@@ -1,6 +1,6 @@
 ---
 description: >
-  Overview of the operational work trail (_backlog/): the flat root entries and every project, each with
+  Overview of the operational work trail (__callbell__/_backlog/): the flat root entries and every project, each with
   status and a short description. Loaded at session start through the hook (like the memory index
   MEMORY.md), so the agent knows the open state without opening every file. Operating logic: rule
   callbell-backlog.
@@ -11,7 +11,7 @@ edit: shared
 # Backlog
 
 <!-- Top overview of the work trail. Root entries (no project) live flat as epic/story/task files in
-     _backlog/; a project is a folder _backlog/<project>/ with its own index.md. Location, projects, and
+     __callbell__/_backlog/; a project is a folder __callbell__/_backlog/<project>/ with its own index.md. Location, projects, and
      life cycle are set by callbell-backlog.
 
      One line per active root entry and one line per project (pointing to its index.md):

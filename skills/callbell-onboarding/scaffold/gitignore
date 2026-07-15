@@ -1,11 +1,11 @@
-# Raw zone _import/: volatile inputs (raw files the agent processes) and their processed/ archive,
+# Raw zone __callbell__/_import/: volatile inputs (raw files the agent processes) and their processed/ archive,
 # not part of the knowledge base, not versioned. The folder stays (via .gitkeep), its content is ignored.
-/_import/*
-!/_import/.gitkeep
+/__callbell__/_import/*
+!/__callbell__/_import/.gitkeep
 
-# Zone _export/: requested deliverables the user takes out of the repo. Often carry real, unredacted
+# Zone __callbell__/_export/: requested deliverables the user takes out of the repo. Often carry real, unredacted
 # data, so they must never be versioned. Unseeded: appears only when a deliverable is requested.
-/_export/
+/__callbell__/_export/
 
 # Per-user language (root): each user's own chat + thinking language. The committed
 # _user-language.example.md stays; the real file is personal and not versioned.

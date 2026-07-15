@@ -33,7 +33,7 @@ The level sticks until changed or session end.
 | **callbell-debt** | `/callbell-debt` | Harvests every `callbell:` marker into a debt ledger. |
 | **callbell-gain** *(code)* | `/callbell-gain` | Measured-impact scoreboard: less code, less cost, more speed. |
 | **callbell-filing** *(ops)* | `/callbell-filing` | Decides where a file belongs and how the tree grows. |
-| **callbell-import** | "it's in the inbox", `/callbell-import` | Turns raw material in `_import/` into redacted, filed content. |
+| **callbell-import** | "it's in the inbox", `/callbell-import` | Turns raw material in `__callbell__/_import/` into redacted, filed content. |
 | **callbell-onboarding** | `/callbell-onboarding` | One-time repo setup: purpose, scaffolds, and how you work together. |
 | **callbell-worktree** | `/callbell-worktree` | Git worktree for parallel work, cleaned up after the merge. |
 | **callbell-help** | `/callbell-help` | This card. |
@@ -47,7 +47,7 @@ Codex uses the same skills with the `@` prefix (`@callbell`, `@callbell-review`,
 - **Approvals:** structure or schema changes (and new areas in ops) and promotion of drafts only after
   approval; routine within the established scope the agent handles itself (see `callbell-governance`).
 - **Structure:** the path says WHERE, the frontmatter says WHAT, `status` drives maturity.
-- **Zones:** `_import/` (inputs), `_export/` (requested deliverables), `_backlog/` (work trail).
+- **Zones:** `__callbell__/_import/` (inputs), `__callbell__/_export/` (requested deliverables), `__callbell__/_backlog/` (work trail).
 
 ## Namespace
 

@@ -13,12 +13,13 @@ edit: locked
 These rules always apply. The full procedure (placement, thresholds, promotion) lives in the skill
 `callbell-filing` and is read only when you actually file or move a file.
 
-**Two levels in the root.** The root separates cleanly. The **operational level** is the flat area
-folders `<area>-<topic>` (for example `business-finance/`, `personal-gaming/`) plus the zones `_import/`,
-`_export/`, and `_backlog/` (see `callbell-zones`). Alongside it is the **global meta level** `__META__/`
-(global context, memory). Area-local meta (`framework.md`), by contrast, lives **in** the operational
-level, with the area it sharpens. No deep `domain/area/topic` hierarchy: the area folder is the top
-level, depth arises inside it and only when needed.
+**The root is your workspace; `__callbell__/` is callbell's layer.** The **operational level** is the flat
+area folders `<area>-<topic>` (for example `business-finance/`, `personal-gaming/`) in the repo root, where
+your content lives. The **callbell-managed layer** is the single folder `__callbell__/`: the meta level
+(context, memory, templates, docs) plus the zones `__callbell__/_import/`, `__callbell__/_export/`, and
+`__callbell__/_backlog/` (see `callbell-zones`). Area-local meta (`framework.md`), by contrast, lives **in**
+the operational level, with the area it sharpens. No deep `domain/area/topic` hierarchy: the area folder is
+the top level, depth arises inside it and only when needed.
 
 **Content folders are named `<area>-<topic>`.** The area up front groups related topics and makes the
 folder self-explaining for human and agent (`business-finance`, `personal-gaming`). Which areas and
@@ -37,7 +38,7 @@ zone (no type, no frontmatter), like the root zones.
 place decides the structure: the path.
 
 **Areas come from the registry, not from the gut.** Which areas and topics exist is stated in the
-registry in the root `framework.md`. The agent uses only what is there and invents no areas. A new area, a
+registry in `__callbell__/framework.md`. The agent uses only what is there and invents no areas. A new area, a
 new topic, or a loosening of the schema requires approval (see `callbell-governance`).
 
 **Status drives maturity, not location.** Unfinished material carries `status: draft` and lives in its

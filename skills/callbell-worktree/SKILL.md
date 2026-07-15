@@ -18,7 +18,7 @@ folder. For several sessions or topics at the same time.
 - Or when parallel or colliding work comes up (a new strand while a branch is open): propose a worktree,
   explain it in a sentence or two, and create it only after approval (a new structural element, see
   `callbell-governance`).
-- For a parallel strand, also suggest a dedicated backlog project `_backlog/<project>/`: it isolates that
+- For a parallel strand, also suggest a dedicated backlog project `__callbell__/_backlog/<project>/`: it isolates that
   strand's backlog changes so the worktrees do not collide on shared files (see `callbell-backlog`).
 
 ## Setup

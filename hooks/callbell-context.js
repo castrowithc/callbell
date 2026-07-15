@@ -6,8 +6,8 @@
 // SessionStart stdout as context.
 //
 //   Claude: registered in .claude/settings.json (WITHOUT --rules).
-//           Root via $CLAUDE_PROJECT_DIR. Injects the context from __META__/context/,
-//           the memory index __META__/memory/MEMORY.md and the backlog index _backlog/BACKLOG.md.
+//           Root via $CLAUDE_PROJECT_DIR. Injects the context from __callbell__/context/,
+//           the memory index __callbell__/memory/MEMORY.md and the backlog index __callbell__/_backlog/BACKLOG.md.
 //           On Claude the rules do NOT come from here, but natively from .claude/rules/
 //           (otherwise duplicate context).
 //   Codex:  registered in .codex/hooks.json WITH --rules.
@@ -19,7 +19,7 @@
 //           comes from ${CLAUDE_PLUGIN_ROOT}/${PLUGIN_ROOT} when the project carries none of its own.
 //           Project-local always wins, so a real project never double-loads its rules.
 //
-// Scope deliberately narrow: only __META__/context/ (onboarding facts, a dynamic complement to
+// Scope deliberately narrow: only __callbell__/context/ (onboarding facts, a dynamic complement to
 // rules/skills), the memory index, and the backlog index (open work state). The individual
 // backlog files, templates, and deeper framework.md stay on demand (cascade), not always on.
 //
@@ -71,7 +71,7 @@ function markdownHeavy(dir) {
 
 function resolveProjectType(dir) {
   // Primary: onboarding writes `project-type: code|ops` into repo.md frontmatter.
-  const declared = frontmatterOf(path.join(dir, '__META__', 'context', 'repo.md'))
+  const declared = frontmatterOf(path.join(dir, '__callbell__', 'context', 'repo.md'))
     .match(/^project-type:\s*(code|ops)\b/mi);
   if (declared) return declared[1].toLowerCase();
   // Fallback: filesystem markers.
@@ -79,7 +79,7 @@ function resolveProjectType(dir) {
   const codeMarkers = ['package.json', 'tsconfig.json', 'pyproject.toml', 'requirements.txt',
     'Cargo.toml', 'go.mod', 'pom.xml', 'build.gradle', 'Gemfile', 'composer.json', 'src'];
   if (codeMarkers.some(has)) return 'code';
-  if (has('framework.md') || markdownHeavy(dir)) return 'ops';
+  if (has('__callbell__/framework.md') || markdownHeavy(dir)) return 'ops';
   return 'unknown';
 }
 
@@ -118,7 +118,7 @@ function section(files, base) {
 
 const blocks = [];
 
-// Per-user interaction language (root file, gitignored). Read explicitly; it is not in __META__/context.
+// Per-user interaction language (root file, gitignored). Read explicitly; it is not in __callbell__/context.
 // It sets how the agent talks to the user (chat + visible reasoning), not the language of repo content.
 const langFile = path.join(root, '_user-language.md');
 if (fs.existsSync(langFile)) {
@@ -135,15 +135,15 @@ blocks.push(projectType === 'unknown'
   ? 'PROJECT TYPE: unknown (no code or ops markers yet; derive it from the task, onboarding sets it durably)'
   : 'PROJECT TYPE: ' + projectType);
 
-const contextFiles = collect(path.join(root, '__META__', 'context'));
-const memoryIndex = path.join(root, '__META__', 'memory', 'MEMORY.md');
+const contextFiles = collect(path.join(root, '__callbell__', 'context'));
+const memoryIndex = path.join(root, '__callbell__', 'memory', 'MEMORY.md');
 if (fs.existsSync(memoryIndex)) contextFiles.push(memoryIndex);
-const backlogIndex = path.join(root, '_backlog', 'BACKLOG.md');
+const backlogIndex = path.join(root, '__callbell__', '_backlog', 'BACKLOG.md');
 if (fs.existsSync(backlogIndex)) contextFiles.push(backlogIndex);
 
 const context = section(contextFiles, root);
 if (context.length) {
-  blocks.push('Way of working & context (loaded automatically at session start from __META__/context/, the memory index, and the backlog index):');
+  blocks.push('Way of working & context (loaded automatically at session start from __callbell__/context/, the memory index, and the backlog index):');
   blocks.push(context.join('\n\n'));
 }
 

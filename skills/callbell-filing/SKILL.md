@@ -14,13 +14,13 @@ edit: locked
 # Filing: where a file belongs and how the tree grows
 
 Placement follows the invariants in the rule `callbell-structure`. This skill is the procedure behind
-them. Which areas and topics exist is stated in the registry in the root `framework.md`; the agent uses
+them. Which areas and topics exist is stated in the registry in `__callbell__/framework.md`; the agent uses
 only what is there and creates no new area without approval (see `callbell-governance`).
 
 ## Look for a template first
 
 Before you reinvent a recurring area structure (for example customers, projects, objects), check
-`__META__/templates/` for a matching template and instantiate it. For customers there is a pattern there:
+`__callbell__/templates/` for a matching template and instantiate it. For customers there is a pattern there:
 the area `business-customers/` gets a `framework.md` (how to identify, how to search, which data never
 flows in) and one subfolder `<id>/index.md` per customer. Only when no template fits do you build your own
 and propose to the user that the pattern be captured as a template.
@@ -47,9 +47,9 @@ an area overflows: do not guess, propose an adjustment and wait for approval.
 | `fact` · `knowledge` · `history` | Flat with a prefix `<area>-<topic>/<type>-<name>.md`; once more than 5 of the same type → a `<type>/` folder. |
 | `playbook` | Next to the recurring process it serves (`<area>-<topic>/[<subtopic>/]playbooks/`); otherwise flat `playbook-<name>.md`. |
 | `decision` | Central and dated in the area: `<area>-<topic>/decisions/YYYY-MM-DD-….md`. Structural and meta decisions concern the framework, not one area. |
-| `meta` | Flat, no prefix: `<area>-<topic>/framework.md` (the root = the root `framework.md`). |
-| `epic` · `story` · `task` | In the `_backlog/` zone. Location and life cycle are set by `callbell-backlog`. |
-| `memory` | `__META__/memory/*.md` (see `callbell-memory`). |
+| `meta` | Flat, no prefix: `<area>-<topic>/framework.md` (the root registry = `__callbell__/framework.md`). |
+| `epic` · `story` · `task` | In the `__callbell__/_backlog/` zone. Location and life cycle are set by `callbell-backlog`. |
+| `memory` | `__callbell__/memory/*.md` (see `callbell-memory`). |
 
 Rules and skills are not placed by hand: they live natively in `.claude/rules/` and `.claude/skills/`
 (Codex mirror: `.agents/skills/`).
@@ -74,8 +74,8 @@ The zones are central (see `callbell-zones`). Relevant for filing:
   substructure allowed (for example `work/2025/`). It keeps the area level **readable**: `<area>-<topic>/`
   should show only type folders (and flat type files). Anything that would otherwise create foreign folders
   (years, ad hoc groups) moves into `work/` instead of hiding the type folders.
-- **`_import/`** (root): raw external inputs, volatile, gitignored.
-- **`_export/`** (root): requested human deliverables, **only on explicit request**, without types,
+- **`__callbell__/_import/`** (root): raw external inputs, volatile, gitignored.
+- **`__callbell__/_export/`** (root): requested human deliverables, **only on explicit request**, without types,
   without frontmatter. Not part of the knowledge base; the agent files nothing here on its own.
 
 ## Draft and maturity through status
@@ -89,7 +89,7 @@ approval (see `callbell-governance`).
 - **`decision`**: `status: draft` while it is being weighed; on approval `status: active`, date = release
   date (not draft date), dated in `decisions/…`.
 - **Standing rules** of an area move into its `framework.md`.
-- **Backlog**: maturity and completion are set by `callbell-backlog` (`_backlog/` → `_backlog/done/`).
+- **Backlog**: maturity and completion are set by `callbell-backlog` (`__callbell__/_backlog/` → `__callbell__/_backlog/done/`).
 
 ## Lazy depth: two separate thresholds
 
@@ -107,7 +107,7 @@ first `business-finance/<subtopic-1>/knowledge/`, then `business-finance/<subtop
 ## Cascade
 
 One `framework.md` per area or subtopic, **lazy and as an overlay**: it comes into being only when the
-folder needs its own growing work rules (what the backbone from `__META__/context`, rules, and skills does
+folder needs its own growing work rules (what the backbone from `__callbell__/context`, rules, and skills does
 not already cover), and it describes how work is done there (search, identification, local guardrails). It
 is read only when work happens there. No nested `AGENTS.md`/`CLAUDE.md` down in the depth: the cascade runs
 solely through the `framework.md` files by path (read from the root), not through harness auto-loading.
@@ -116,7 +116,7 @@ solely through the `framework.md` files by path (read from the root), not throug
 
 - **No asset store.** This is a planning layer, not a store for bulk, media, or *changing* binary files.
   Allowed: a small, stable image when it *is* the artifact (for example a diagram). Large files → a file
-  store or Git LFS; volatile inputs → `_import/`.
+  store or Git LFS; volatile inputs → `__callbell__/_import/`.
 - **Rare but important → a playbook.** A procedure needed only a few times a year lives as its own playbook
   and is referenced elsewhere with a one-line pointer, so the required reading stays lean.
 - **A playbook is neutral and recurring.** It describes the repeatable procedure (for tools: fields,

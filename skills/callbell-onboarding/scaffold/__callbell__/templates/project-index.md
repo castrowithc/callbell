@@ -7,7 +7,7 @@ status: active        # active | final | archived
 
 # Project: <name>
 
-<!-- Template. Copy it to _backlog/<project>/index.md.
+<!-- Template. Copy it to __callbell__/_backlog/<project>/index.md.
 The project header: the big picture and description of the project, plus a roster of its epics and any
 standalone stories or tasks. Each epic, story, and task is its own file (see callbell-backlog). -->
 

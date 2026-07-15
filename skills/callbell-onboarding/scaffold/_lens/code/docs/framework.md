@@ -1,15 +1,15 @@
 ---
 description: >
-  Framework for the docs of this code project: what lives in __META__/docs/ and how it is organized.
-  Applies at the __META__ level, the root of the docs cascade.
+  Framework for the docs of this code project: what lives in __callbell__/docs/ and how it is organized.
+  Applies at the __callbell__ level, the root of the docs cascade.
 type: meta
 edit: locked
 ---
 
 # Docs Framework
 
-This directory (`__META__/docs/`) holds the project's documentation: repo and user docs, occasionally
-personal learnings or summaries. It applies at the `__META__` level; the root stays the code project.
+This directory (`__callbell__/docs/`) holds the project's documentation: repo and user docs, occasionally
+personal learnings or summaries. It applies at the `__callbell__` level; the root stays the code project.
 
 ## Structure
 - Docs are organized by topic in folders `<area>-<topic>` as they grow; single files stay flat.

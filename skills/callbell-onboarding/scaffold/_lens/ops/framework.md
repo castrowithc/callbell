@@ -14,8 +14,8 @@ structured way, creates and maintains it, and manages what the user sets out. Th
 
 ## Structure in brief
 - Operational content lives in flat root folders `<area>-<topic>` (for example `business-finance/`).
-- Alongside it the global meta level `__META__/` (context, memory) and the zones `_import/` (raw inputs),
-  `_export/` (requested deliverables), and `_backlog/` (the operational work trail), see `callbell-zones`
+- Alongside it the global meta level `__callbell__/` (context, memory) and the zones `__callbell__/_import/` (raw inputs),
+  `__callbell__/_export/` (requested deliverables), and `__callbell__/_backlog/` (the operational work trail), see `callbell-zones`
   and `callbell-backlog`.
 - The path says WHERE something lives; the frontmatter says WHAT it is. No duplication.
 - `status` drives maturity (`draft → active`), not the folder.
@@ -35,6 +35,6 @@ nothing. New entries only after approval by the user (onboarding: `/callbell-onb
 -->
 
 ## Cascade
-A folder may carry its own `framework.md`, which comes into being only when it needs its own growing work
-rules, and applies and is read only when work happens there. That keeps the context lean. This root
-`framework.md` is the root.
+An area folder may carry its own `framework.md`, which comes into being only when it needs its own growing
+work rules, and applies and is read only when work happens there. That keeps the context lean. This file,
+`__callbell__/framework.md`, is the root of that cascade.

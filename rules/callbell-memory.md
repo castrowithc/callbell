@@ -9,7 +9,7 @@ edit: locked
 
 # Memory
 
-Memory lives in the repo (`__META__/memory/`), not locally in the agent, so it travels with the project
+Memory lives in the repo (`__callbell__/memory/`), not locally in the agent, so it travels with the project
 and is available to every agent. One file per memory, opened up through the index `MEMORY.md`.
 
 ## Reading
@@ -25,7 +25,7 @@ and is available to every agent. One file per memory, opened up through the inde
   structure, `context/`, or the rules. Store nothing that is already documented. **Always here** when the
   user wants something remembered, or when the agent would record something it would otherwise put in its
   **native/local memory**. The repo memory takes its place.
-- **How:** one file per memory in `__META__/memory/`, plus **one** line in the index `MEMORY.md`
+- **How:** one file per memory in `__callbell__/memory/`, plus **one** line in the index `MEMORY.md`
   (`- [Title](file.md) - short hook`). Before creating one, check whether a file already covers the
   topic, then update that one instead of duplicating. Delete memories that have become wrong.
 - Memory files may carry `type: memory` (`edit: shared`); data protection applies here too (no contact
