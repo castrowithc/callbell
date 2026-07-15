@@ -1,0 +1,25 @@
+{
+  "name": "callbell",
+  "version": "0.1.0",
+  "description": "Lazy senior mode for code and knowledge repos: adaptive skills, rules, and an always-on context loader.",
+  "author": { "name": "Callbell" },
+  "homepage": "https://github.com/castrowithc/callbell",
+  "repository": "https://github.com/castrowithc/callbell",
+  "license": "MIT",
+  "keywords": ["yagni", "minimalism", "filing", "review", "productivity"],
+  "skills": "./skills/",
+  "hooks": "./hooks/callbell-hooks.json",
+  "interface": {
+    "displayName": "Callbell",
+    "shortDescription": "Lazy senior mode for code and knowledge repos",
+    "longDescription": "Forces the leanest solution that holds (YAGNI, reuse, the smallest correct form) for code and for filing and structure, and ships the review, audit, and debt tools plus onboarding.",
+    "developerName": "Callbell",
+    "category": "Productivity",
+    "capabilities": ["Instructions", "Lifecycle hooks"],
+    "defaultPrompt": [
+      "Set up this project with callbell.",
+      "Audit this repo for over-engineering.",
+      "Where does this file belong?"
+    ]
+  }
+}
