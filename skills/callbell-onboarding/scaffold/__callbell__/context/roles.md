@@ -25,7 +25,7 @@ sparring partner, quiet executor. Sets stance and initiative. -->
 ## Likes / dislikes
 <!-- What do you value in the collaboration, what bothers you? For example no emojis, explain intermediate steps, ask directly when something is unclear. -->
 
-<!-- Language is set per user in the root file _user-language.md, not here. -->
+<!-- Interaction language is set during onboarding in AGENTS.md (imported by CLAUDE.md), not here. -->
 
 ## Special rules & wishes
 <!-- Your own directives that go beyond the fixed rules and should apply to YOUR repo.

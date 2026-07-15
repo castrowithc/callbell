@@ -18,7 +18,7 @@ the current lens (`PROJECT TYPE`): **callbell-gain** for code, **callbell-filing
 | Level | Trigger | What changes |
 |-------|---------|--------------|
 | **muffin** | `/callbell muffin` | Build what is asked, name the lazier alternative in one line. |
-| **cake** | `/callbell` | The ladder enforced: YAGNI → reuse → platform/flat → one line → minimum. Default. |
+| **cake** | `/callbell cake` (or bare `/callbell`) | The ladder enforced: YAGNI → reuse → platform/flat → one line → minimum. Default. |
 | **buffet** | `/callbell buffet` | YAGNI extremist. Deletion before addition, challenge the requirement. |
 
 The level sticks until changed or session end.

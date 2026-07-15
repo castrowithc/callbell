@@ -14,7 +14,7 @@
 //           Root via stdin JSON {cwd}. Codex has no Markdown rules folder, so
 //           the norms from .claude/rules/ are injected here as well.
 //   Plugin (ambient mode): installed per device and started in an arbitrary or empty folder.
-//           Two roots then. Project STATE (context, memory, backlog, _user-language) still comes
+//           Two roots then. Project STATE (context, memory, backlog) still comes
 //           from the project cwd, only if present. The always-on PAYLOAD (rules + AGENTS.md ruleset)
 //           comes from ${CLAUDE_PLUGIN_ROOT}/${PLUGIN_ROOT} when the project carries none of its own.
 //           Project-local always wins, so a real project never double-loads its rules.
@@ -118,15 +118,8 @@ function section(files, base) {
 
 const blocks = [];
 
-// Per-user interaction language (root file, gitignored). Read explicitly; it is not in __callbell__/context.
-// It sets how the agent talks to the user (chat + visible reasoning), not the language of repo content.
-const langFile = path.join(root, '_user-language.md');
-if (fs.existsSync(langFile)) {
-  const langBody = bodyOf(langFile);
-  if (langBody) blocks.push('Your interaction language (from _user-language.md):\n' + langBody);
-} else {
-  blocks.push('No _user-language.md set. Before other work, ask the user which language to use for chat replies and for your visible reasoning, then create _user-language.md from _user-language.example.md. Content written into repo files stays project-governed, not set here. A missing _user-language.md usually means the repo was just copied from the template — offer to run /callbell-onboarding for the one-time setup.');
-}
+// Interaction language now lives natively in AGENTS.md / CLAUDE.md (onboarding writes it there), so the
+// hook no longer injects it. Both harnesses load those root files on their own.
 
 // The lens, emitted once. Lens-bearing skills (callbell and the review/audit/debt family) read
 // this line instead of detecting the type themselves.
@@ -145,6 +138,8 @@ const context = section(contextFiles, root);
 if (context.length) {
   blocks.push('Way of working & context (loaded automatically at session start from __callbell__/context/, the memory index, and the backlog index):');
   blocks.push(context.join('\n\n'));
+} else if (pluginRoot) {
+  blocks.push('No callbell project set up in this folder yet (ambient mode). Skills and rules are active everywhere; run /callbell-onboarding to turn it into a persistent project (it sets the interaction language in AGENTS.md and lays down context, memory, and backlog).');
 }
 
 // Always-on payload: the rules (norms) and the minimal AGENTS.md ruleset. Project-local always

@@ -47,6 +47,5 @@ own). The backlog's flow, location, and life cycle are set by `callbell-backlog`
 - Zones carry **no** type prefix and (except `__callbell__/_backlog/`) no frontmatter.
 - No bulk or media storage: large or changing binary files belong in a file store or Git LFS, not in a
   zone. Volatile inputs go to `__callbell__/_import/`.
-- The `_` prefix also marks a few root-level backbone **config files** (for example `_user-language.md`):
-  agent-known, outside the typed filing, sorted to the top of the root. These are files, not zones, so the
-  zone rules above do not apply to them; they follow their own purpose.
+- Inside `__callbell__/`, the zones sit beside the typed meta (`context/`, `memory/`, `templates/`); the `_`
+  prefix keeps them apart from that typed filing.

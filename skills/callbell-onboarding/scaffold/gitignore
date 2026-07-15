@@ -6,7 +6,3 @@
 # Zone __callbell__/_export/: requested deliverables the user takes out of the repo. Often carry real, unredacted
 # data, so they must never be versioned. Unseeded: appears only when a deliverable is requested.
 /__callbell__/_export/
-
-# Per-user language (root): each user's own chat + thinking language. The committed
-# _user-language.example.md stays; the real file is personal and not versioned.
-/_user-language.md
