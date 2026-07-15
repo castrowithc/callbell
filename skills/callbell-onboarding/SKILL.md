@@ -20,13 +20,22 @@ Read the lens once from `PROJECT TYPE` in session context (**code** or **ops**);
 what you scaffold. Unknown or ambient? Confirm with the user which it is, first.
 
 ## 0. Materialize the scaffold, then secure progress (first)
-**If this folder has no callbell scaffold** (no `__META__/`, no `.claude/rules/`, and for ops no root
-`framework.md`), you were started as the device-global plugin in a bare folder (ambient mode). Before
-anything else, lay the scaffold down from the plugin root (`${CLAUDE_PLUGIN_ROOT}`) into the current folder:
-the template skeleton for the lens (`__META__/` with its context and template scaffolds, `.claude/rules/`,
-`AGENTS.md`/`CLAUDE.md`, the zones `_backlog/` and `_import/` with their indexes, and for ops the root
-`framework.md`). A folder that already carries the scaffold (a template copy) skips this. If
-`${CLAUDE_PLUGIN_ROOT}` is not resolvable from the session, ask the user for the plugin's install path.
+**If this folder has no callbell scaffold** (no `__META__/`), you were started as the device-global plugin
+in a bare folder (ambient mode). Lay the **project scaffold** into the current folder from the plugin's
+bundled copy at `${CLAUDE_PLUGIN_ROOT}/skills/callbell-onboarding/scaffold/`. The plugin already delivers the
+rules, skills, hook, and ruleset device-global (the SessionStart hook injects them, project-local wins), so
+the scaffold carries **only project state**, never a second copy of those:
+
+- Copy the shared base verbatim into the current folder: `__META__/` (context, memory index, template
+  scaffolds), the zones `_backlog/BACKLOG.md` and `_import/.gitkeep`, and `_user-language.example.md`.
+- Copy `scaffold/gitignore` to `.gitignore` (the dot is dropped in the bundle so it does not act as an
+  ignore file inside the plugin).
+- **Lens extras from `scaffold/_lens/`:** for **ops**, copy `_lens/ops/framework.md` to the root
+  `framework.md` and `_lens/ops/templates/*` into `__META__/templates/`; for **code**, copy
+  `_lens/code/docs/framework.md` to `__META__/docs/framework.md`.
+
+A folder that already carries the scaffold (a template copy) skips this. If `${CLAUDE_PLUGIN_ROOT}` is not
+resolvable from the session, ask the user for the plugin's install path.
 
 Then create `_backlog/task-initial-onboarding.md` right away (template in `__META__/templates/task.md`,
 `status: active`) and add one line to the backlog index `_backlog/BACKLOG.md`. Check off the steps as you
