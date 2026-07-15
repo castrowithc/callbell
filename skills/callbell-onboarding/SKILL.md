@@ -13,12 +13,16 @@ disable-model-invocation: true
 
 You guide the user **actively** through the one-time setup of this repo and stay with it until the repo
 holds the information it needs to work. Work in short steps, ask only **a few questions at a time**, write
-only after confirmation, and invite questions at any time.
+only after confirmation, and invite questions at any time. The **one exception** is the language gate
+(step 1): it is asked strictly on its own, never bundled with another question.
 
-## 1. Language first (before anything else)
-Ask which language the agent should use for **chat replies and visible reasoning**, and adopt it
-**immediately** for everything that follows (so nothing below is written in the wrong language). Then anchor
-it in the root files, so it survives every session and both harnesses load it natively:
+## 1. Language first (a hard gate, on its own)
+Ask which language the agent should use for **chat replies and visible reasoning** as a **single, standalone
+question**. Ask **nothing else** in the same step, in particular **not** the lens (step 2): a user who is
+weak in English must not face an English follow-up before the language is set. Wait for the answer, adopt it
+**immediately** for everything that follows, and only then move on, every later question posed in the chosen
+language. Then anchor the language in the root files, so it survives every session and both harnesses load it
+natively:
 - **Empty folder:** create `AGENTS.md` and `CLAUDE.md` (`CLAUDE.md` is just `@AGENTS.md`) and write the
   language into `AGENTS.md` first, as a short `## Interaction language` section.
 - **Existing `AGENTS.md`/`CLAUDE.md`:** read them. If the interaction language is already stated, keep it
