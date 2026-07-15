@@ -32,8 +32,10 @@ This is the **interaction** language (how the agent talks), committed with the r
 **content** (folder and area names) is a separate axis, set in step 4.
 
 ## 2. The lens, then its sub-question
-Read `PROJECT TYPE` from session context (**code** or **ops**); unknown or ambient, confirm which it is.
-Then, right away, its sub-question with a one-line description:
+Read `PROJECT TYPE` from session context (**code** or **ops**) and **confirm it with the user** before
+proceeding: the fallback detection can be wrong before the lens is written down in step 4, so never take it
+as given, and on unknown or ambient ask outright. Then, right away, its sub-question with a one-line
+description:
 - **ops:** Personal OS, Business OS, or **Mixed** (personal and business in one repo, typical for solo
   entrepreneurs and freelancers). You record the choice in `repo.md` in step 4.
 - **code:** the tech stack in broad strokes and the stage it is at. The deployment path (Full/Clean) comes

@@ -38,6 +38,9 @@ The level sticks until changed or session end.
 | **callbell-worktree** | `/callbell-worktree` | Git worktree for parallel work, cleaned up after the merge. |
 | **callbell-help** | `/callbell-help` | This card. |
 
+Only the domain-unique skill matching this repo's lens is installed (`callbell-gain` in code repos,
+`callbell-filing` in ops repos); the other is listed for reference only.
+
 Codex uses the same skills with the `@` prefix (`@callbell`, `@callbell-review`, and so on); Claude uses the
 `/` forms above.
 
