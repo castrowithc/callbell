@@ -66,8 +66,10 @@ appear in this table. Memory files may carry `type: memory` (`edit: shared`) for
 In the same way, the fixed-function index `BACKLOG.md` opens up the **backlog subsystem** (`__callbell__/backlog/`,
 governed by `callbell-backlog`). Like `MEMORY.md` it loads at session start through the hook and is a
 living index, so it carries `edit: shared` even though structurally it is `meta`. This is the same
-deliberate exception to the type to edit coupling as with the memory index. The backlog **entries**
-themselves (`task`) still follow the table above.
+deliberate exception to the type to edit coupling as with the memory index. A **project's `index.md`**
+(`__callbell__/backlog/<project>/index.md`) is the same case one level down: a living roster that is
+rewritten as its tasks move, so it too is `meta` with `edit: shared`, plus a `status`. The backlog
+**entries** themselves (`task`) still follow the table above.
 
 ## `edit`: follows strictly from `type`
 
