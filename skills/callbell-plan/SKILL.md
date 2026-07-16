@@ -1,20 +1,22 @@
 ---
 name: callbell-plan
 description: >
-  Turn an idea into a plan the agent can work from: clarify it in conversation, then cut it into
-  self-contained work packages (tasks) with why, scope, approach, and definition of done. Use when the user
-  brings something to build, change, or set up ("I want to build X", "we should add Y", "here is an idea"),
-  when a plan or a breakdown is asked for, when new work arrives that needs cutting into tasks, or on
-  /callbell-plan. Do NOT use for pure brainstorming with no intent to build, for a single obvious step, or
-  to read or check off existing backlog work.
+  Turn an idea into a plan: clarify it in conversation, then cut it into self-contained work packages
+  (tasks) with why, scope, approach, and definition of done. Started by the user with /callbell-plan, never
+  on its own: only the user knows whether they want this built or are still thinking about it, and from the
+  outside those two look the same.
 type: skill
 edit: locked
+disable-model-invocation: true
 ---
 
 # /callbell-plan
 
 The planning session: an idea goes in, a project and its work packages come out. Then this is done and the
 work grows in conversation from there.
+
+The user started this deliberately, so the intent to build is established: do not re-litigate whether they
+want this. What is still open is *what* they want, and that is the work below.
 
 Planning is a **conversation, not a form**. Never hand the user a template to fill in. The checklist below
 is yours: test what they gave you against it, and ask about what is missing.

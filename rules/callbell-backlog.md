@@ -11,8 +11,14 @@ edit: locked
 # Backlog
 
 The backlog is the repo's operational work trail: versioned managed state under `__callbell__/backlog/`,
-not one of the volatile zones. This rule holds the standing invariants. **Planning and cutting work is the
-skill `callbell-plan`**, which loads when there is work to plan; it is not needed to read the backlog.
+not one of the volatile zones. This rule holds the standing invariants.
+
+**Planning and cutting work is the skill `callbell-plan`, and only the user starts it** (`/callbell-plan`).
+Never start planning on your own: wanting a thing built and thinking a thing through look identical from
+the outside, and only the user knows which one is happening. Guessing wrong is expensive, because a
+half-formed idea gets cut into packages before it was ready. When work comes up that looks like it wants
+planning, **say so and offer the skill**, then let the user decide. Suggesting costs nothing; starting
+costs their idea.
 
 ## Where work lives
 - **A task is the unit of work, and its own file** `task-<slug>.md`. It lives flat in
@@ -51,5 +57,10 @@ task and one line per project** (`- [Title](path) - status, short state`), the p
 `index.md`. The agent maintains it; finished work drops out.
 
 ## Templates
-Scaffolds for new entries live in `__callbell__/templates/` (`task.md`, `project-index.md`). Copy from
-there, do not reinvent.
+Scaffolds live in `__callbell__/templates/`. Copy from there, do not reinvent. A scaffold is **renamed as
+it is copied**, because it never carries a reserved name itself (see `callbell-conventions`):
+
+| Scaffold | Becomes |
+|---|---|
+| `task.md` | `__callbell__/backlog/task-<slug>.md`, or `<project>/task-<slug>.md` |
+| `project-index.md` | `__callbell__/backlog/<project>/index.md` |
