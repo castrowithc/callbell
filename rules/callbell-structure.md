@@ -16,8 +16,8 @@ These rules always apply. The full procedure (placement, thresholds, promotion) 
 **The root is your workspace; `__callbell__/` is callbell's layer.** The **operational level** is the flat
 area folders `<area>-<topic>` (for example `business-finance/`, `personal-gaming/`) in the repo root, where
 your content lives. The **callbell-managed layer** is the single folder `__callbell__/`: the meta level
-(context, memory, templates, docs) plus the zones `__callbell__/_import/`, `__callbell__/_export/`, and
-`__callbell__/_backlog/` (see `callbell-zones`). Area-local meta (`framework.md`), by contrast, lives **in**
+(context, memory, templates, docs, and the backlog `__callbell__/backlog/`) plus the two volatile zones
+`__callbell__/zone-import/` and `__callbell__/zone-export/` (see `callbell-zones`). Area-local meta (`framework.md`), by contrast, lives **in**
 the operational level, with the area it sharpens. No deep `domain/area/topic` hierarchy: the area folder is
 the top level, depth arises inside it and only when needed.
 

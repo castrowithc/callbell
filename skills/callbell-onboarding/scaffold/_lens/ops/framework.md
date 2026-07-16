@@ -14,9 +14,9 @@ structured way, creates and maintains it, and manages what the user sets out. Th
 
 ## Structure in brief
 - Operational content lives in flat root folders `<area>-<topic>` (for example `business-finance/`).
-- Alongside it the global meta level `__callbell__/` (context, memory) and the zones `__callbell__/_import/` (raw inputs),
-  `__callbell__/_export/` (requested deliverables), and `__callbell__/_backlog/` (the operational work trail), see `callbell-zones`
-  and `callbell-backlog`.
+- Alongside it the global meta level `__callbell__/` (context, memory, and the backlog `__callbell__/backlog/`, the
+  operational work trail) plus the two volatile zones `__callbell__/zone-import/` (raw inputs) and
+  `__callbell__/zone-export/` (requested deliverables), see `callbell-zones` and `callbell-backlog`.
 - The path says WHERE something lives; the frontmatter says WHAT it is. No duplication.
 - `status` drives maturity (`draft → active`), not the folder.
 - Depth grows lazily: flat first, a sublevel only from the second element of the same kind.

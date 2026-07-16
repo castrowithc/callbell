@@ -7,7 +7,7 @@
 //
 //   Claude: registered in .claude/settings.json (WITHOUT --rules).
 //           Root via $CLAUDE_PROJECT_DIR. Injects the context from __callbell__/context/,
-//           the memory index __callbell__/memory/MEMORY.md and the backlog index __callbell__/_backlog/BACKLOG.md.
+//           the memory index __callbell__/memory/MEMORY.md and the backlog index __callbell__/backlog/BACKLOG.md.
 //           On Claude the rules do NOT come from here, but natively from .claude/rules/
 //           (otherwise duplicate context).
 //   Codex:  registered in .codex/hooks.json WITH --rules.
@@ -135,7 +135,7 @@ blocks.push(projectType === 'unknown'
 const contextFiles = collect(path.join(root, '__callbell__', 'context'));
 const memoryIndex = path.join(root, '__callbell__', 'memory', 'MEMORY.md');
 if (fs.existsSync(memoryIndex)) contextFiles.push(memoryIndex);
-const backlogIndex = path.join(root, '__callbell__', '_backlog', 'BACKLOG.md');
+const backlogIndex = path.join(root, '__callbell__', 'backlog', 'BACKLOG.md');
 if (fs.existsSync(backlogIndex)) contextFiles.push(backlogIndex);
 
 const context = section(contextFiles, root);

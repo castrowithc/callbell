@@ -3,7 +3,7 @@ name: callbell-filing
 description: >
   Decide where a file belongs and how the folder tree grows. Use this whenever
   you create, place, move, promote, or restructure a content file: which area
-  folder, flat-with-prefix vs. a type folder, which zone (work / import / export),
+  folder, flat-with-prefix vs. a type folder, which zone (work / zone-import / zone-export),
   and how a draft becomes active through its status. Also use on "where does this
   go", "restructure this", "promote this", "callbell-filing", or
   "/callbell-filing".
@@ -48,7 +48,7 @@ an area overflows: do not guess, propose an adjustment and wait for approval.
 | `playbook` | Next to the recurring process it serves (`<area>-<topic>/[<subtopic>/]playbooks/`); otherwise flat `playbook-<name>.md`. |
 | `decision` | Central and dated in the area: `<area>-<topic>/decisions/YYYY-MM-DD-….md`. Structural and meta decisions concern the framework, not one area. |
 | `meta` | Flat, no prefix: `<area>-<topic>/framework.md` (the root registry = `__callbell__/framework.md`). |
-| `epic` · `story` · `task` | In the `__callbell__/_backlog/` zone. Location and life cycle are set by `callbell-backlog`. |
+| `epic` · `story` · `task` | In `__callbell__/backlog/` (versioned work trail, not a zone). Location and life cycle are set by `callbell-backlog`. |
 | `memory` | `__callbell__/memory/*.md` (see `callbell-memory`). |
 
 Rules and skills are not placed by hand: they live natively in `.claude/rules/` and `.claude/skills/`
@@ -74,8 +74,8 @@ The zones are central (see `callbell-zones`). Relevant for filing:
   substructure allowed (for example `work/2025/`). It keeps the area level **readable**: `<area>-<topic>/`
   should show only type folders (and flat type files). Anything that would otherwise create foreign folders
   (years, ad hoc groups) moves into `work/` instead of hiding the type folders.
-- **`__callbell__/_import/`** (root): raw external inputs, volatile, gitignored.
-- **`__callbell__/_export/`** (root): requested human deliverables, **only on explicit request**, without types,
+- **`__callbell__/zone-import/`** (root): raw external inputs, volatile, gitignored.
+- **`__callbell__/zone-export/`** (root): requested human deliverables, **only on explicit request**, without types,
   without frontmatter. Not part of the knowledge base; the agent files nothing here on its own.
 
 ## Draft and maturity through status
@@ -89,7 +89,7 @@ approval (see `callbell-governance`).
 - **`decision`**: `status: draft` while it is being weighed; on approval `status: active`, date = release
   date (not draft date), dated in `decisions/…`.
 - **Standing rules** of an area move into its `framework.md`.
-- **Backlog**: maturity and completion are set by `callbell-backlog` (`__callbell__/_backlog/` → `__callbell__/_backlog/done/`).
+- **Backlog**: maturity and completion are set by `callbell-backlog` (`__callbell__/backlog/` → `__callbell__/backlog/done/`).
 
 ## Lazy depth: two separate thresholds
 
@@ -116,7 +116,7 @@ solely through the `framework.md` files by path (read from the root), not throug
 
 - **No asset store.** This is a planning layer, not a store for bulk, media, or *changing* binary files.
   Allowed: a small, stable image when it *is* the artifact (for example a diagram). Large files → a file
-  store or Git LFS; volatile inputs → `__callbell__/_import/`.
+  store or Git LFS; volatile inputs → `__callbell__/zone-import/`.
 - **Rare but important → a playbook.** A procedure needed only a few times a year lives as its own playbook
   and is referenced elsewhere with a one-line pointer, so the required reading stays lean.
 - **A playbook is neutral and recurring.** It describes the repeatable procedure (for tools: fields,

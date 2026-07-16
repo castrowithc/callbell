@@ -1,8 +1,9 @@
-# Raw zone __callbell__/_import/: volatile inputs (raw files the agent processes) and their processed/ archive,
+# Zone __callbell__/zone-import/: volatile inputs (raw files the agent processes) and their processed/ archive,
 # not part of the knowledge base, not versioned. The folder stays (via .gitkeep), its content is ignored.
-/__callbell__/_import/*
-!/__callbell__/_import/.gitkeep
+/__callbell__/zone-import/*
+!/__callbell__/zone-import/.gitkeep
 
-# Zone __callbell__/_export/: requested deliverables the user takes out of the repo. Often carry real, unredacted
-# data, so they must never be versioned. Unseeded: appears only when a deliverable is requested.
-/__callbell__/_export/
+# Zone __callbell__/zone-export/: requested deliverables the user takes out of the repo. Often carry real,
+# unredacted data, so they must never be versioned. The folder stays (via .gitkeep), its content is ignored.
+/__callbell__/zone-export/*
+!/__callbell__/zone-export/.gitkeep

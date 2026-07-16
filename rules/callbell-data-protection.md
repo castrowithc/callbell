@@ -24,8 +24,8 @@ private repo can be shared later. The norms below hold either way.
   structure for such an entity, that structure defines how the entity is identified.
 
 ## Intake and redaction
-The user may deliberately drop material with personal data into `__callbell__/_import/` for the agent to process (see
-`callbell-zones`, `callbell-import`). `__callbell__/_import/` is volatile and unversioned, so the raw original stays out
+The user may deliberately drop material with personal data into `__callbell__/zone-import/` for the agent to process (see
+`callbell-zones`, `callbell-import`). `__callbell__/zone-import/` is volatile and unversioned, so the raw original stays out
 of the versioned repo by construction. The **converted, filed** file is where the norm is enforced:
 
 - **Redact while converting.** Sensitive data does not flow into the filed file. Replace it in place with a

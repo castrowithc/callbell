@@ -29,7 +29,7 @@ Files with a fixed role are recognized by their **name** (not by a type prefix).
 | `README.md` | structural header of a folder or area (no enum `type`) |
 | `index.md` | index or roster of a folder or entity |
 | `MEMORY.md` | index of the agent's memory |
-| `BACKLOG.md` | index of the operational work trail (`__callbell__/_backlog/`) |
+| `BACKLOG.md` | index of the operational work trail (`__callbell__/backlog/`) |
 | `history.md` | running log of a folder (`type: history`) |
 
 These names are **exclusive in the working tree**: a real fixed-function file is named exactly

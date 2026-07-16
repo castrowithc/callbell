@@ -34,7 +34,7 @@ It never overwrites the file from its own prior knowledge. This holds most stron
 
 | `type` | Meaning |
 |---|---|
-| `meta` | Standing governance and structure: frameworks, index, navigation, this spec. Recognizable by its fixed-function name (`framework.md`, `index.md`, see `callbell-conventions`) or by the file living in a `_` zone or in `__callbell__/`. |
+| `meta` | Standing governance and structure: frameworks, index, navigation, this spec. Recognizable by its fixed-function name (`framework.md`, `index.md`, see `callbell-conventions`) or by the file living in `__callbell__/` (its zones and typed meta). |
 | `rule` | A standing behavior norm that the agent follows by default. |
 | `skill` | An actively triggered procedure. The `description` is the trigger, the body is the steps; it loads only when a matching task appears. |
 
@@ -65,7 +65,7 @@ The **memory system** is a standalone subsystem with a fixed location (`__callbe
 `callbell-memory` and opened up through the index `MEMORY.md`. It is not a filing decision, so it does not
 appear in this table. Memory files may carry `type: memory` (`edit: shared`) for discoverability.
 
-In the same way, the fixed-function index `BACKLOG.md` opens up the **backlog subsystem** (`__callbell__/_backlog/`,
+In the same way, the fixed-function index `BACKLOG.md` opens up the **backlog subsystem** (`__callbell__/backlog/`,
 governed by `callbell-backlog`). Like `MEMORY.md` it loads at session start through the hook and is a
 living index, so it carries `edit: shared` even though structurally it is `meta`. This is the same
 deliberate exception to the type to edit coupling as with the memory index. The backlog **entries**

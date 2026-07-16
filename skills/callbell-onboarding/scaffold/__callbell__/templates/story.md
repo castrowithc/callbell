@@ -10,7 +10,7 @@ updated: YYYY-MM-DD
 
 # Story: <Title>
 
-<!-- Template. Copy it to __callbell__/_backlog/story-<slug>.md (or __callbell__/_backlog/<project>/story-<slug>.md) and fill it in.
+<!-- Template. Copy it to __callbell__/backlog/story-<slug>.md (or __callbell__/backlog/<project>/story-<slug>.md) and fill it in.
 A story is its OWN file and holds its tasks INLINE as the checklist below. If it carries the epic: slug,
 it belongs to that epic (see callbell-backlog). Classic shape: "As <role> I want <function>, so that
 <benefit>." -->
