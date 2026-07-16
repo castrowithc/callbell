@@ -1,6 +1,6 @@
 {
   "name": "callbell",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Lazy senior mode for code and knowledge repos: adaptive skills, rules, and an always-on context loader.",
   "author": { "name": "Callbell" },
   "homepage": "https://github.com/castrowithc/callbell",

@@ -48,7 +48,7 @@ an area overflows: do not guess, propose an adjustment and wait for approval.
 | `playbook` | Next to the recurring process it serves (`<area>-<topic>/[<subtopic>/]playbooks/`); otherwise flat `playbook-<name>.md`. |
 | `decision` | Central and dated in the area: `<area>-<topic>/decisions/YYYY-MM-DD-….md`. Structural and meta decisions concern the framework, not one area. |
 | `meta` | Flat, no prefix: `<area>-<topic>/framework.md` (the root registry = `__callbell__/framework.md`). |
-| `epic` · `story` · `task` | In `__callbell__/backlog/` (versioned work trail, not a zone). Location and life cycle are set by `callbell-backlog`. |
+| `task` | In `__callbell__/backlog/` (versioned work trail, not a zone). Location and life cycle are set by `callbell-backlog`. |
 | `memory` | `__callbell__/memory/*.md` (see `callbell-memory`). |
 
 Rules and skills are not placed by hand: they live natively in `.claude/rules/` and `.claude/skills/`

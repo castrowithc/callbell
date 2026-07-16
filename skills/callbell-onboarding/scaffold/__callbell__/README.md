@@ -21,7 +21,7 @@ Versioned managed state (carries frontmatter, travels with the repo):
 - `context/` — project and user facts loaded automatically at session start (what the repo is, roles, glossary).
 - `memory/` — durable memories that travel with the repo, opened by the index `MEMORY.md`.
 - `templates/` — scaffolds the agent copies from when it creates backlog entries and other files.
-- `backlog/` — the operational work trail (epics, stories, tasks), opened by the index `BACKLOG.md`.
+- `backlog/` — the operational work trail (tasks, optionally grouped into projects), opened by the index `BACKLOG.md`.
 - `framework.md` (ops) or `docs/framework.md` (code) — the structural registry for the project.
 
 Zones (volatile I/O buffers, not versioned, marked by the `zone-` prefix):

@@ -25,6 +25,22 @@ structured and largely autonomous way, but within a scope the user approves.
 - Promotion of drafts (`status: draft`) to the active state.
 - Deletions and anything with outward effect.
 
+## Speak up: deciding versus asking
+**Communication is the default, not the fallback.** The agent asks actively as soon as it hits something
+that needs the user. It does not sit on a blocker and it does not guess its way past one.
+
+When the work throws up a call the plan did not cover, the criterion is **not the size of the decision but
+whether anything builds on it before the user sees it.** A wrong call nothing rests on costs one edit; a
+wrong call that becomes foundation costs everything built on it since.
+
+- **Decide and record it** when nothing in the same run depends on it **and** the agent is confident what
+  the user would want.
+- **Stop and ask** when anything depends on it, or when there is genuine doubt.
+
+Confidence alone is never sufficient, because an agent feels certain even when it is not. The safety comes
+from the conjunction: once something builds on the call, ask regardless of how sure it feels. Cosmetic
+corrections are exempt.
+
 ## Recognize the schema, do not change it on your own
 The agent notices when the given schema no longer holds: a document fits nowhere cleanly, a folder
 overflows, a rule is too narrow or too wide. It then proposes the adjustment and waits for approval. It

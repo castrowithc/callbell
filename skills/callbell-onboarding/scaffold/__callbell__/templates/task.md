@@ -10,12 +10,22 @@ updated: YYYY-MM-DD
 
 # Task: <Title>
 
-<!-- Template. A standalone task-<slug>.md exists ONLY for a task that is genuinely independent of any
-epic or story (then it carries NEITHER an epic nor a story field), not by size. If the task belongs to a
-story, it lives INLINE in that story-<slug>.md, not here (see callbell-backlog).
-Copy it to __callbell__/backlog/task-<slug>.md and fill it in. -->
+<!-- Template. A task is one work package: everything needed to work on it, and nothing pointing sideways.
+It NEVER names another task; order and dependency live in the roster (BACKLOG.md, or the project's
+index.md). Size it to fit one session; if you cannot estimate it, it is not understood and must be cut.
+Copy it to __callbell__/backlog/task-<slug>.md (or __callbell__/backlog/<project>/) and fill it in.
+See callbell-backlog; the planning procedure is the skill callbell-plan. -->
 
-## What to do
-<!-- The concrete step and how "done" is recognized. -->
+## Why
+<!-- What is this for? Enough context to decide well while working, not a restatement of the title. -->
 
-- [ ] <Substep>
+## Scope
+<!-- What belongs to this package, and what is explicitly out. The boundary is the useful half. -->
+
+## Approach
+<!-- How to go about it. Known constraints, the things already ruled out and why. -->
+
+- [ ] <Step>
+
+## Definition of done
+<!-- How is it verified? Something observable, not "it looks right". -->

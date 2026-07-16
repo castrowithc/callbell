@@ -33,6 +33,7 @@ The level sticks until changed or session end.
 | **callbell-debt** | `/callbell-debt` | Harvests every `callbell:` marker into a debt ledger. |
 | **callbell-gain** *(code)* | `/callbell-gain` | Measured-impact scoreboard: less code, less cost, more speed. |
 | **callbell-filing** *(ops)* | `/callbell-filing` | Decides where a file belongs and how the tree grows. |
+| **callbell-plan** | "I want to build X", `/callbell-plan` | Turns an idea into work packages you can hand back: why, scope, approach, done. |
 | **callbell-import** | "it's in the inbox", `/callbell-import` | Turns raw material in `__callbell__/zone-import/` into redacted, filed content. |
 | **callbell-onboarding** | `/callbell-onboarding` | One-time repo setup: purpose, scaffolds, and how you work together. |
 | **callbell-worktree** | `/callbell-worktree` | Git worktree for parallel work, cleaned up after the merge. |

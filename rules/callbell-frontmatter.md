@@ -53,13 +53,11 @@ It never overwrites the file from its own prior knowledge. This holds most stron
 | `decision` | A binding decision made **by the user**, dated and reasoned. Authoritative like `fact`, but bound to the user rather than to an external source. The agent **never** records a decision of its own here; it proposes, the user decides, then it is recorded. |
 | `history` | A compact, running log (append only, for example a changelog): what was changed, added, or removed and when. Kept only when a later analysis genuinely needs this chronology. |
 
-**Backlog** (agile framework)
+**Backlog**
 
 | `type` | Meaning |
 |---|---|
-| `epic` | A large undertaking, broken into stories. Its **own file** `epic-*.md`; it rosters its stories in the body and does not hold them inline. Done when its stories are done (see `callbell-backlog`). |
-| `story` | A self-contained unit of value ("as a role I want a function, so that a benefit"). Its **own file** `story-*.md`; carries the `epic:` key when it belongs to an epic, and holds its **tasks inline**. |
-| `task` | A single operative or technical step, **inline** in its `story-*.md`. A standalone `task-*.md` exists only when the task is genuinely independent of any epic or story (then it carries neither field), not by size. |
+| `task` | One work package: the unit of work, always its **own file** `task-*.md`. It carries why, scope, approach, and definition of done, so it can be worked without further questions, and it **never names another task** (order lives in the roster, see `callbell-backlog`). Sized to fit one session; if the size cannot be estimated, it is not understood and must be cut. |
 
 The **memory system** is a standalone subsystem with a fixed location (`__callbell__/memory/`), governed by
 `callbell-memory` and opened up through the index `MEMORY.md`. It is not a filing decision, so it does not
@@ -69,7 +67,7 @@ In the same way, the fixed-function index `BACKLOG.md` opens up the **backlog su
 governed by `callbell-backlog`). Like `MEMORY.md` it loads at session start through the hook and is a
 living index, so it carries `edit: shared` even though structurally it is `meta`. This is the same
 deliberate exception to the type to edit coupling as with the memory index. The backlog **entries**
-themselves (`epic`/`story`/`task`) still follow the table above.
+themselves (`task`) still follow the table above.
 
 ## `edit`: follows strictly from `type`
 
@@ -81,7 +79,7 @@ themselves (`epic`/`story`/`task`) still follow the table above.
 | `playbook` | `locked` | A standing procedure, change only after approval. |
 | `decision` | `locked` | An authoritative user decision. |
 | `history` | `shared` | Kept up over time. |
-| `epic` · `story` · `task` | `shared` | Active backlog. |
+| `task` | `shared` | Active backlog. |
 
 - **`locked`** means: precedence over training knowledge, and protected. The agent changes it **only
   after approval**, then carefully **in place**. `fact` and `decision` are the core that is not negotiable.
@@ -138,11 +136,11 @@ Delta per type (in addition to `description`/`type`/`edit`):
 | `rule` | `paths` | date fields |
 | `skill` | `name` (`argument-hint`, `disable-model-invocation` optional) | date fields |
 | Command (agent native) | `argument-hint` (optional) | `type`/`edit` |
-| `fact` | `source` (optional); `updated` = verification date | epic/story |
-| `knowledge` · `history` | `created`, `updated` | epic/story |
-| `playbook` | - | epic/story; date only when dated |
-| `decision` | `created` = release date | epic/story |
-| `epic` · `story` · `task` | `status`, `created`, `updated`; story only: `epic` | a `task:` key |
+| `fact` | `source` (optional); `updated` = verification date | - |
+| `knowledge` · `history` | `created`, `updated` | - |
+| `playbook` | - | date fields, unless genuinely dated |
+| `decision` | `created` = release date | - |
+| `task` | `status`, `created`, `updated` | any key linking to another task |
 | `memory` | - | - |
 
 `status` and `tags` are optional on any content type, when they earn their place.
