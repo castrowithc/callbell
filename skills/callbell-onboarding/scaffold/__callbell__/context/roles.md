@@ -25,7 +25,7 @@ sparring partner, quiet executor. Sets stance and initiative. -->
 ## Likes / dislikes
 <!-- What do you value in the collaboration, what bothers you? For example no emojis, explain intermediate steps, ask directly when something is unclear. -->
 
-<!-- Interaction language is set during onboarding in AGENTS.md (imported by CLAUDE.md), not here. -->
+<!-- Interaction language is set during onboarding in the user's own machine-local agent file, not here. -->
 
 ## Special rules & wishes
 <!-- Your own directives that go beyond the fixed rules and should apply to YOUR repo.

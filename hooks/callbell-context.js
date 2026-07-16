@@ -122,8 +122,8 @@ function section(files, base) {
 
 const blocks = [];
 
-// Interaction language now lives natively in AGENTS.md / CLAUDE.md (onboarding writes it there), so the
-// hook no longer injects it. Both harnesses load those root files on their own.
+// The interaction language lives in the user's machine-local harness instructions (~/.claude/CLAUDE.md,
+// ~/.codex/AGENTS.md); onboarding writes it there, so the hook never injects it.
 
 // The lens, emitted once. Lens-bearing skills (callbell and the review/audit/debt family) read
 // this line instead of detecting the type themselves.
@@ -143,7 +143,7 @@ if (context.length) {
   blocks.push('Way of working & context (loaded automatically at session start from __callbell__/context/, the memory index, and the backlog index):');
   blocks.push(context.join('\n\n'));
 } else if (pluginRoot) {
-  blocks.push('No callbell project set up in this folder yet (ambient mode). Skills and rules are active everywhere; run /callbell-onboarding to turn it into a persistent project (it sets the interaction language in AGENTS.md and lays down context, memory, and backlog).');
+  blocks.push('No callbell project set up in this folder yet (ambient mode). Skills and rules are active everywhere; run /callbell-onboarding to turn it into a persistent project (it sets your interaction language in your machine-local agent file and lays down context, memory, and backlog).');
 }
 
 // Always-on payload: the rules (norms) and the minimal AGENTS.md ruleset. Project-local always

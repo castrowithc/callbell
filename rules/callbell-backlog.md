@@ -87,12 +87,22 @@ phase plan up front.
   its own, but it **says so** when it does. It never silently rewrites the agreed shape.
 
 ## Life cycle and completion
-- A task is done: check it off in its inline block (or `status: final` in a standalone file).
-- A finished entry moves into the **local** `done/`: `__callbell__/backlog/done/` for a root entry,
-  `__callbell__/backlog/<project>/done/` for a project entry. Lasting insights are filed as durable content first (the
-  template governs the filing); the backlog holds only the work trail.
-- A project is finished when its work is done: its `index.md` goes `status: final` and its line drops out
-  of the active `BACKLOG.md`; its entries rest in its local `done/`, the folder stays in place.
+Completion is **one atomic step, never half of it**: a finished entry gets `status: final` **and** is moved
+into the local `done/` in the same act. The two always travel together, so an entry is never left `active`
+inside `done/`, nor `final` while still in the active tree. The `status:` field is the **single truth** of
+doneness; a "done" note in an epic roster or a project `index.md` is a convenience for the reader, never a
+substitute for flipping the status. When the two disagree, `status:` wins and the roster is corrected.
+
+- **A task** is done: check it off in its inline block (an inline task in a story), or set `status: final`
+  in a standalone `task-*.md` and move it to `done/`.
+- **A story or an epic** is done: set its own `status: final`, move the file into the local `done/`, and
+  update its roster line (the epic's story roster, the project `index.md`) to read done in the same pass. A
+  story is done when its tasks are checked; an epic when all its stories are `final`.
+- **Where `done/` lives:** `__callbell__/backlog/done/` for a root entry, `__callbell__/backlog/<project>/done/`
+  for a project entry. Lasting insights are filed as durable content first (the template governs the
+  filing); the backlog holds only the work trail.
+- **A project** is finished when its work is done: its `index.md` goes `status: final` and its line drops
+  out of the active `BACKLOG.md`; its entries rest in its local `done/`, the folder stays in place.
 - Finished work no longer clutters the active view.
 
 ## Templates

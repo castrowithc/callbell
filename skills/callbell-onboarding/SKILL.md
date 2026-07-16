@@ -22,15 +22,18 @@ Ask which language the agent should use for **chat replies and visible reasoning
 question**. Ask **nothing else** in the same step, in particular **not** the lens (step 3): a user who is
 weak in English must not face an English follow-up before the language is set. Wait for the answer, adopt it
 **immediately** for everything that follows, and only then move on, every later question posed in the chosen
-language. Then anchor the language in the root files, so it survives every session and both harnesses load it
-natively:
-- **Empty folder:** create `AGENTS.md` and `CLAUDE.md` (`CLAUDE.md` is just `@AGENTS.md`) and write the
-  language into `AGENTS.md` first, as a short `## Interaction language` section.
-- **Existing `AGENTS.md`/`CLAUDE.md`:** read them. If the interaction language is already stated, keep it
-  (do not ask again). If not, add the `## Interaction language` section.
+language. Then anchor it in the user's **personal, machine-local** agent instructions, so it holds across
+every session and every project and never enters the shared repo:
+- **Where:** the harness's user-global instructions file, for **Claude** `~/.claude/CLAUDE.md`, for **Codex**
+  `~/.codex/AGENTS.md`. Create the file if it is missing.
+- **What:** a single plain line naming the language for chat and visible reasoning, phrased in that language
+  (for German, `Antworte mir immer auf Deutsch (Chat und sichtbares Reasoning).`). No heading, no HTML
+  comment, no callbell branding, this is the user's own file.
+- **Idempotent:** read the file first; if it already states an interaction language, keep that and add nothing.
 
-This is the **interaction** language (how the agent talks), committed with the repo. The language of repo
-**content** (folder and area names) is a separate axis, set in step 5.
+This is the **interaction** language (how the agent talks), a per-user property that is deliberately **not**
+committed to the repo. The language of repo **content** (folder and area names) is a separate axis, committed
+in `repo.md` and set in step 5.
 
 ## 2. Familiarity next (a standalone gate, on its own)
 Right after the language gate and **before** the lens, ask one standalone question and **nothing else**:
@@ -108,7 +111,7 @@ Adapt to the mode from step 2. In **express mode**, collapse the whole briefing 
 split: `__callbell__/` is callbell-managed, the root is your content) and move straight to step 8. In
 **guided mode**, brief in full:
 - **Roles:** the user decides and reviews, the agent executes in a structured and largely autonomous way.
-- **Language:** the interaction language lives in `AGENTS.md`; the content/structure language in `repo.md`.
+- **Language:** your interaction language lives in your personal machine-local agent file (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`), not in the repo; the content/structure language lives in `repo.md`.
 - **Rules and skills:** the rules apply (conventions, frontmatter, zones, backlog, memory, data protection,
   Git, for ops also structure, and more); `/callbell-help` shows the skills.
 - **Approvals:** structure and schema changes (and new areas in ops) and the promotion of drafts happen only
