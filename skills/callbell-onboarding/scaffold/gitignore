@@ -7,7 +7,3 @@
 # unredacted data, so they must never be versioned. The folder stays (via .gitkeep), its content is ignored.
 /__callbell__/zone-export/*
 !/__callbell__/zone-export/.gitkeep
-
-# Interaction language is per-user and machine-local (it lives in the harness's user-global file). Any
-# _user-language*.md that ever lands in a repo stays user-specific and is never tracked.
-_user-language*.md
