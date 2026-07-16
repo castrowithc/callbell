@@ -48,7 +48,8 @@ Completion is **one atomic step, never half of it**: a finished task gets `statu
 into the local `done/` in the same act (`__callbell__/backlog/done/`, or `<project>/done/`). So a task is
 never `active` inside `done/`, nor `final` in the active tree. On a disagreement between `status:` and a
 roster line, `status:` wins and the roster is corrected. A project is finished when its `index.md` goes
-`final`; the folder stays.
+`final`; the folder stays. **Not every project ends:** a product line stays `active` and simply rests empty
+between rounds of work.
 
 ## Overview: `BACKLOG.md`
 `__callbell__/backlog/BACKLOG.md` is the single overview, the counterpart to `MEMORY.md`, loaded at session
