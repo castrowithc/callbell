@@ -112,11 +112,17 @@ is the date of the last verification). **Never** on `meta`, `rule`, or `skill`.
 Always `description`, `type`, `edit` (`edit` follows strictly from `type`, see above). Date fields only on
 dated content. Everything else is the delta per type, not a superset.
 
+**`description` is always a folded block scalar:** `description: >` on its own line, the one-line text
+indented beneath it, never inline on the same line as the key. A colon, quote, or angle bracket in the text
+(for example `<project name>: what it delivers`) breaks an inline value's YAML parse; the block scalar is
+immune and keeps every header uniform.
+
 Minimal form, using `knowledge` as the example:
 
 ```
 ---
-description: What it is about, one sentence for triage.
+description: >
+  What it is about, one sentence for triage.
 type: knowledge
 edit: shared
 created: YYYY-MM-DD

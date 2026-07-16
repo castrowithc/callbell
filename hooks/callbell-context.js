@@ -79,9 +79,9 @@ function resolveProjectType(dir) {
   const codeMarkers = ['package.json', 'tsconfig.json', 'pyproject.toml', 'requirements.txt',
     'Cargo.toml', 'go.mod', 'pom.xml', 'build.gradle', 'Gemfile', 'composer.json', 'src'];
   if (codeMarkers.some(has)) return 'code';
-  // Positive structural marker of the pristine templates, before any user content exists:
-  // devcore ships __callbell__/docs/framework.md, opscore ships __callbell__/framework.md.
-  // Check devcore's first, else its markdown-only root would fall through to markdownHeavy -> ops.
+  // Positive structural marker of the pristine scaffolds, before any user content exists:
+  // a code project ships __callbell__/docs/framework.md, an ops project ships __callbell__/framework.md.
+  // Check the code marker first, else a markdown-only root would fall through to markdownHeavy -> ops.
   if (has('__callbell__/docs/framework.md')) return 'code';
   if (has('__callbell__/framework.md') || markdownHeavy(dir)) return 'ops';
   return 'unknown';

@@ -1,5 +1,6 @@
 ---
-description: <What is this task about? One sentence.>
+description: >
+  <What is this task about? One sentence.>
 type: task
 edit: shared
 status: draft         # draft | active | final | archived

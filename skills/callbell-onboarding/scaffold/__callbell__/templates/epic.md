@@ -1,5 +1,6 @@
 ---
-description: <What is this epic about? One sentence.>
+description: >
+  <What is this epic about? One sentence.>
 type: epic
 edit: shared
 status: draft         # draft | active | final | archived

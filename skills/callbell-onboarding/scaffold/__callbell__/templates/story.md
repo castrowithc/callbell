@@ -1,5 +1,6 @@
 ---
-description: <What is this story about? One sentence.>
+description: >
+  <What is this story about? One sentence.>
 type: story
 edit: shared
 status: draft         # draft | active | final | archived

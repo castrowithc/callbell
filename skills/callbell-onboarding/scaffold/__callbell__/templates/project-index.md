@@ -1,5 +1,6 @@
 ---
-description: <project name>: what it delivers, in one sentence.
+description: >
+  <project name>: what it delivers, in one sentence.
 type: meta
 edit: shared
 status: active        # active | final | archived

@@ -1,5 +1,6 @@
 ---
-description: <customer short name>, master record.
+description: >
+  <customer short name>, master record.
 type: knowledge
 edit: shared
 status: active
