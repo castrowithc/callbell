@@ -1,0 +1,32 @@
+#!/bin/sh
+# Rejects co-author and tool branding in commit messages (callbell-git: "no co-author or tool branding").
+#
+# Why a hook and not a norm: an agent harness instructs the agent to append a co-author trailer, so the
+# default behavior actively fights the rule, and the rule is one line among hundreds read at session start.
+# It lost that collision 23 times before anyone noticed, because a missing line produces no artifact. A hook
+# does not negotiate, and it fires at the moment of the act.
+#
+# Git-level, so it is host-independent: Claude, Codex, and a hand-typed `git commit` all pass through here.
+#
+# Enabled per clone (core.hooksPath is local config and does not travel with the repo):
+#   git config core.hooksPath .githooks
+
+set -e
+
+msg="$1"
+pattern='^Co-Authored-By:|^Signed-off-by:.*(claude|anthropic)|Generated with \[Claude Code\]|Co-authored-by:'
+
+if grep -qiE "$pattern" "$msg"; then
+  echo "" >&2
+  echo "commit-msg: rejected — co-author or tool branding in the message." >&2
+  echo "callbell-git: 'Commit messages: short, imperative, \"what and where\", no co-author or tool branding, always in English.'" >&2
+  echo "" >&2
+  echo "Offending line(s):" >&2
+  grep -inE "$pattern" "$msg" | sed 's/^/  /' >&2
+  echo "" >&2
+  echo "Remove the line and commit again. Do not bypass with --no-verify." >&2
+  echo "" >&2
+  exit 1
+fi
+
+exit 0

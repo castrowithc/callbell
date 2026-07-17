@@ -1,8 +1,8 @@
 ---
 paths: ["**/*"]
 description: >
-  How the agent handles Git and the repo: check the state, fetch what is new, spot conflicts,
-  commit and push deliberately. The goal is a safe and tidy repo state.
+  How the agent handles Git and the repo: check the state, fetch what is new, spot conflicts, show the
+  commit message before committing, commit and push deliberately. The goal is a safe and tidy repo state.
 type: rule
 edit: locked
 ---
@@ -43,7 +43,20 @@ state on its own, and reports anything unusual before acting.
 - The default branch is `main`. For larger or self-contained work use a dedicated branch, otherwise
   commit directly to `main`.
 - Commit messages: short, imperative, "what and where", no co-author or tool branding, always in English.
+- **State the message before you commit.** Write the full text out where the user can read it, then commit.
+  Do not ask for approval, show and act: the user sees every word entering the permanent record and can
+  stop or correct it. A message the user never saw is a message nobody reviewed.
+- **Never bypass a Git hook** (`--no-verify`, `--no-gpg-sign`). A hook that fires is the repo telling you
+  something; fix the cause and commit again.
 - Point it out when no Git globals are set up. Never invent anything.
+
+**Why the branding ban is worth a hook.** An agent harness may instruct the agent to append a co-author
+trailer, so the agent's default behavior actively fights this rule. That collision has no referee: the
+harness instruction is specific, procedural, and fires exactly at commit time, while this rule is one line
+among hundreds. It loses, silently, because a line that was not omitted produces no artifact anyone
+notices. Where it must hold, a repo carries a `commit-msg` hook that rejects the branding outright
+(`.githooks/commit-msg`, enabled per clone with `git config core.hooksPath .githooks`). A norm asks; a hook
+does not negotiate.
 
 ## Parallel work: worktrees
 
