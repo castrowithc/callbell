@@ -47,10 +47,17 @@ function resolveRoot() {
 
 const root = resolveRoot();
 
-// The lens: resolve the project type once per session, so lens-bearing skills read it
-// instead of detecting per skill. Primary = the durable answer onboarding records in
-// repo.md frontmatter; fallback = zero-config filesystem detection (for the window before
-// onboarding has run, and for the plugin's ambient mode in an arbitrary folder).
+// Two independent questions, two answers. They used to be welded into one word, which typed a
+// documentation-heavy software repo as `code` and let the structural payload arrive anyway, ungated.
+//
+//   The LENS  — what kind of repo is this: primarily executable code, or primarily markdown steering a
+//               topic? It picks the ladder rungs and the shortcut-comment syntax. Lens-bearing skills read
+//               it instead of detecting per skill.
+//   The SCAFFOLD — is there a `__callbell__/` here at all? Nothing else can answer it, and the rule
+//               injection gates on it.
+//
+// A repo can be any combination: a software project run with agents is `code` WITH a scaffold, and that is
+// exactly the case the fused version got wrong.
 function frontmatterOf(file) {
   try {
     const text = fs.readFileSync(file, 'utf8').replace(/^﻿/, '');
@@ -69,21 +76,25 @@ function markdownHeavy(dir) {
   return md * 2 > files.length; // majority markdown, no recursion (root only, cheap)
 }
 
+// One fact, no inference: is there a scaffold in this folder?
+function hasScaffold(dir) {
+  try { return fs.statSync(path.join(dir, '__callbell__')).isDirectory(); }
+  catch { return false; }
+}
+
 function resolveProjectType(dir) {
-  // Primary: onboarding writes `project-type: code|ops` into repo.md frontmatter.
+  // Primary: onboarding writes `project-type: code|ops` into repo.md frontmatter. Every scaffold carries
+  // it, because onboarding is what lays a scaffold down.
   const declared = frontmatterOf(path.join(dir, '__callbell__', 'context', 'repo.md'))
     .match(/^project-type:\s*(code|ops)\b/mi);
   if (declared) return declared[1].toLowerCase();
-  // Fallback: filesystem markers.
+  // Fallback for the window before onboarding has run, and for an arbitrary folder in ambient mode.
+  // Code markers first: a markdown-only root would otherwise fall through to markdownHeavy -> ops.
   const has = p => fs.existsSync(path.join(dir, p));
   const codeMarkers = ['package.json', 'tsconfig.json', 'pyproject.toml', 'requirements.txt',
     'Cargo.toml', 'go.mod', 'pom.xml', 'build.gradle', 'Gemfile', 'composer.json', 'src'];
   if (codeMarkers.some(has)) return 'code';
-  // Positive structural marker of the pristine scaffolds, before any user content exists:
-  // a code project ships __callbell__/docs/framework.md, an ops project ships __callbell__/framework.md.
-  // Check the code marker first, else a markdown-only root would fall through to markdownHeavy -> ops.
-  if (has('__callbell__/docs/framework.md')) return 'code';
-  if (has('__callbell__/framework.md') || markdownHeavy(dir)) return 'ops';
+  if (markdownHeavy(dir)) return 'ops';
   return 'unknown';
 }
 
@@ -125,12 +136,18 @@ const blocks = [];
 // The interaction language lives in the user's machine-local harness instructions (~/.claude/CLAUDE.md,
 // ~/.codex/AGENTS.md); onboarding writes it there, so the hook never injects it.
 
-// The lens, emitted once. Lens-bearing skills (callbell and the review/audit/debt family) read
-// this line instead of detecting the type themselves.
+// The two facts, emitted once each. Lens-bearing skills (callbell and the review/audit/debt family) read
+// PROJECT TYPE instead of detecting the type themselves.
 const projectType = resolveProjectType(root);
-blocks.push(projectType === 'unknown'
-  ? 'PROJECT TYPE: unknown (no code or ops markers yet; derive it from the task, onboarding sets it durably)'
-  : 'PROJECT TYPE: ' + projectType);
+const scaffold = hasScaffold(root);
+blocks.push([
+  projectType === 'unknown'
+    ? 'PROJECT TYPE: unknown (no code or ops markers yet; derive it from the task, onboarding sets it durably)'
+    : 'PROJECT TYPE: ' + projectType,
+  scaffold
+    ? 'CALLBELL SCAFFOLD: yes (__callbell__/ is present; its norms are in force)'
+    : 'CALLBELL SCAFFOLD: no (no __callbell__/ here, so no backlog, zones, or memory layer; the norms that govern them are not loaded and do not apply)',
+].join('\n'));
 
 const contextFiles = collect(path.join(root, '__callbell__', 'context'));
 const memoryIndex = path.join(root, '__callbell__', 'memory', 'MEMORY.md');
