@@ -32,9 +32,8 @@ Backbone darunter ist geteilt: Konventionen, Frontmatter, Zonen, Backlog, Memory
 
 ## Der `callbell`-Namensraum
 
-`callbell-*` ist **reserviert** für die vom Plugin gelieferten Skills und Rules. Domänen-Tools tragen ein
-Segment: `callbell-code-*` (Code) und `callbell-ops-*` (Ops). Der faule Flagship-Modus heißt schlicht
-`callbell` und flavored sich über die Linse.
+`callbell-*` ist **reserviert** für die vom Plugin gelieferten Skills und Rules. Der faule Flagship-Modus
+heißt schlicht `callbell` und flavored sich über die Linse.
 
 Deine **eigenen** Skills legst du **außerhalb** dieses Präfixes an (eigener Name oder eigenes Präfix). So
 bleiben Plugin- und User-Skills jederzeit unterscheidbar, auch wenn du sie zwischen Projekten mischst.

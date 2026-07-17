@@ -43,9 +43,10 @@ state on its own, and reports anything unusual before acting.
 - The default branch is `main`. For larger or self-contained work use a dedicated branch, otherwise
   commit directly to `main`.
 - Commit messages: short, imperative, "what and where", no co-author or tool branding, always in English.
-- **State the message before you commit.** Write the full text out where the user can read it, then commit.
-  Do not ask for approval, show and act: the user sees every word entering the permanent record and can
-  stop or correct it. A message the user never saw is a message nobody reviewed.
+- **State the message before you commit.** Write the full text out where the user can read it, take any
+  correction, and commit only once it stands. A message the user never saw is a message nobody reviewed.
+  The procedure is run by the skill `/callbell-commit`; commit through it rather than reaching for
+  `git commit` yourself, because the hand-rolled path is the one that loses the message.
 - **Never bypass a Git hook** (`--no-verify`, `--no-gpg-sign`). A hook that fires is the repo telling you
   something; fix the cause and commit again.
 - Point it out when no Git globals are set up. Never invent anything.

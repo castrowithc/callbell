@@ -36,11 +36,12 @@ The level sticks until changed or session end.
 | **callbell-plan** | `/callbell-plan` only | Turns an idea into work packages: why, scope, approach, done. You start it; it never starts itself. |
 | **callbell-import** | "it's in the inbox", `/callbell-import` | Turns raw material in `__callbell__/zone-import/` into redacted, filed content. |
 | **callbell-onboarding** | `/callbell-onboarding` | One-time repo setup: purpose, scaffolds, and how you work together. |
+| **callbell-commit** | `/callbell-commit`, "commit this" | Commits through a message you have read: drafted, shown in full, corrected, then committed and pushed. |
 | **callbell-worktree** | `/callbell-worktree` | Git worktree for parallel work, cleaned up after the merge. |
 | **callbell-help** | `/callbell-help` | This card. |
 
-Only the domain-unique skill matching this repo's lens is installed (`callbell-gain` in code repos,
-`callbell-filing` in ops repos); the other is listed for reference only.
+Every skill is installed everywhere; the lens does not gate them. The `(code)` and `(ops)` marks say which
+kind of repo a skill is meant for, not whether you have it.
 
 Codex uses the same skills with the `@` prefix (`@callbell`, `@callbell-review`, and so on); Claude uses the
 `/` forms above.

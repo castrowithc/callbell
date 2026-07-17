@@ -30,9 +30,8 @@ conventions, frontmatter, zones, backlog, memory, data protection, Git.
 
 ## The `callbell` namespace
 
-`callbell-*` is **reserved** for the skills and rules the plugin ships. Domain tools carry a segment:
-`callbell-code-*` (code) and `callbell-ops-*` (ops). The lazy flagship mode is simply called `callbell` and
-flavors itself by the lens.
+`callbell-*` is **reserved** for the skills and rules the plugin ships. The lazy flagship mode is simply
+called `callbell` and flavors itself by the lens.
 
 Put your **own** skills **outside** this prefix (your own name or your own prefix). That way plugin and
 user skills stay distinguishable at all times, even when you mix them across projects.
