@@ -1,9 +1,9 @@
 ---
 name: callbell-onboarding
 description: >
-  Guides the user through the first-time setup of this repo: set the language, clarify the lens and
-  context, lay down the scaffold, and brief the user on how the collaboration works. Adapts to a code repo
-  or an ops repo. Only on explicit call (/callbell-onboarding), once, never automatically.
+  Guides the user through the first-time setup of this repo: clarify the lens and context, lay down the
+  scaffold, and brief the user on how the collaboration works. Adapts to a code repo or an ops repo. Only
+  on explicit call (/callbell-onboarding), once, never automatically.
 type: skill
 edit: locked
 disable-model-invocation: true
@@ -13,52 +13,37 @@ disable-model-invocation: true
 
 You guide the user **actively** through the one-time setup of this repo and stay with it until the repo
 holds the information it needs to work. Work in short steps, ask only **a few questions at a time**, write
-only after confirmation, and invite questions at any time. The **two exceptions** are standalone gates,
-asked strictly on their own and never bundled with another question: the language gate (step 1) and the
-familiarity gate (step 2).
+only after confirmation, and invite questions at any time. The **one exception** is the familiarity gate
+(step 1), asked strictly on its own and never bundled with another question.
 
-## 1. Language first (a hard gate, on its own)
-Ask which language the agent should use for **chat replies and visible reasoning** as a **single, standalone
-question**. Ask **nothing else** in the same step, in particular **not** the lens (step 3): a user who is
-weak in English must not face an English follow-up before the language is set. Wait for the answer, adopt it
-**immediately** for everything that follows, and only then move on, every later question posed in the chosen
-language. Then anchor it in the user's **personal, machine-local** agent instructions, so it holds across
-every session and every project and never enters the shared repo:
-- **Where:** the harness's user-global instructions file, for **Claude** `~/.claude/CLAUDE.md`, for **Codex**
-  `~/.codex/AGENTS.md`. Create the file if it is missing.
-- **What:** a single plain line naming the language for chat and visible reasoning, phrased in that language
-  (for German, `Antworte mir immer auf Deutsch (Chat und sichtbares Reasoning).`). No heading, no HTML
-  comment, no callbell branding, this is the user's own file.
-- **Idempotent:** read the file first; if it already states an interaction language, keep that and add nothing.
+The **interaction** language is not asked here: it is a per-user, cross-project property that `callbell-language`
+handles on its own, in any session, including the ones that never reach this skill. The language of repo
+**content** (folder and area names) is a separate axis, committed in `repo.md` and set in step 4.
 
-This is the **interaction** language (how the agent talks), a per-user property that is deliberately **not**
-committed to the repo. The language of repo **content** (folder and area names) is a separate axis, committed
-in `repo.md` and set in step 5.
-
-## 2. Familiarity next (a standalone gate, on its own)
-Right after the language gate and **before** the lens, ask one standalone question and **nothing else**:
+## 1. Familiarity first (a standalone gate, on its own)
+**Before** the lens, ask one standalone question and **nothing else**:
 does the user already know the callbell onboarding? Two options, each with a one-line description:
 - **Yes, I know it** ("done this before, I know the process") sets **express mode**.
 - **No, guide me** ("never, or not often enough, walk me through it") sets **guided mode**.
 
 The answer sets the **depth of the rest**, and only that. It changes how much you **explain**, never which
-project data you **gather**: language, lens, purpose, roles, and areas are asked in both modes.
-- **Guided:** explain as you go, keep the briefing (step 7) full, and offer the `__callbell__` deep-dive at
-  the end (step 8).
+project data you **gather**: lens, purpose, roles, and areas are asked in both modes.
+- **Guided:** explain as you go, keep the briefing (step 6) full, and offer the `__callbell__` deep-dive at
+  the end (step 7).
 - **Express:** skip the teaching, compress the briefing to one line, and at the end just name the
   `__callbell__` folder, no offer.
 
-## 3. The lens, then its sub-question
+## 2. The lens, then its sub-question
 Read `PROJECT TYPE` from session context (**code** or **ops**) and **confirm it with the user** before
-proceeding: the fallback detection can be wrong before the lens is written down in step 5, so never take it
+proceeding: the fallback detection can be wrong before the lens is written down in step 4, so never take it
 as given, and on unknown or ambient ask outright. Then, right away, its sub-question with a one-line
 description:
 - **ops:** Personal OS, Business OS, or **Mixed** (personal and business in one repo, typical for solo
-  entrepreneurs and freelancers). You record the choice in `repo.md` in step 5.
+  entrepreneurs and freelancers). You record the choice in `repo.md` in step 4.
 - **code:** the tech stack in broad strokes and the stage it is at. The deployment path (Full/Clean) comes
-  in step 6.
+  in step 5.
 
-## 4. Materialize the scaffold (once the lens is known)
+## 3. Materialize the scaffold (once the lens is known)
 **If this folder has no `__callbell__/`**, you were started as the device-global plugin in a bare folder
 (ambient mode). Lay the **project scaffold** into the current folder from the plugin's bundled copy at
 `${CLAUDE_PLUGIN_ROOT}/skills/callbell-onboarding/scaffold/`. The plugin delivers rules, skills, hook, and
@@ -79,13 +64,13 @@ Then create `__callbell__/backlog/task-initial-onboarding.md` (template in `__ca
 `status: active`) and add one line to `__callbell__/backlog/BACKLOG.md`. Check off the steps as you go, so
 the state survives a pause.
 
-## 5. Gather and fill the context (a few questions per step, write after confirmation)
+## 4. Gather and fill the context (a few questions per step, write after confirmation)
 - **Structure language** (`repo.md`): ask whether folder and area names should follow the chat language, be
   English, or something else. Record it in `repo.md`. Names stay ASCII kebab per `callbell-conventions`
   (German transliterated: ae, oe, ue, ss), whichever language is chosen.
 - **Purpose** (`repo.md`): what the repo achieves, scope, non-goals, the people involved. Set
   `project-type: code` or `project-type: ops` in the frontmatter (the durable lens the hook emits), and note
-  the ops sub-type (Personal / Business / Mixed) from step 3.
+  the ops sub-type (Personal / Business / Mixed) from step 2.
 - **Roles and style** (`roles.md`): your role, the **agent's stance** (how autonomous: autonomous and
   structured / propose-then-act / closely guided), and **two separate style axes** — detail (concise vs
   detailed) and tone (direct vs warm). Plus any **special rules or wishes** beyond the fixed rules. Note:
@@ -98,7 +83,7 @@ the state survives a pause.
   project.
 - **Terms:** if a term of the user's own comes up, offer to capture it in `glossary.md`.
 
-## 6. Choose the deployment mode (code only, explain and select)
+## 5. Choose the deployment mode (code only, explain and select)
 Explain the two paths and let the user choose (no forced default):
 - **Full:** everything for agentic work (`.claude/`, `.codex/`, `.agents/`, `AGENTS.md`, `__callbell__/`)
   lives **inside** the repo. Layout `folder/repo-from-template`. Simple, all in one place.
@@ -106,9 +91,9 @@ Explain the two paths and let the user choose (no forced default):
   clean (today's dev standard). Layout `folder/{repo-control-from-template/, repo-codebase, …}`.
 - Full can later become Clean, not easily the other way around.
 
-## 7. Brief the user
-Adapt to the mode from step 2. In **express mode**, collapse the whole briefing to one line (the layer
-split: `__callbell__/` is callbell-managed, the root is your content) and move straight to step 8. In
+## 6. Brief the user
+Adapt to the mode from step 1. In **express mode**, collapse the whole briefing to one line (the layer
+split: `__callbell__/` is callbell-managed, the root is your content) and move straight to step 7. In
 **guided mode**, brief in full:
 - **Roles:** the user decides and reviews, the agent executes in a structured and largely autonomous way.
 - **Language:** your interaction language lives in your personal machine-local agent file (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`), not in the repo; the content/structure language lives in `repo.md`.
@@ -121,7 +106,7 @@ split: `__callbell__/` is callbell-managed, the root is your content) and move s
   code, flat area folders `<area>-<topic>` for ops). The versioned work trail is `__callbell__/backlog/`;
   the two volatile zones are `__callbell__/zone-import/` (inputs) and `__callbell__/zone-export/` (deliverables).
 
-## 8. Wrap-up
+## 7. Wrap-up
 - If no Git repo is initialized yet, point it out and offer `git init` (only after confirmation).
 - Git identity (before the first commit): if `git config user.name`/`user.email` is unset, ask which name
   and email the commits should carry, usually the user's GitHub username and their GitHub no-reply/alias

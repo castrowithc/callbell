@@ -28,6 +28,7 @@
 // YAML frontmatter and pure @-import lines are stripped.
 
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 
 const withRules = process.argv.includes('--rules');
@@ -84,6 +85,21 @@ function hasScaffold(dir) {
   catch { return false; }
 }
 
+// The interaction language drifts against English rules unless one line in the user's machine-local agent
+// file holds it — and most users do not know that file exists. So report when it does not.
+//
+// Only the ABSENCE of the file is reported, and only the part the agent cannot see for itself: the host
+// loads that file's contents natively, so if it exists the agent reads it and judges whether it names a
+// language. What the agent cannot notice is a file that was never there. Once an anchor exists this emits
+// nothing, so the mechanic costs nothing after the first session. `callbell-language` says what to do.
+function missingLanguageAnchor() {
+  const file = process.env.PLUGIN_ROOT && !process.env.CLAUDE_PLUGIN_ROOT
+    ? path.join(os.homedir(), '.codex', 'AGENTS.md')   // Codex
+    : path.join(os.homedir(), '.claude', 'CLAUDE.md'); // Claude
+  try { return fs.readFileSync(file, 'utf8').trim() ? null : file; }
+  catch { return file; } // missing or unreadable: same outcome for the user
+}
+
 function resolveProjectType(dir) {
   // Primary: onboarding writes `project-type: code|ops` into repo.md frontmatter. Every scaffold carries
   // it, because onboarding is what lays a scaffold down.
@@ -135,9 +151,6 @@ function section(files, base) {
 
 const blocks = [];
 
-// The interaction language lives in the user's machine-local harness instructions (~/.claude/CLAUDE.md,
-// ~/.codex/AGENTS.md); onboarding writes it there, so the hook never injects it.
-
 // The two facts, emitted once each. Lens-bearing skills (callbell and the review/audit/debt family) read
 // PROJECT TYPE instead of detecting the type themselves.
 const projectType = resolveProjectType(root);
@@ -151,6 +164,13 @@ blocks.push([
     : 'CALLBELL SCAFFOLD: no (no __callbell__/ here, so no backlog, zones, or memory layer; the norms that govern them are not loaded and do not apply)',
 ].join('\n'));
 
+// Reported only when absent, so this line disappears for good once an anchor exists.
+const anchorFile = missingLanguageAnchor();
+if (anchorFile) {
+  blocks.push('NO LANGUAGE ANCHOR: ' + anchorFile.split(path.sep).join('/') +
+    ' is missing or empty (see callbell-language).');
+}
+
 const contextFiles = collect(path.join(root, '__callbell__', 'context'));
 const memoryIndex = path.join(root, '__callbell__', 'memory', 'MEMORY.md');
 if (fs.existsSync(memoryIndex)) contextFiles.push(memoryIndex);
@@ -162,7 +182,7 @@ if (context.length) {
   blocks.push('Way of working & context (loaded automatically at session start from __callbell__/context/, the memory index, and the backlog index):');
   blocks.push(context.join('\n\n'));
 } else if (pluginRoot) {
-  blocks.push('No callbell project set up in this folder yet (ambient mode). Skills and rules are active everywhere; run /callbell-onboarding to turn it into a persistent project (it sets your interaction language in your machine-local agent file and lays down context, memory, and backlog).');
+  blocks.push('No callbell project set up in this folder yet (ambient mode). Skills and rules are active everywhere; run /callbell-onboarding to turn it into a persistent project (it lays down context, memory, and backlog).');
 }
 
 // Always-on payload: the rules (norms) and the minimal AGENTS.md ruleset. Project-local always
