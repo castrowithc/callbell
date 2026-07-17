@@ -28,6 +28,11 @@ conventions, frontmatter, zones, backlog, memory, data protection, Git.
    project scaffold (context, memory, backlog, zones). Laying down a scaffold is a deliberate act, so it is
    never automatic.
 
+**The most callbell will ever ask of you: Node on your PATH.** The session hook that supplies the norms and
+project context runs on Node, so `node` has to be on your PATH (Nix/nvm users: on the *non-interactive*
+shell's PATH). Without it nothing breaks loudly — the skills still work; the always-on norms and context
+just stay quiet instead of erroring on every prompt.
+
 ## The `callbell` namespace
 
 `callbell-*` is **reserved** for the skills and rules the plugin ships. The lazy flagship mode is simply

@@ -30,6 +30,11 @@ Backbone darunter ist geteilt: Konventionen, Frontmatter, Zonen, Backlog, Memory
    Projekt-Scaffold an (Kontext, Memory, Backlog, Zonen). Ein Scaffold anzulegen ist eine bewusste
    Handlung und passiert deshalb nie automatisch.
 
+**Das Höchste, worum callbell dich je bittet: Node im PATH.** Der Session-Hook, der die Normen und den
+Projektkontext liefert, läuft über Node — `node` muss also im PATH sein (Nix/nvm: im PATH der
+*non-interactive* Shell). Fehlt es, bricht nichts lautstark: die Skills funktionieren weiter, nur die
+Always-on-Normen und der Kontext bleiben still, statt bei jedem Prompt zu erroren.
+
 ## Der `callbell`-Namensraum
 
 `callbell-*` ist **reserviert** für die vom Plugin gelieferten Skills und Rules. Der faule Flagship-Modus
