@@ -1,8 +1,9 @@
 ---
 paths: ["**/*"]
 description: >
-  Assume the repo is public; no personal or contact data in versioned files; imports are redacted on
-  intake and every redaction is reported; master data belongs in the source system; domain IDs stay local.
+  Assume the repo is public; no personal or contact data in versioned files; handed-over material is
+  redacted as it is written and every redaction is reported; master data belongs in the source system;
+  domain IDs stay local.
 type: rule
 edit: locked
 ---
@@ -24,15 +25,17 @@ private repo can be shared later. The norms below hold either way.
   structure for such an entity, that structure defines how the entity is identified.
 
 ## Intake and redaction
-The user may deliberately drop material with personal data into `__callbell__/zone-import/` for the agent to process (see
-`callbell-zones`, `callbell-import`). `__callbell__/zone-import/` is volatile and unversioned, so the raw original stays out
-of the versioned repo by construction. The **converted, filed** file is where the norm is enforced:
+The user may deliberately hand over material carrying personal data for the agent to process: a pasted
+document, a file dropped in, an export. Wherever it came from, the moment it becomes something the agent
+**writes into the repo** is where this norm is enforced:
 
-- **Redact while converting.** Sensitive data does not flow into the filed file. Replace it in place with a
-  placeholder in the document's own language, for example `[social security number redacted]` or
+- **Redact while converting.** Sensitive data does not flow into the written file. Replace it in place with
+  a placeholder in the document's own language, for example `[social security number redacted]` or
   `[Sozialversicherungsnummer geschwärzt]`.
 - **Always report.** List every redaction so the user can decide, per file, to keep something after all.
   The agent thinks ahead for the user here; it never silently drops or silently keeps sensitive data.
+- **The original is not the agent's to version.** Whatever holds the raw material stays out of the
+  versioned repo.
 
 ## Identifying an entity
 When filed material belongs to a customer, project, or topic, identify it in this order, and communicate

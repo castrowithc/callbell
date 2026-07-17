@@ -2,7 +2,8 @@
 paths: ["**/*"]
 description: >
   The repo memory: the index MEMORY.md is present at session start, individual memories are opened when
-  needed, and when and how the agent writes a memory. Backbone, applies in every repo.
+  needed, and when and how the agent writes a memory. Applies where a __callbell__/ scaffold exists;
+  without one the agent uses its own native memory.
 type: rule
 edit: locked
 ---

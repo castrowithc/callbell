@@ -1,9 +1,9 @@
 ---
 paths: ["**/*"]
 description: >
-  Where files belong: flat, self-explaining area folders in the root, the type is visible in the path,
-  the path is the structural truth, status drives maturity, folders grow only when needed. New areas
-  only after approval.
+  Where files belong: flat, self-explaining area folders in the root, the type is visible in the path as a
+  prefix or a folder, the path is the structural truth, status drives maturity, folders grow only when
+  needed, fixed-function file names. New areas only after approval.
 type: rule
 edit: locked
 ---
@@ -26,7 +26,9 @@ folder self-explaining for human and agent (`business-finance`, `personal-gaming
 topics exist is set by the registry (below), not by the agent's gut.
 
 **The type is visible in the path.** Every file shows its `type` without being opened: as a file name
-prefix (`<type>-<name>.md`) while flat, or as a `<type>/` folder once grouped. Never hide the type.
+prefix (`<type>-<name>.md`, for example `fact-…`, `knowledge-…`, `playbook-…`, `history-…`) while flat, or
+as a `<type>/` folder once grouped. Never hide the type. The prefix follows the `type` in the frontmatter;
+on a drift the frontmatter is canonical. Raw zones carry no type (see `callbell-zones`).
 
 **The area level stays readable.** Inside a `<area>-<topic>/` there are only flat type files and type
 folders. That way a human sees after one click which types exist and that content is there. Anything that
@@ -48,3 +50,24 @@ and active state differ by `status`, not by folder. Backlog maturity is set by `
 **Folders grow only when needed.** A folder comes into being with its first file, never empty just in
 case. A named sublevel appears only once a second element of the same kind is added. An area gets its own
 `framework.md` only when it needs growing, distinct work rules (not already covered by the backbone).
+
+## Fixed-Function File Names
+
+Files with a fixed role are recognized by their **name**, not by a type prefix. The agent finds them by
+name, and the human sorts nothing.
+
+| Name | Role |
+|---|---|
+| `framework.md` | framework for a level (`type: meta`) |
+| `README.md` | structural header of a folder or area (no enum `type`) |
+| `index.md` | index or roster of a folder or entity |
+| `MEMORY.md` | index of the agent's memory |
+| `BACKLOG.md` | index of the operational work trail (`__callbell__/backlog/`) |
+| `history.md` | running log of a folder (`type: history`) |
+
+These names are **exclusive in the working tree**: a real fixed-function file is named exactly
+`framework.md` or `index.md`, never prefixed. That keeps the cascade fast and unambiguous: a `framework.md`
+or `index.md` at any level of the tree is always a real node, read it. A **scaffold** for one of these
+files lives only in `__callbell__/templates/` and is named with its target as a suffix
+(`project-index.md`, for example), never the bare reserved name. The suffix says what the scaffold becomes
+and keeps it out of the node scan, because its name is not exactly `framework.md` or `index.md`.

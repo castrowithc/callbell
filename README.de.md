@@ -46,9 +46,11 @@ Dieses Repo **ist** das Plugin. Es gibt keinen Build-Schritt und nichts wird gen
 installiert wird.
 
 - `skills/` — ein flacher Ordner; die Linse entscheidet zur Laufzeit über Code oder Ops, nicht die Ablage.
-- `rules/` — die Normen, vom Hook injiziert, wo der Harness keinen nativen Leser hat.
-- `hooks/callbell-context.js` — der SessionStart-Hook: löst die Linse auf und injiziert Kontext und Regeln.
-  Läuft unter Claude wie unter Codex.
+- `rules/core/` — Normen, die in jedem Repo gelten. Immer injiziert.
+- `rules/scaffold/` — Normen, die nur dort etwas bedeuten, wo ein `__callbell__/`-Gerüst existiert (Backlog,
+  Zonen, Frontmatter, Memory, Struktur). Nur dort injiziert; ein Repo ohne Gerüst zahlt nichts dafür.
+- `hooks/callbell-context.js` — der SessionStart-Hook: löst die Linse auf, meldet das Gerüst und injiziert
+  Kontext und Regeln. Läuft unter Claude wie unter Codex.
 - `node scripts/callbell-publish.js` — Version stempeln, committen, pushen.
 
 ## Lizenz

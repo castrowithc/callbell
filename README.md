@@ -43,9 +43,11 @@ This repo **is** the plugin. There is no build step and nothing is generated: `s
 `hooks/`, and the host manifests are authored here directly, and what you read is what gets installed.
 
 - `skills/` — one flat folder; the lens decides code vs ops at runtime, not the file layout.
-- `rules/` — the norms, injected by the hook where the harness has no native reader.
-- `hooks/callbell-context.js` — the SessionStart hook: resolves the lens and injects context and rules.
-  Runs on Claude and Codex alike.
+- `rules/core/` — norms that hold in any repo. Always injected.
+- `rules/scaffold/` — norms that only mean anything where a `__callbell__/` scaffold exists (backlog,
+  zones, frontmatter, memory, structure). Injected only there, so a repo without one pays nothing for them.
+- `hooks/callbell-context.js` — the SessionStart hook: resolves the lens, reports the scaffold, and injects
+  context and rules. Runs on Claude and Codex alike.
 - `node scripts/callbell-publish.js` — stamp the version, commit, push.
 
 ## License

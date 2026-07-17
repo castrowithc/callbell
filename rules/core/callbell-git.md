@@ -61,8 +61,7 @@ through `git worktree`: a second branch in its own folder, the same Git database
 
 ## Large files (binaries)
 
-The repo is not an asset store (see `callbell-zones`): large or changing binary data belongs in a file
-store, not in the history. If a rare, stable binary file does have to go into the repo, it runs through
+The repo is not an asset store: large or changing binary data belongs in a file store, not in the history. If a rare, stable binary file does have to go into the repo, it runs through
 **Git LFS**, which replaces the file with a pointer and keeps the history lean.
 
 When proposing this, the agent names the prerequisites: `git-lfs` must be installed on every machine that

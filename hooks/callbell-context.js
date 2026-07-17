@@ -18,6 +18,8 @@
 //           from the project cwd, only if present. The always-on PAYLOAD (rules + AGENTS.md ruleset)
 //           comes from ${CLAUDE_PLUGIN_ROOT}/${PLUGIN_ROOT} when the project carries none of its own.
 //           Project-local always wins, so a real project never double-loads its rules.
+//           The plugin's rules come in two groups: rules/core/ always, rules/scaffold/ only where
+//           __callbell__/ exists. A repo without a scaffold is not billed for norms it cannot use.
 //
 // Scope deliberately narrow: only __callbell__/context/ (onboarding facts, a dynamic complement to
 // rules/skills), the memory index, and the backlog index (open work state). The individual
@@ -178,7 +180,12 @@ if (projectRules.length) {
     }
   }
 } else if (pluginRoot) {
-  const rules = section(collect(path.join(pluginRoot, 'rules')), pluginRoot);
+  // Two groups, gated. `core/` holds what is true in any repo. `scaffold/` holds what only means
+  // anything where __callbell__/ exists (backlog, zones, frontmatter, memory, structure) — roughly 60%
+  // of the payload, and a repo without a scaffold used to be billed for all of it every session.
+  const groups = [path.join(pluginRoot, 'rules', 'core')];
+  if (scaffold) groups.push(path.join(pluginRoot, 'rules', 'scaffold'));
+  const rules = section(groups.flatMap(collect), pluginRoot);
   if (rules.length) {
     blocks.push('Project rules (norms, always in force):');
     blocks.push(rules.join('\n\n'));

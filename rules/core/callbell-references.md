@@ -18,7 +18,7 @@ So keep them sparse and follow fixed rules.
 - **Do not link anything that is always in context anyway** (automatically injected files); a pointer to
   it is redundant.
 - **Rules do not duplicate one another;** each rule is self-contained in substance. A backbone rule may
-  name a sister rule by its **slug** (`callbell-zones`, `callbell-governance`, and so on) when that rule
+  name a sister rule by its **slug** (`callbell-governance`, `callbell-git`, and so on) when that rule
   owns the topic. Slugs are stable. Never point to the path, line, or section of another rule, and never
   split a topic artificially just to link it. If something truly belongs in one file, it is merged, not
   linked.

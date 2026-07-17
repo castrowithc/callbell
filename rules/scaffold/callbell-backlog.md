@@ -59,7 +59,7 @@ task and one line per project** (`- [Title](path) - status, short state`), the p
 
 ## Templates
 Scaffolds live in `__callbell__/templates/`. Copy from there, do not reinvent. A scaffold is **renamed as
-it is copied**, because it never carries a reserved name itself (see `callbell-conventions`):
+it is copied**, because it never carries a reserved name itself (see `callbell-structure`):
 
 | Scaffold | Becomes |
 |---|---|

@@ -34,7 +34,7 @@ It never overwrites the file from its own prior knowledge. This holds most stron
 
 | `type` | Meaning |
 |---|---|
-| `meta` | Standing governance and structure: frameworks, index, navigation, this spec. Recognizable by its fixed-function name (`framework.md`, `index.md`, see `callbell-conventions`) or by the file living in `__callbell__/` (its zones and typed meta). |
+| `meta` | Standing governance and structure: frameworks, index, navigation, this spec. Recognizable by its fixed-function name (`framework.md`, `index.md`, see `callbell-structure`) or by the file living in `__callbell__/` (its zones and typed meta). |
 | `rule` | A standing behavior norm that the agent follows by default. |
 | `skill` | An actively triggered procedure. The `description` is the trigger, the body is the steps; it loads only when a matching task appears. |
 
