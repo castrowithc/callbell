@@ -1,0 +1,56 @@
+# Callbell
+
+*[English](README.md) · [Deutsch](README.de.md)*
+
+**Ein Experte, umgeben von Experten.** Du bist der Experte; die Agents und Sub-Agents sind Experten, die
+für dich arbeiten. Und die Kommunikation dazwischen ist **faul**: die schlankste Lösung, die wirklich
+trägt, statt Aufwand auf Vorrat. Der Name ist die Metapher, eine **Call Bell** (Service-Glocke): du
+klingelst, die Experten kommen. Deshalb trägt alles, was callbell liefert, das Präfix `callbell`.
+
+Callbell ist **nicht** auf Coding begrenzt. Es ist ein Rahmen für agentische Solo-Arbeit, für Devs und
+Non-Devs gleichermaßen.
+
+## Ein Plugin
+
+Callbell ist ein **Plugin**, einmal pro Gerät installiert und in jedem Ordner aktiv. Es trägt die Skills,
+die Normen und einen Session-Hook, der den Kontext liefert. Es gibt nichts zu kopieren und nichts zu
+wählen.
+
+Das Plugin bedient beide Arten von Arbeit aus einer Installation. Ein Session-Hook löst zur Laufzeit die
+**Linse** auf: ob ein Repo primär ausführbarer Code ist oder primär Markdown, das ein Thema steuert. Die
+faule Skill-Familie liest diese Linse und passt sich an. Code-Projekte bekommen die Code-Ausprägung,
+operative Arbeit (Personal OS, Business OS, Wiki & Docs) die Ops-Ausprägung plus das Ablage-System, und der
+Backbone darunter ist geteilt: Konventionen, Frontmatter, Zonen, Backlog, Memory, Datenschutz, Git.
+
+## Nutzung
+
+1. Das Plugin aus dem Marketplace **installieren**.
+2. Arbeiten. Die Skills und Normen sind sofort aktiv, in jedem Ordner.
+3. Optional `/callbell-onboarding` starten: der Agent führt dich durch das Setup und legt ein dauerhaftes
+   Projekt-Scaffold an (Kontext, Memory, Backlog, Zonen). Ein Scaffold anzulegen ist eine bewusste
+   Handlung und passiert deshalb nie automatisch.
+
+## Der `callbell`-Namensraum
+
+`callbell-*` ist **reserviert** für die vom Plugin gelieferten Skills und Rules. Domänen-Tools tragen ein
+Segment: `callbell-code-*` (Code) und `callbell-ops-*` (Ops). Der faule Flagship-Modus heißt schlicht
+`callbell` und flavored sich über die Linse.
+
+Deine **eigenen** Skills legst du **außerhalb** dieses Präfixes an (eigener Name oder eigenes Präfix). So
+bleiben Plugin- und User-Skills jederzeit unterscheidbar, auch wenn du sie zwischen Projekten mischst.
+
+## Dieses Repo
+
+Dieses Repo **ist** das Plugin. Es gibt keinen Build-Schritt und nichts wird generiert: `skills/`,
+`rules/`, `hooks/` und die Host-Manifeste werden hier direkt geschrieben, und was du liest, ist das, was
+installiert wird.
+
+- `skills/` — ein flacher Ordner; die Linse entscheidet zur Laufzeit über Code oder Ops, nicht die Ablage.
+- `rules/` — die Normen, vom Hook injiziert, wo der Harness keinen nativen Leser hat.
+- `hooks/callbell-context.js` — der SessionStart-Hook: löst die Linse auf und injiziert Kontext und Regeln.
+  Läuft unter Claude wie unter Codex.
+- `node scripts/callbell-publish.js` — Version stempeln, committen, pushen.
+
+## Lizenz
+
+MIT, siehe [LICENSE](LICENSE).

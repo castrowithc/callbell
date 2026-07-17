@@ -1,0 +1,2 @@
+# Zeilenenden normalisieren: im Repo immer LF (verhindert CRLF-Rauschen unter Windows).
+* text=auto eol=lf
