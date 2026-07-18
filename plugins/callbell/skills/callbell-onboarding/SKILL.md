@@ -2,14 +2,29 @@
 name: callbell-onboarding
 description: >
   Guides the user through the first-time setup of this repo: clarify the lens and context, lay down the
-  scaffold, and brief the user on how the collaboration works. Adapts to a code repo or an ops repo. Only
-  on explicit call (/callbell-onboarding), once, never automatically.
+  scaffold, and brief the user on how the collaboration works. Adapts to a code repo or an ops repo. Takes
+  an optional argument: `bare` lays the scaffold down without the interview, `top-up` brings an existing
+  scaffold up to the shipped one additively. Only on explicit call (/callbell-onboarding), never
+  automatically.
 type: skill
 edit: locked
 disable-model-invocation: true
 ---
 
 # /callbell-onboarding
+
+## 0. Which mode (read the argument and the folder first)
+Three situations, and only the first is the full interview. Decide before asking anything.
+
+- **`top-up`** (or any folder that already has `__callbell__/`): do **not** run the interview. Go straight
+  to step 3a. The repo is already set up; what it needs is the newer scaffold's missing pieces.
+- **`bare`**: lay the scaffold down and ask nothing. Take the lens from `PROJECT TYPE` in session context;
+  only if that says `unknown` ask that one question, because nothing else can answer it. Do step 3, stamp
+  the version, and stop — no purpose, no roles, no areas, no briefing. Close by saying the scaffold is
+  there, that `repo.md` and `roles.md` are still templates, and that `/callbell-onboarding` fills them in
+  whenever the user wants. This exists because the interview is right for setting up a project and far too
+  much when someone just wants the folder so the session has a backlog.
+- **no argument, no `__callbell__/`**: the full guided setup below, from step 1.
 
 You guide the user **actively** through the one-time setup of this repo and stay with it until the repo
 holds the information it needs to work. Work in short steps, ask only **a few questions at a time**, write
@@ -52,17 +67,43 @@ state**, never a second copy of those:
 - Copy the shared base verbatim: `__callbell__/` (the structural header `README.md`, context, memory index,
   template scaffolds), the backlog index `__callbell__/backlog/BACKLOG.md`, and the two zones
   `__callbell__/zone-import/.gitkeep` and `__callbell__/zone-export/.gitkeep`.
-- Copy `scaffold/gitignore` to `.gitignore` (the dot is dropped in the bundle so it is inert there).
+- **`.gitignore`: append, never replace.** The bundle carries the rules as `scaffold/gitignore` (the dot is
+  dropped so the file is inert there). With no `.gitignore` in the repo, copy it. With one already present,
+  check whether it already ignores `__callbell__/zone-import/`; if it does, change nothing, and if it does
+  not, append the bundle's content verbatim (comments included) after a blank line. Every existing line
+  stays untouched — those rules are the user's, and overwriting them is data loss. One check, no merging,
+  and a second run adds nothing.
 - **Lens extras from `scaffold/_lens/`:** for **ops**, copy `_lens/ops/framework.md` to
   `__callbell__/framework.md` and `_lens/ops/templates/*` into `__callbell__/templates/`; for **code**, copy
   `_lens/code/docs/framework.md` to `__callbell__/docs/framework.md`.
 
-A folder that already carries the scaffold (a template copy) skips this. If `${CLAUDE_PLUGIN_ROOT}` is not
+- **Stamp the version, always and last.** Read the plugin's `VERSION` and write it into `repo.md`
+  frontmatter as `scaffold-version: <version>`. The hook compares that stamp against the shipped `VERSION`
+  and reports drift, so an unstamped scaffold reads as outdated forever. This is the one frontmatter field
+  the user never edits.
+
+A folder that already carries the scaffold goes to step 3a instead. If `${CLAUDE_PLUGIN_ROOT}` is not
 resolvable from the session, ask the user for the plugin's install path.
 
 Then create `__callbell__/backlog/task-initial-onboarding.md` (template in `__callbell__/templates/task.md`,
 `status: active`) and add one line to `__callbell__/backlog/BACKLOG.md`. Check off the steps as you go, so
-the state survives a pause.
+the state survives a pause. In **bare** mode skip that task — there is no interview to track.
+
+## 3a. Top-up: an existing scaffold, brought up to the shipped one
+**Additive only, and that is the whole design.** Copy in what is **absent**; touch nothing that is
+**present**. Do not compare contents, do not merge, do not offer to "update" a file the user has edited —
+their `repo.md` is theirs, and not diffing it is precisely why their edits survive. There is no downgrade
+and no migration path here; a scaffold newer than the plugin is left alone.
+
+- Walk the bundle (shared base plus the lens extras for this repo's `project-type`) and add every file the
+  repo does not have, creating folders as needed.
+- Apply the `.gitignore` step the same way as in step 3: check, append if the zone rules are missing, never
+  replace.
+- Rewrite `scaffold-version` in `repo.md` to the plugin's `VERSION`, last.
+- Report what you added, as a list, plus the fact that nothing existing was changed. If nothing was
+  missing, say that and only restamp.
+
+Do not run the interview and do not create an onboarding task: this repo was onboarded already.
 
 ## 4. Gather and fill the context (a few questions per step, write after confirmation)
 - **Structure language** (`repo.md`): ask whether folder and area names should follow the chat language, be

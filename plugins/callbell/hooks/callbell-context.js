@@ -5,14 +5,29 @@
 // Builds the session context and writes it to stdout; both harnesses inject
 // SessionStart stdout as context.
 //
-//   Claude: registered in .claude/settings.json (WITHOUT --rules).
+//   Claude: registered by the plugin itself, via hooks/callbell-hooks.json (WITHOUT --rules).
 //           Root via $CLAUDE_PROJECT_DIR. Injects the context from __callbell__/context/,
 //           the memory index __callbell__/memory/MEMORY.md and the backlog index __callbell__/backlog/BACKLOG.md.
-//           On Claude the rules do NOT come from here, but natively from .claude/rules/
+//           On Claude the project's own rules do NOT come from here, but natively from .claude/rules/
 //           (otherwise duplicate context).
-//   Codex:  registered in .codex/hooks.json WITH --rules.
-//           Root via stdin JSON {cwd}. Codex has no Markdown rules folder, so
-//           the norms from .claude/rules/ are injected here as well.
+//   Codex:  registered by the USER, in a config-layer ~/.codex/hooks.json, WITH --rules.
+//           Not by the plugin: Codex does not execute plugin-local hooks (openai/codex#16430, open,
+//           reproduced through 0.130.0; `codex features list` reports plugin_hooks as not yet enabled).
+//           The bundled hooks.json is registered in the Codex manifest anyway — it is the correct
+//           declaration and starts working the day the runtime catches up — but until then the
+//           config-layer entry is what actually runs:
+//
+//             { "hooks": { "SessionStart": [ { "matcher": "startup|resume",
+//               "hooks": [ { "type": "command",
+//                 "command": "PLUGIN_ROOT=<install-path> node <install-path>/hooks/callbell-context.js --rules",
+//                 "timeout": 5 } ] } ] } }
+//
+//           Because that entry sits outside any plugin, Codex sets no PLUGIN_ROOT for it and it must
+//           set its own; without it the script finds no payload and injects only project state.
+//           Root via stdin JSON {cwd}. Codex has no Markdown rules folder, so the norms from
+//           .claude/rules/ are injected here as well.
+//           Note that Codex also sets CLAUDE_PLUGIN_ROOT as a compatibility alias, so the environment
+//           cannot be used to tell the two hosts apart — only the --rules flag can.
 //   Plugin (ambient mode): installed per device and started in an arbitrary or empty folder.
 //           Two roots then. Project STATE (context, memory, backlog) still comes
 //           from the project cwd, only if present. The always-on PAYLOAD (rules + AGENTS.md ruleset)
@@ -92,12 +107,37 @@ function hasScaffold(dir) {
 // loads that file's contents natively, so if it exists the agent reads it and judges whether it names a
 // language. What the agent cannot notice is a file that was never there. Once an anchor exists this emits
 // nothing, so the mechanic costs nothing after the first session. `callbell-language` says what to do.
+//
+// The host is told apart by the `--rules` flag, not by the environment: Codex sets CLAUDE_PLUGIN_ROOT
+// as a compatibility alias alongside its own PLUGIN_ROOT, so the old `PLUGIN_ROOT && !CLAUDE_PLUGIN_ROOT`
+// test was never true there and pointed Codex users at Claude's anchor file. Only the Codex
+// registration passes --rules, which makes the flag the one reliable signal we control.
 function missingLanguageAnchor() {
-  const file = process.env.PLUGIN_ROOT && !process.env.CLAUDE_PLUGIN_ROOT
+  const file = withRules
     ? path.join(os.homedir(), '.codex', 'AGENTS.md')   // Codex
     : path.join(os.homedir(), '.claude', 'CLAUDE.md'); // Claude
   try { return fs.readFileSync(file, 'utf8').trim() ? null : file; }
   catch { return file; } // missing or unreadable: same outcome for the user
+}
+
+// A scaffold has three states and the hook could only ever see two of them. Presence it knew; staleness it
+// did not, so an already-onboarded repo silently kept whatever it was given at the time and a user's repos
+// drifted further apart with every release, with nothing ever saying so.
+//
+// Reported like the language anchor: one line, only when there is something to say, and gone for good once
+// resolved. Comparing needs both sides, so a scaffold without a plugin (the frozen template fallback) is
+// not nagged — there is no shipped version to be behind. A scaffold that carries no stamp at all is
+// reported too: it predates stamping, which is exactly the drift this exists to surface.
+function scaffoldDrift(dir) {
+  if (!pluginRoot) return null;
+  let shipped;
+  try { shipped = fs.readFileSync(path.join(pluginRoot, 'VERSION'), 'utf8').trim(); }
+  catch { return null; }
+  if (!shipped) return null;
+  const m = frontmatterOf(path.join(dir, '__callbell__', 'context', 'repo.md'))
+    .match(/^scaffold-version:\s*(\S+)/mi);
+  const stamped = m ? m[1] : null;
+  return stamped === shipped ? null : { stamped, shipped };
 }
 
 function resolveProjectType(dir) {
@@ -171,6 +211,16 @@ if (anchorFile) {
     ' is missing or empty (see callbell-language).');
 }
 
+// Same shape, same discipline: one line, only on a mismatch.
+const drift = scaffold ? scaffoldDrift(root) : null;
+if (drift) {
+  blocks.push('SCAFFOLD ' + (drift.stamped
+    ? 'OUTDATED: this repo is stamped ' + drift.stamped
+    : 'UNSTAMPED: this repo records no scaffold version') +
+    ', the plugin ships ' + drift.shipped + '. `/callbell-onboarding top-up` adds what is missing and ' +
+    'leaves everything you have edited untouched.');
+}
+
 const contextFiles = collect(path.join(root, '__callbell__', 'context'));
 const memoryIndex = path.join(root, '__callbell__', 'memory', 'MEMORY.md');
 if (fs.existsSync(memoryIndex)) contextFiles.push(memoryIndex);
@@ -182,38 +232,48 @@ if (context.length) {
   blocks.push('Way of working & context (loaded automatically at session start from __callbell__/context/, the memory index, and the backlog index):');
   blocks.push(context.join('\n\n'));
 } else if (pluginRoot) {
-  blocks.push('No callbell project set up in this folder yet (ambient mode). Skills and rules are active everywhere; run /callbell-onboarding to turn it into a persistent project (it lays down context, memory, and backlog).');
+  blocks.push('No callbell project set up in this folder yet (ambient mode). Skills and rules are active everywhere, but this folder has no backlog, memory, or project context. Two ways to change that, either of them one turn: `/callbell-onboarding bare` lays the scaffold down straight away and asks nothing, `/callbell-onboarding` walks through the full setup (purpose, roles, areas). Nothing is written until you ask — laying down a scaffold stays deliberate.');
 }
 
-// Always-on payload: the rules (norms) and the minimal AGENTS.md ruleset. Project-local always
-// wins; the plugin root is the fallback for ambient mode (an arbitrary or empty folder that carries
-// no scaffold of its own). Claude reads project .claude/rules/ natively, so only a host without a
-// native rules dir passes --rules (Codex). The plugin-root fallback has no native reader on either
-// host, so it injects for both and needs no flag.
+// Always-on payload: the rules (norms) and the minimal AGENTS.md ruleset.
+//
+// Precedence runs PER FILE, not all-or-nothing. The all-or-nothing version had a silent failure mode
+// that cost the user everything: a repo carrying a single unrelated rule of its own took the project
+// branch, and on Claude (which passes no --rules) that branch emits nothing — so every callbell norm
+// vanished because the user had written one rule. Now a project rule only displaces the plugin rule
+// of the SAME file name, which is what "project-local wins" was always meant to mean, and the case it
+// exists for (a repo pinning its own copy of a callbell rule) still works.
+//
+// Who reads what, since it resolves per host: Claude reads project .claude/rules/ natively and must
+// therefore never receive them from here, or they arrive twice. Codex reads nothing natively and gets
+// them via --rules. The plugin's own rules have no native reader anywhere and are injected on both.
 const projectRules = collect(path.join(root, '.claude', 'rules'));
-if (projectRules.length) {
-  if (withRules) {
-    const rules = section(projectRules, root);
-    if (rules.length) {
-      blocks.push('Project rules (norms, always in force):');
-      blocks.push(rules.join('\n\n'));
-    }
+if (withRules && projectRules.length) {
+  const rules = section(projectRules, root);
+  if (rules.length) {
+    blocks.push('Project rules (norms, always in force):');
+    blocks.push(rules.join('\n\n'));
   }
-} else if (pluginRoot) {
+}
+if (pluginRoot) {
   // Two groups, gated. `core/` holds what is true in any repo. `scaffold/` holds what only means
   // anything where __callbell__/ exists (backlog, zones, frontmatter, memory, structure) — roughly 60%
   // of the payload, and a repo without a scaffold used to be billed for all of it every session.
   const groups = [path.join(pluginRoot, 'rules', 'core')];
   if (scaffold) groups.push(path.join(pluginRoot, 'rules', 'scaffold'));
-  const rules = section(groups.flatMap(collect), pluginRoot);
+  const owned = new Set(projectRules.map(f => path.basename(f)));
+  const files = groups.flatMap(collect).filter(f => !owned.has(path.basename(f)));
+  const rules = section(files, pluginRoot);
   if (rules.length) {
-    blocks.push('Project rules (norms, always in force):');
+    blocks.push('Callbell rules (norms from the plugin, always in force):');
     blocks.push(rules.join('\n\n'));
   }
   // The AGENTS.md ruleset auto-merges natively only inside the project tree; the plugin's copy sits
-  // outside it, so inject it here when the project carries none.
+  // outside it, so inject it here — but only when the project carries no root ruleset of its own,
+  // which the host has then already loaded.
+  const hasOwnRuleset = ['AGENTS.md', 'CLAUDE.md'].some(f => fs.existsSync(path.join(root, f)));
   const ruleset = path.join(pluginRoot, 'AGENTS.md');
-  if (fs.existsSync(ruleset)) {
+  if (!hasOwnRuleset && fs.existsSync(ruleset)) {
     const body = bodyOf(ruleset);
     if (body) blocks.push('Project ruleset (from AGENTS.md):\n' + body);
   }

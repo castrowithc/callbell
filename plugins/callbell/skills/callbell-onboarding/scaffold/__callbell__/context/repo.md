@@ -6,6 +6,8 @@ description: >
 type: meta
 edit: locked
 # project-type: code|ops  # the lens; onboarding sets it, the SessionStart hook emits it as PROJECT TYPE
+# scaffold-version: x.y.z  # which scaffold this repo was laid down from; onboarding stamps it, the hook
+#                          # compares it against the plugin's VERSION and reports drift. Never edit by hand.
 ---
 
 # Repo

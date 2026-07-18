@@ -14,16 +14,23 @@ edit: locked
 # Filing: where a file belongs and how the tree grows
 
 Placement follows the invariants in the rule `callbell-structure`. This skill is the procedure behind
-them. Which areas and topics exist is stated in the registry in `__callbell__/framework.md`; the agent uses
-only what is there and creates no new area without approval (see `callbell-governance`).
+them.
+
+Area folders are an **ops** structure, and so is their registry. In an ops repo, which areas and topics
+exist is stated in `__callbell__/framework.md`; the agent uses only what is there and creates no new area
+without approval (see `callbell-governance`). A **code** repo has no area registry and needs none: the root
+is the code project, documentation lives under `__callbell__/docs/`, and `__callbell__/docs/framework.md` is
+the root of that cascade. Read the lens before reaching for a registry.
 
 ## Look for a template first
 
 Before you reinvent a recurring area structure (for example customers, projects, objects), check
-`__callbell__/templates/` for a matching template and instantiate it. For customers there is a pattern there:
-the area `business-customers/` gets a `framework.md` (how to identify, how to search, which data never
-flows in) and one subfolder `<id>/index.md` per customer. Only when no template fits do you build your own
-and propose to the user that the pattern be captured as a template.
+`__callbell__/templates/` for a matching template and instantiate it. Which templates are there depends on
+the lens — the customer pattern ships with the **ops** scaffold only, so in a code repo do not go looking
+for it. Where it exists, it works like this: the area `business-customers/` gets a `framework.md` (how to
+identify, how to search, which data never flows in) and one subfolder `<id>/index.md` per customer. Only
+when no template fits do you build your own and propose to the user that the pattern be captured as a
+template.
 
 ## The area folder first
 
@@ -47,7 +54,7 @@ an area overflows: do not guess, propose an adjustment and wait for approval.
 | `fact` · `knowledge` · `history` | Flat with a prefix `<area>-<topic>/<type>-<name>.md`; once more than 5 of the same type → a `<type>/` folder. |
 | `playbook` | Next to the recurring process it serves (`<area>-<topic>/[<subtopic>/]playbooks/`); otherwise flat `playbook-<name>.md`. |
 | `decision` | Central and dated in the area: `<area>-<topic>/decisions/YYYY-MM-DD-….md`. Structural and meta decisions concern the framework, not one area. |
-| `meta` | Flat, no prefix: `<area>-<topic>/framework.md` (the root registry = `__callbell__/framework.md`). |
+| `meta` | Flat, no prefix: `<area>-<topic>/framework.md` (root of the cascade: ops `__callbell__/framework.md`, code `__callbell__/docs/framework.md`). |
 | `task` | In `__callbell__/backlog/` (versioned work trail, not a zone). Location and life cycle are set by `callbell-backlog`. |
 | `memory` | `__callbell__/memory/*.md` (see `callbell-memory`). |
 

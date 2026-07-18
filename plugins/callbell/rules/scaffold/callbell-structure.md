@@ -13,10 +13,12 @@ edit: locked
 These rules always apply. The full procedure (placement, thresholds, promotion) lives in the skill
 `callbell-filing` and is read only when you actually file or move a file.
 
-**The root is your workspace; `__callbell__/` is callbell's layer.** The **operational level** is the flat
-area folders `<area>-<topic>` (for example `business-finance/`, `personal-gaming/`) in the repo root, where
-your content lives. The **callbell-managed layer** is the single folder `__callbell__/`: the meta level
-(context, memory, templates, docs, and the backlog `__callbell__/backlog/`) plus the two volatile zones
+**The root is your workspace; `__callbell__/` is callbell's layer.** In the **ops** lens the **operational
+level** is the flat area folders `<area>-<topic>` (for example `business-finance/`, `personal-gaming/`) in
+the repo root, where your content lives; in the **code** lens the root is the codebase itself and there is
+no area level. The **callbell-managed layer** is the same in both: the single folder `__callbell__/`, the
+meta level (context, memory, templates, the backlog `__callbell__/backlog/`, and in the code lens the
+documentation `__callbell__/docs/`) plus the two volatile zones
 `__callbell__/zone-import/` and `__callbell__/zone-export/` (see `callbell-zones`). Area-local meta (`framework.md`), by contrast, lives **in**
 the operational level, with the area it sharpens. No deep `domain/area/topic` hierarchy: the area folder is
 the top level, depth arises inside it and only when needed.
@@ -39,9 +41,11 @@ zone (no type, no frontmatter), like the root zones.
 **The path is the structural truth.** Area and topic sit in the folder name, not in the frontmatter. One
 place decides the structure: the path.
 
-**Areas come from the registry, not from the gut.** Which areas and topics exist is stated in the
-registry in `__callbell__/framework.md`. The agent uses only what is there and invents no areas. A new area, a
-new topic, or a loosening of the schema requires approval (see `callbell-governance`).
+**Areas come from the registry, not from the gut.** Area folders exist in the **ops** lens, and so does
+their registry: `__callbell__/framework.md` states which areas and topics there are. The agent uses only
+what is there and invents no areas. A new area, a new topic, or a loosening of the schema requires approval
+(see `callbell-governance`). A **code** repo has no area level and no registry — its root is the code
+project, and `__callbell__/docs/framework.md` governs the documentation instead.
 
 **Status drives maturity, not location.** Unfinished material carries `status: draft` and lives in its
 proper place; it matures there in place until `status: active`. There is no separate draft zone: draft
