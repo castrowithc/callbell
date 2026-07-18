@@ -24,8 +24,18 @@ folder. For several sessions or topics at the same time.
 ## Setup
 1. Check the state (`git status`), secure open changes in the main folder (commit or stash).
 2. Settle the branch name (from the argument or a quick question), descriptive and kebab-case.
-3. Create the worktree as a sibling folder next to the repo: `git worktree add ../<repo>-<branch> -b <branch>`.
+3. Create the worktree as a sibling folder next to the repo, named `<repo>-wt-<purpose>`:
+   `git worktree add ../<repo>-wt-<purpose> -b <branch>`.
 4. Tell the user the location and branch and how to switch there.
+
+**The `-wt-` infix is load-bearing, not decoration.** A worktree is often created inside another repo's
+working tree (a repo nested in a repo, a control repo steering a codebase), and that outer repo has to
+ignore it. `*-wt-*/` catches every worktree at any depth and nothing else. Naming them `<repo>-<purpose>`
+instead would force the outer repo to ignore a whole name prefix, which then swallows any future folder
+that happens to start the same way — including, in a callbell repo, `backlog/<repo>-*` project folders.
+
+Keep the purpose in the folder name and not a reusable slot number: the name is what makes an unmerged
+worktree obvious, and what makes it clear the folder should be gone once the strand is merged.
 
 ## Cleanup
 - Once the strand is merged or dropped: `git worktree remove <location>` and clean up the branch. Leave no
