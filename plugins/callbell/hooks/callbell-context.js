@@ -189,13 +189,43 @@ function section(files, base) {
   return parts;
 }
 
+// The host caps what a SessionStart hook may put into the session. Over the cap it does not truncate: it
+// saves the WHOLE payload to a file and shows a ~2 KB preview, so going over loses nearly everything rather
+// than the tail. Measured 2026-07-18 (Claude Code 2.1.214) by bisection with a throwaway hook, verified by
+// asking a tool-less session to quote a marker at the end of the output: everything up to 10 001 characters
+// arrives, 10 025 does not. It counts characters, not lines — 9 000 characters over 3 000 lines still
+// arrive. BUDGET keeps a margin under that for the wrapper the harness adds around our text.
+//
+// Everything below is assembled against this budget. What does not fit is not dropped silently: it is
+// announced with its path, so the session knows the norm exists and where to read it.
+const BUDGET = 9000;
 const blocks = [];
+let used = 0;
+
+// Returns false when the block does not fit, so the caller can announce instead of inline.
+function push(text) {
+  const cost = text.length + 2; // the '\n\n' join
+  if (used + cost > BUDGET) return false;
+  blocks.push(text);
+  used += cost;
+  return true;
+}
+
+// One line per rule that was not inlined: what it governs and where to read it. The wording comes from the
+// rule's own frontmatter description, so a reworded rule updates its own pointer and the two cannot drift.
+function pointer(file, base) {
+  const desc = frontmatterOf(file).match(/^description:\s*>?\s*([\s\S]*?)(?=^\S|\Z)/m);
+  let text = desc ? desc[1].replace(/\s+/g, ' ').trim() : '';
+  if (text.length > 140) text = text.slice(0, 137) + '...';
+  const rel = path.relative(base, file).split(path.sep).join('/');
+  return '- ' + path.basename(file, '.md') + ' (' + rel + '): ' + text;
+}
 
 // The two facts, emitted once each. Lens-bearing skills (callbell and the review/audit/debt family) read
 // PROJECT TYPE instead of detecting the type themselves.
 const projectType = resolveProjectType(root);
 const scaffold = hasScaffold(root);
-blocks.push([
+push([
   projectType === 'unknown'
     ? 'PROJECT TYPE: unknown (no code or ops markers yet; derive it from the task, onboarding sets it durably)'
     : 'PROJECT TYPE: ' + projectType,
@@ -207,14 +237,14 @@ blocks.push([
 // Reported only when absent, so this line disappears for good once an anchor exists.
 const anchorFile = missingLanguageAnchor();
 if (anchorFile) {
-  blocks.push('NO LANGUAGE ANCHOR: ' + anchorFile.split(path.sep).join('/') +
+  push('NO LANGUAGE ANCHOR: ' + anchorFile.split(path.sep).join('/') +
     ' is missing or empty (see callbell-language).');
 }
 
 // Same shape, same discipline: one line, only on a mismatch.
 const drift = scaffold ? scaffoldDrift(root) : null;
 if (drift) {
-  blocks.push('SCAFFOLD ' + (drift.stamped
+  push('SCAFFOLD ' + (drift.stamped
     ? 'OUTDATED: this repo is stamped ' + drift.stamped
     : 'UNSTAMPED: this repo records no scaffold version') +
     ', the plugin ships ' + drift.shipped + '. `/callbell-onboarding top-up` adds what is missing and ' +
@@ -229,10 +259,10 @@ if (fs.existsSync(backlogIndex)) contextFiles.push(backlogIndex);
 
 const context = section(contextFiles, root);
 if (context.length) {
-  blocks.push('Way of working & context (loaded automatically at session start from __callbell__/context/, the memory index, and the backlog index):');
-  blocks.push(context.join('\n\n'));
+  push('Way of working & context (loaded automatically at session start from __callbell__/context/, the memory index, and the backlog index):');
+  push(context.join('\n\n'));
 } else if (pluginRoot) {
-  blocks.push('No callbell project set up in this folder yet (ambient mode). Skills and rules are active everywhere, but this folder has no backlog, memory, or project context. Two ways to change that, either of them one turn: `/callbell-onboarding bare` lays the scaffold down straight away and asks nothing, `/callbell-onboarding` walks through the full setup (purpose, roles, areas). Nothing is written until you ask — laying down a scaffold stays deliberate.');
+  push('No callbell project set up in this folder yet (ambient mode). Skills and rules are active everywhere, but this folder has no backlog, memory, or project context. Two ways to change that, either of them one turn: `/callbell-onboarding bare` lays the scaffold down straight away and asks nothing, `/callbell-onboarding` walks through the full setup (purpose, roles, areas). Nothing is written until you ask — laying down a scaffold stays deliberate.');
 }
 
 // Always-on payload: the rules (norms) and the minimal AGENTS.md ruleset.
@@ -251,23 +281,62 @@ const projectRules = collect(path.join(root, '.claude', 'rules'));
 if (withRules && projectRules.length) {
   const rules = section(projectRules, root);
   if (rules.length) {
-    blocks.push('Project rules (norms, always in force):');
-    blocks.push(rules.join('\n\n'));
+    push('Project rules (norms, always in force):');
+    push(rules.join('\n\n'));
   }
 }
 if (pluginRoot) {
-  // Two groups, gated. `core/` holds what is true in any repo. `scaffold/` holds what only means
-  // anything where __callbell__/ exists (backlog, zones, frontmatter, memory, structure) — roughly 60%
-  // of the payload, and a repo without a scaffold used to be billed for all of it every session.
-  const groups = [path.join(pluginRoot, 'rules', 'core')];
-  if (scaffold) groups.push(path.join(pluginRoot, 'rules', 'scaffold'));
+  // Two groups, and since 2026-07-18 they mean two different things rather than two sizes.
+  //
+  // `core/` is the always-on KERNEL: inlined here, in the order below, for as much as the budget allows.
+  // `scaffold/` is the CASCADE: never inlined, only announced. Those norms govern specific activities
+  // (filing, backlog, frontmatter, zones, memory) and are read when that activity happens — the same
+  // shape the framework.md cascade already has, and the reason they are the ones demoted.
+  //
+  // The order is by what it costs to be missing, not by size: a leaked address cannot be taken back, a
+  // clumsy commit message can. A rule that does not fit is not lost, it is announced.
   const owned = new Set(projectRules.map(f => path.basename(f)));
-  const files = groups.flatMap(collect).filter(f => !owned.has(path.basename(f)));
-  const rules = section(files, pluginRoot);
-  if (rules.length) {
-    blocks.push('Callbell rules (norms from the plugin, always in force):');
-    blocks.push(rules.join('\n\n'));
+  const KERNEL_ORDER = ['callbell-conventions.md', 'callbell-data-protection.md', 'callbell-language.md',
+    'callbell-governance.md', 'callbell-writing-style.md', 'callbell-references.md', 'callbell-git.md'];
+  const rank = f => { const i = KERNEL_ORDER.indexOf(path.basename(f)); return i < 0 ? KERNEL_ORDER.length : i; };
+  const kernel = collect(path.join(pluginRoot, 'rules', 'core'))
+    .filter(f => !owned.has(path.basename(f)))
+    .sort((a, b) => rank(a) - rank(b));
+
+  // The cascade: announced always, inlined never. Gated on the scaffold, because a repo without one
+  // cannot act on these at all.
+  const cascade = scaffold
+    ? collect(path.join(pluginRoot, 'rules', 'scaffold')).filter(f => !owned.has(path.basename(f)))
+    : [];
+
+  // Reserve the announcement's worst case BEFORE inlining anything. Measured first without this, and the
+  // announcement was the block that fell out when the budget got tight — losing the very index that says
+  // which norms exist. The index is what makes deferral honest, so it is paid for first and the kernel
+  // competes for what is left.
+  const NOTICE = 'Callbell norms not inlined here. They are in force all the same — read the file before '
+    + 'you act in its area, the way a framework.md is read on arrival:\n';
+  const lines = new Map(kernel.concat(cascade).map(f => [f, pointer(f, pluginRoot)]));
+  const reserve = kernel.concat(cascade).length
+    ? NOTICE.length + [...lines.values()].join('\n').length + 2
+    : 0;
+
+  const deferred = [];
+  let heading = false;
+  for (const f of kernel) {
+    const [body] = section([f], pluginRoot);
+    if (!body) continue;
+    const fits = t => used + t.length + 2 <= BUDGET - reserve;
+    if (!heading) {
+      const h = 'Callbell rules (norms from the plugin, always in force):';
+      if (!fits(h)) { deferred.push(f); continue; }
+      push(h);
+      heading = true;
+    }
+    if (fits(body)) push(body); else deferred.push(f);
   }
+
+  const announced = deferred.concat(cascade);
+  if (announced.length) push(NOTICE + announced.map(f => lines.get(f)).join('\n'));
   // The AGENTS.md ruleset auto-merges natively only inside the project tree; the plugin's copy sits
   // outside it, so inject it here — but only when the project carries no root ruleset of its own,
   // which the host has then already loaded.
@@ -275,9 +344,17 @@ if (pluginRoot) {
   const ruleset = path.join(pluginRoot, 'AGENTS.md');
   if (!hasOwnRuleset && fs.existsSync(ruleset)) {
     const body = bodyOf(ruleset);
-    if (body) blocks.push('Project ruleset (from AGENTS.md):\n' + body);
+    if (body) push('Project ruleset (from AGENTS.md):\n' + body);
   }
 }
 
-if (blocks.length) process.stdout.write(blocks.join('\n\n') + '\n');
+const out = blocks.join('\n\n');
+// A guarantee, not a hope: nothing leaves this script over budget. If a future edit adds an unbudgeted
+// path, this catches it here rather than in a user's session where the symptom is silence.
+if (out.length > BUDGET) {
+  process.stderr.write('callbell: payload ' + out.length + ' over budget ' + BUDGET + ', truncated\n');
+  process.stdout.write(out.slice(0, BUDGET) + '\n');
+} else if (out) {
+  process.stdout.write(out + '\n');
+}
 process.exit(0);
