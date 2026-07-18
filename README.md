@@ -9,12 +9,14 @@ experts come. That is why everything callbell ships carries the `callbell` prefi
 
 Callbell is **not** limited to coding. It is a frame for agentic solo work, for devs and non-devs alike.
 
-## One plugin
+## The always-on core
 
-Callbell is a **plugin**, installed once per device and active in every folder. It carries the skills, the
-norms, and a session hook that supplies the context. There is nothing to copy and nothing to choose.
+Callbell's core is **one plugin**, installed once per device and active in every folder. It carries the
+skills, the norms, and a session hook that supplies the context. Install it and work — nothing to copy,
+nothing to configure. Optional purpose packs install the same way from the same marketplace, only if you
+want them.
 
-The plugin serves both kinds of work from one install. A session hook resolves the **lens** at runtime:
+The core serves both kinds of work from one install. A session hook resolves the **lens** at runtime:
 whether a repo is primarily executable code or primarily markdown steering a topic. The lazy skill family
 reads that lens and adapts. Code projects get the code flavor, operational work (personal OS, business OS,
 wiki and docs) gets the ops flavor plus the filing system, and the backbone underneath is shared:

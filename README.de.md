@@ -10,13 +10,14 @@ klingelst, die Experten kommen. Deshalb trägt alles, was callbell liefert, das 
 Callbell ist **nicht** auf Coding begrenzt. Es ist ein Rahmen für agentische Solo-Arbeit, für Devs und
 Non-Devs gleichermaßen.
 
-## Ein Plugin
+## Der Always-on-Core
 
-Callbell ist ein **Plugin**, einmal pro Gerät installiert und in jedem Ordner aktiv. Es trägt die Skills,
-die Normen und einen Session-Hook, der den Kontext liefert. Es gibt nichts zu kopieren und nichts zu
-wählen.
+Callbells Core ist **ein Plugin**, einmal pro Gerät installiert und in jedem Ordner aktiv. Es trägt die
+Skills, die Normen und einen Session-Hook, der den Kontext liefert. Installieren und arbeiten — nichts zu
+kopieren, nichts zu konfigurieren. Optionale Zweck-Packs installieren sich genauso aus demselben
+Marketplace, nur wenn du sie willst.
 
-Das Plugin bedient beide Arten von Arbeit aus einer Installation. Ein Session-Hook löst zur Laufzeit die
+Der Core bedient beide Arten von Arbeit aus einer Installation. Ein Session-Hook löst zur Laufzeit die
 **Linse** auf: ob ein Repo primär ausführbarer Code ist oder primär Markdown, das ein Thema steuert. Die
 faule Skill-Familie liest diese Linse und passt sich an. Code-Projekte bekommen die Code-Ausprägung,
 operative Arbeit (Personal OS, Business OS, Wiki & Docs) die Ops-Ausprägung plus das Ablage-System, und der
