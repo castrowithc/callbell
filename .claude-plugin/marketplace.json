@@ -3,6 +3,7 @@
   "owner": { "name": "Callbell", "url": "https://github.com/castrowithc" },
   "description": "Callbell steering, distributed as a plugin: one always-on core plus optional purpose packs.",
   "plugins": [
-    { "name": "callbell", "source": "./plugins/callbell", "category": "productivity", "defaultEnabled": true }
+    { "name": "callbell", "source": "./plugins/callbell", "category": "productivity", "defaultEnabled": true },
+    { "name": "callbell-server", "source": "./plugins/callbell-server", "category": "productivity" }
   ]
 }

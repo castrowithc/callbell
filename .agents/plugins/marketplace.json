@@ -5,6 +5,10 @@
     { "name": "callbell",
       "source": { "source": "local", "path": "./plugins/callbell" },
       "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Productivity" },
+    { "name": "callbell-server",
+      "source": { "source": "local", "path": "./plugins/callbell-server" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
       "category": "Productivity" }
   ]
 }

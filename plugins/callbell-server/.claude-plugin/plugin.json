@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "callbell-server",
+  "displayName": "Callbell Server",
+  "version": "0.1.0",
+  "description": "Server-manager pack for callbell: a passive safety layer plus on-demand server-ops skills, active where a host identity is declared.",
+  "author": { "name": "Callbell", "url": "https://github.com/castrowithc" },
+  "homepage": "https://github.com/castrowithc/callbell",
+  "repository": "https://github.com/castrowithc/callbell",
+  "license": "MIT",
+  "keywords": ["server", "ops", "hardening", "backup", "docker"],
+  "skills": "./skills/",
+  "hooks": "./hooks/callbell-server-hooks.json"
+}
