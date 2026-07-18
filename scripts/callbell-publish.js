@@ -19,7 +19,10 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const MANIFESTS = ['.claude-plugin/plugin.json', '.codex-plugin/plugin.json'];
+// callbell: einplugin (die Collection). Sobald ein zweites Pack unter plugins/ liegt,
+// muss das auf per-Pack-Versionierung generalisiert werden (siehe task-callbell-server).
+const PLUGIN = 'plugins/callbell';
+const MANIFESTS = [`${PLUGIN}/.claude-plugin/plugin.json`, `${PLUGIN}/.codex-plugin/plugin.json`];
 
 function git(args, allowFail = false) {
   try {
@@ -33,7 +36,7 @@ function git(args, allowFail = false) {
 // Patch-Bump der VERSION-Datei; ein Argument gewinnt gegen den Bump.
 function resolveVersion() {
   const arg = process.argv[2];
-  const vf = path.join(ROOT, 'VERSION');
+  const vf = path.join(ROOT, PLUGIN, 'VERSION');
   if (arg) {
     fs.writeFileSync(vf, arg.trim() + '\n');
     return arg.trim();

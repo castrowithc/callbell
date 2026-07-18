@@ -43,15 +43,19 @@ user skills stay distinguishable at all times, even when you mix them across pro
 
 ## This repo
 
-This repo **is** the plugin. There is no build step and nothing is generated: `skills/`, `rules/`,
-`hooks/`, and the host manifests are authored here directly, and what you read is what gets installed.
+This repo **is** a marketplace: the always-on `callbell` collection plus optional purpose packs, each its
+own installable plugin under `plugins/`. There is no build step and nothing is generated: every plugin is
+authored here directly, and what you read is what gets installed.
 
-- `skills/` — one flat folder; the lens decides code vs ops at runtime, not the file layout.
-- `rules/core/` — norms that hold in any repo. Always injected.
-- `rules/scaffold/` — norms that only mean anything where a `__callbell__/` scaffold exists (backlog,
-  zones, frontmatter, memory, structure). Injected only there, so a repo without one pays nothing for them.
-- `hooks/callbell-context.js` — the SessionStart hook: resolves the lens, reports the scaffold, and injects
-  context and rules. Runs on Claude and Codex alike.
+- `plugins/callbell/` — the collection, what you install and run always-on:
+  - `skills/` — one flat folder; the lens decides code vs ops at runtime, not the file layout.
+  - `rules/core/` — norms that hold in any repo. Always injected.
+  - `rules/scaffold/` — norms that only mean anything where a `__callbell__/` scaffold exists (backlog,
+    zones, frontmatter, memory, structure). Injected only there, so a repo without one pays nothing for them.
+  - `hooks/callbell-context.js` — the SessionStart hook: resolves the lens, reports the scaffold, and
+    injects context and rules. Runs on Claude and Codex alike.
+- `.claude-plugin/marketplace.json`, `.agents/plugins/marketplace.json` — the marketplace catalogs, one
+  per host, listing the collection and any packs.
 - `node scripts/callbell-publish.js` — stamp the version, commit, push.
 
 ## License
