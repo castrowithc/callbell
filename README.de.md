@@ -23,18 +23,69 @@ faule Skill-Familie liest diese Linse und passt sich an. Code-Projekte bekommen 
 operative Arbeit (Personal OS, Business OS, Wiki & Docs) die Ops-Ausprägung plus das Ablage-System, und der
 Backbone darunter ist geteilt: Konventionen, Frontmatter, Zonen, Backlog, Memory, Datenschutz, Git.
 
+## Installation
+
+Den Marketplace einmal hinzufügen, dann daraus installieren, was du willst.
+
+**Claude Code:**
+
+```
+claude plugin marketplace add castrowithc/callbell
+claude plugin install callbell@callbell
+```
+
+**Codex:**
+
+```
+codex plugin marketplace add castrowithc/callbell
+codex plugin add callbell@callbell
+```
+
+Unter Codex folgt ein Handgriff, denn Codex führt Hooks, die in einem Plugin stecken, bisher nicht aus
+([openai/codex#16430](https://github.com/openai/codex/issues/16430); das Feature `plugin_hooks` fehlt in
+0.134.0). Die Skills installieren und funktionieren, aber der Session-Hook feuert nie — also keine Normen,
+kein Projektkontext, keine Linse. Trag ihn selbst in `~/.codex/hooks.json` ein und ersetze beide Pfade durch
+die Installationswurzel, die `codex plugin add` ausgegeben hat:
+
+```json
+{ "hooks": { "SessionStart": [ { "matcher": "startup|resume",
+  "hooks": [ { "type": "command",
+    "command": "PLUGIN_ROOT=<installationswurzel> node <installationswurzel>/hooks/callbell-context.js --rules",
+    "timeout": 5 } ] } ] } }
+```
+
+Codex fragt vor dem ersten Lauf, ob du dem neuen Hook vertraust. Sollte eine spätere Codex-Version
+Plugin-Hooks von sich aus ausführen, siehst du den Kontext doppelt — dann diesen Eintrag entfernen.
+
+## Was du installieren kannst
+
+- **`callbell`** — der Always-on-Core: die faule Skill-Familie, die Normen, der Session-Hook, das Onboarding.
+  Mehr braucht es nicht.
+- **`callbell-server`** — ein Server-Manager-Pack: eine passive Sicherheitsschicht, die vor zerstörerischen
+  Befehlen Erklärung und Bestätigung verlangt, dazu Skills, um einen Linux-Host aufzusetzen, zu härten, zu
+  sichern, zu bespielen und zu prüfen. **Vor der Installation:** es ist für die Arbeit *auf einem Server* —
+  du brauchst Shell-Zugang zu diesem Host und root oder sudo darauf, und einige Skills setzen Docker voraus,
+  wo dein Stack es nutzt. Es bleibt vollständig still, bis du eine Host-Identität deklarierst
+  (`__callbell__/.host-identity`); geräteweit installiert kostet es deine Code-Repos also nichts.
+  Installation mit `claude plugin install callbell-server@callbell` bzw.
+  `codex plugin add callbell-server@callbell`.
+
 ## Nutzung
 
-1. Das Plugin aus dem Marketplace **installieren**.
+1. Wie oben **installieren**.
 2. Arbeiten. Die Skills und Normen sind sofort aktiv, in jedem Ordner.
 3. Optional `/callbell-onboarding` starten: der Agent führt dich durch das Setup und legt ein dauerhaftes
    Projekt-Scaffold an (Kontext, Memory, Backlog, Zonen). Ein Scaffold anzulegen ist eine bewusste
-   Handlung und passiert deshalb nie automatisch.
+   Handlung und passiert deshalb nie automatisch. `/callbell-onboarding bare` überspringt das Interview und
+   legt nur das Gerüst an.
 
 **Das Höchste, worum callbell dich je bittet: Node im PATH.** Der Session-Hook, der die Normen und den
 Projektkontext liefert, läuft über Node — `node` muss also im PATH sein (Nix/nvm: im PATH der
-*non-interactive* Shell). Fehlt es, bricht nichts lautstark: die Skills funktionieren weiter, nur die
-Always-on-Normen und der Kontext bleiben still, statt bei jedem Prompt zu erroren.
+*non-interactive* Shell). Fehlt es, bricht nichts lautstark — keine Fehler, keine abgebrochenen Prompts —,
+aber alles, was der Hook liefert, fällt weg: die Always-on-Normen, der Projektkontext, die Memory- und
+Backlog-Indizes und die Linse. Die Skills selbst laden und laufen weiter; die linsenlesenden (`callbell`,
+`callbell-review`, `callbell-audit`, `callbell-help`) leiten die Linse dann aus der Aufgabe ab, was
+unzuverlässiger ist, als sie gesagt zu bekommen. Ein Notbetrieb, kein unterstützter Zustand.
 
 ## Der `callbell`-Namensraum
 
@@ -56,7 +107,8 @@ generiert: jedes Plugin wird hier direkt geschrieben, und was du liest, ist das,
   - `rules/scaffold/` — Normen, die nur dort etwas bedeuten, wo ein `__callbell__/`-Gerüst existiert
     (Backlog, Zonen, Frontmatter, Memory, Struktur). Nur dort injiziert; ein Repo ohne Gerüst zahlt nichts.
   - `hooks/callbell-context.js` — der SessionStart-Hook: löst die Linse auf, meldet das Gerüst und injiziert
-    Kontext und Regeln. Läuft unter Claude wie unter Codex.
+    Kontext und Regeln. Claude führt ihn aus dem Plugin aus; unter Codex muss er von Hand registriert werden
+    (siehe Installation).
 - `.claude-plugin/marketplace.json`, `.agents/plugins/marketplace.json` — die Marketplace-Kataloge, einer
   je Host, die die Collection und etwaige Packs listen.
 - `node scripts/callbell-publish.js` — Version stempeln, committen, pushen.
