@@ -1,5 +1,5 @@
 ---
-name: callbell-server-harden
+name: harden
 description: >
   Harden a server to a security baseline, or audit an existing hardening: SSH, firewall, fail2ban, users,
   system. Trigger: "harden a server", "secure a server", "check the hardening", "security audit", a fresh
@@ -95,4 +95,4 @@ security context.
 
 ## Docker (Docker servers only)
 - Docker log rotation configured.
-- Stack layout and conventions: skill `callbell-server-deploy`.
+- Stack layout and conventions: skill `callbell-sysadmin:deploy`.

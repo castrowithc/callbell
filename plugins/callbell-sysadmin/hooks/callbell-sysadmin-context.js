@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-// callbell-server SessionStart hook. Server-specific, ships with the callbell-server pack, and is
+// callbell-sysadmin SessionStart hook. Server-specific, ships with the callbell-sysadmin pack, and is
 // deliberately separate from the core callbell-context.js: host identity is a server concept and is
 // absent on non-server hosts, so the core hook stays untouched.
 //

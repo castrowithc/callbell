@@ -1,5 +1,5 @@
 ---
-name: callbell-server-checkup
+name: checkup
 description: >
   Periodic all-round health check of one of your servers: system (kernel/reboot/disk/time/resources),
   pending updates, hardening drift, backup liveness, checked against the documented facts, result as a
@@ -15,17 +15,17 @@ Periodic health check of an already set-up server. **Read-only operation** plus 
 change the system configuration. Findings are reported and fixed only on request.
 
 **Boundary (not a duplicate):** The target values of the hardening (SSH, firewall, fail2ban, users) are
-defined by `callbell-server-harden`; the backup setup is defined by `callbell-server-backup`. This skill
+defined by `callbell-sysadmin:harden`; the backup setup is defined by `callbell-sysadmin:backup`. This skill
 **checks** the running state against that baseline and against the per-server documented actual facts, it
-does not redefine the baseline. For a deeper audit or re-hardening, load `callbell-server-harden`.
+does not redefine the baseline. For a deeper audit or re-hardening, load `callbell-sysadmin:harden`.
 
 ## Procedure
 
 1. **Load the identity and target state.** Resolve this server's context (its `__callbell__/` scaffold) to
    the working folder. The per-server documented actual state (security, backup) is in context at session
    start anyway (server overlay + server context) and serves as the target reference for the comparison.
-   The generic target standards for hardening/backups are defined by the skills `callbell-server-harden`
-   and `callbell-server-backup`. A previous report in the server's report area serves as a format template.
+   The generic target standards for hardening/backups are defined by the skills `callbell-sysadmin:harden`
+   and `callbell-sysadmin:backup`. A previous report in the server's report area serves as a format template.
 2. **Run the sweep.** Run this skill folder's `checkup.sh` resource (read-only, gathers all metrics in one
    pass):
    ```bash
@@ -35,7 +35,7 @@ does not redefine the baseline. For a deeper audit or re-hardening, load `callbe
    servers, fill in the missing blocks manually with the distro equivalent (firewalld/nftables, Plesk
    firewall, cron instead of timers).
 3. **Compare against the target state (drift).** Compare each block with the per-server documented
-   security/backup state and the generic standard (`callbell-server-harden`/`callbell-server-backup`). Any
+   security/backup state and the generic standard (`callbell-sysadmin:harden`/`callbell-sysadmin:backup`). Any
    deviation = a finding. Typical drift: an SSH value changed, a jail inactive, a timer disabled, an
    archive older than one interval, a disk threshold, running kernel != newest installed without a reboot
    plan.

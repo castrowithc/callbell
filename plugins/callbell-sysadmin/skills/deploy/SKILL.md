@@ -1,5 +1,5 @@
 ---
-name: callbell-server-deploy
+name: deploy
 description: >
   Set up a new Docker stack to your conventions: directory layout, compose mandatory directives,
   capabilities, network, reverse proxy, SMTP/OIDC placeholders, security variables, sign-off checklist.
@@ -201,5 +201,5 @@ OIDC_CLIENT_SECRET=<from-provider>
 14. [ ] Reverse-proxy entry with security headers
 15. [ ] Port recorded in this server's context (its `__callbell__/` scaffold)
 16. [ ] Stack recorded in this server's context (its `__callbell__/` scaffold)
-17. [ ] For a DB container: add it as a dump target in this server's backup context (skill `callbell-server-backup`)
+17. [ ] For a DB container: add it as a dump target in this server's backup context (skill `callbell-sysadmin:backup`)
 18. [ ] Ask the user whether to create a commit

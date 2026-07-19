@@ -1,5 +1,5 @@
 ---
-name: callbell-server-docker-update
+name: docker-update
 description: >
   Update a Docker stack or the Docker engine: update classes, stack workflow, DB major migration,
   prohibitions. Trigger: "update a Docker stack", "update the Docker engine", "new image version", a

@@ -1,5 +1,5 @@
 ---
-name: callbell-server-shortcuts
+name: shortcuts
 description: >
   Set up or align the standard shell shortcuts on a server: repo navigation (repos, plus one alias per
   project) and tmux (tmux-n/-a/-k/-l). Trigger: "set up aliases", "add tmux shortcuts", "shell shortcuts

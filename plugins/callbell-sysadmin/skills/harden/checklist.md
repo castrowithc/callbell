@@ -1,6 +1,6 @@
 ---
 description: >
-  Resource for callbell-server-harden: a check checklist for new and existing servers (sign-off / audit).
+  Resource for callbell-sysadmin:harden: a check checklist for new and existing servers (sign-off / audit).
   Document the status per server in that server's security context.
 type: skill
 edit: locked
@@ -59,4 +59,4 @@ edit: locked
 - [ ] SSH keys for external services (e.g. GitHub) present and passphrase-protected
 - [ ] No credentials in Git repos
 - [ ] Docker ports bound to 127.0.0.1 (if Docker is installed)
-- [ ] On Docker servers: stack conventions from skill `callbell-server-deploy` followed
+- [ ] On Docker servers: stack conventions from skill `callbell-sysadmin:deploy` followed

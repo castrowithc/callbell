@@ -10,5 +10,5 @@
   "license": "MIT",
   "keywords": ["server", "ops", "hardening", "backup", "docker"],
   "skills": "./skills/",
-  "hooks": "./hooks/callbell-server-hooks.json"
+  "hooks": "./hooks/callbell-sysadmin-hooks.json"
 }

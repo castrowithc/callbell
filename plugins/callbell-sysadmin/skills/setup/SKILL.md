@@ -1,5 +1,5 @@
 ---
-name: callbell-server-setup
+name: setup
 description: >
   Bring a new server up from scratch: lay the callbell scaffold and write its host identity, then tools,
   hardening, backup, and optionally Docker. Trigger: "set up a new server", "onboard a server", "provision
@@ -11,8 +11,8 @@ edit: locked
 # Set Up a New Server: Orchestrator
 
 This skill runs the **full first-time provisioning** of a server. It is the entry point; the detail steps
-live in this folder's resource files and in the standalone skills `callbell-server-harden`,
-`callbell-server-backup`, and `callbell-server-deploy` (load each on demand, progressive disclosure).
+live in this folder's resource files and in the standalone skills `callbell-sysadmin:harden`,
+`callbell-sysadmin:backup`, and `callbell-sysadmin:deploy` (load each on demand, progressive disclosure).
 
 > Run on the new server as the admin user (not root). Before destructive steps the safety rules apply (the
 > two-connection pattern for SSH and firewall).
@@ -26,11 +26,11 @@ the server may differ:
 2. **Server type / purpose.** Influences the firewall tool, auto-reboot, and whether Docker is set up.
 3. **Git auth mechanism.** PAT (default), deploy key, or account SSH key (details: `git-auth.md`).
 4. **Tools.** Confirm the standard set (`micro`, `mc`, `fzf`, `tmux`, `git`).
-5. **Docker server?** If yes, `callbell-server-deploy` and DB dumps run at the end.
+5. **Docker server?** If yes, `callbell-sysadmin:deploy` and DB dumps run at the end.
 
 Hardening and backup decisions are **not** made here: the firewall, SSH port, and auto-reboot are settled by
-`callbell-server-harden`; the backup parameters (storage target, time window, notify channel) by
-`callbell-server-backup`, each in that skill's plan mode. Record the decisions in this server's context.
+`callbell-sysadmin:harden`; the backup parameters (storage target, time window, notify channel) by
+`callbell-sysadmin:backup`, each in that skill's plan mode. Record the decisions in this server's context.
 
 ## Phase 1: scaffold and host identity
 callbell already lays the persistent per-server structure, so this replaces the hand-built bootstrap:
@@ -54,17 +54,17 @@ callbell already lays the persistent per-server structure, so this replaces the 
 See the resource `tools.md` (`micro`, `mc`, `fzf`, `tmux`, `git`, multi-distro install plus `tmux.conf`).
 
 ## Phase 4: hardening
-Load the skill `callbell-server-harden` and run it (SSH, firewall, fail2ban, users, system; distro-aware,
+Load the skill `callbell-sysadmin:harden` and run it (SSH, firewall, fail2ban, users, system; distro-aware,
 with decision points). Document any deviation from the baseline in this server's security context.
 
 ## Phase 5: backup
-Load the skill `callbell-server-backup` and run it (Borg/Borgmatic to an off-site target, notify,
+Load the skill `callbell-sysadmin:backup` and run it (Borg/Borgmatic to an off-site target, notify,
 credentials, staggered start time, restore test).
 
 ## Phase 6: Docker (Docker servers only)
-Load the skill `callbell-server-deploy` for stack conventions; wire DB dumps before the backup via
-`callbell-server-backup` and its `db-dumps.md` resource.
+Load the skill `callbell-sysadmin:deploy` for stack conventions; wire DB dumps before the backup via
+`callbell-sysadmin:backup` and its `db-dumps.md` resource.
 
 ## Phase 7: sign-off
-Walk the sign-off checklist of `callbell-server-harden` point by point; record the result in this server's
+Walk the sign-off checklist of `callbell-sysadmin:harden` point by point; record the result in this server's
 security context. Verify the first backup and a restore test.

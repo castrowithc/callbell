@@ -1,5 +1,5 @@
 # >>> callbell shell shortcuts >>>
-# Managed block: installed/updated by the callbell-server-shortcuts skill. Edit there, not by hand.
+# Managed block: installed/updated by the callbell-sysadmin:shortcuts skill. Edit there, not by hand.
 
 # Repo navigation
 alias repos='cd "$HOME/repos"'

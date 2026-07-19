@@ -1,6 +1,6 @@
 ---
 description: >
-  Resource for callbell-server-setup: set up GitHub access for the repo clone. A fine-grained PAT
+  Resource for callbell-sysadmin:setup: set up GitHub access for the repo clone. A fine-grained PAT
   (default), a deploy key, or an account SSH key.
 type: skill
 edit: locked

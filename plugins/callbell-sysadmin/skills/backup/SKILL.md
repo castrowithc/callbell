@@ -1,5 +1,5 @@
 ---
-name: callbell-server-backup
+name: backup
 description: >
   Set up (or retrofit) an encrypted off-site backup with BorgBackup + Borgmatic to an off-site SSH/SFTP
   storage target: repo init, config, notification, credentials, restore test. Trigger: "set up a backup",

@@ -1,6 +1,6 @@
 ---
 description: >
-  Resource for callbell-server-setup: install the standard CLI tools (micro, mc, fzf, tmux, git)
+  Resource for callbell-sysadmin:setup: install the standard CLI tools (micro, mc, fzf, tmux, git)
   multi-distro and apply the tmux config.
 type: skill
 edit: locked
