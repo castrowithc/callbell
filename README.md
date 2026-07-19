@@ -58,7 +58,7 @@ hooks by itself, you will see the context twice — remove this entry then.
 
 ## What you can install
 
-- **`callbell`** — the always-on core: the lazy skill family, the norms, the session hook, onboarding.
+- **`callbell`** — the always-on core: the norms, the session hook, and `/callbell:start` as the way in.
   Nothing else is required to use it.
 - **`callbell-server`** — a server-manager pack: a passive safety layer that asks for explanation and
   confirmation before destructive commands, plus skills to set up, harden, back up, deploy to, and check a
@@ -71,10 +71,11 @@ hooks by itself, you will see the context twice — remove this entry then.
 ## Usage
 
 1. **Install** as above.
-2. Work. The skills and norms are active immediately, in any folder.
-3. Optionally run `/callbell-onboarding`: the agent walks you through the setup and lays down a persistent
-   project scaffold (context, memory, backlog, zones). Laying down a scaffold is a deliberate act, so it is
-   never automatic. `/callbell-onboarding bare` skips the interview and just lays the scaffold down.
+2. Run **`/callbell:start`** in the folder you want to work in. It checks what is there — Node, git, the
+   scaffold, your ruleset — reports only what is missing, and offers to lay it down. Nothing is written
+   until you say so. Run it whenever you start somewhere new; on a folder that is already set up it
+   costs you one line.
+3. Work. The skills and norms are active immediately, in any folder.
 
 **The most callbell will ever ask of you: Node on your PATH.** The session hook that supplies the norms and
 project context runs on Node, so `node` has to be on your PATH (Nix/nvm users: on the *non-interactive*

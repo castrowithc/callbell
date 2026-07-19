@@ -8,7 +8,7 @@
 // on Windows, macOS, and Linux alike. Writing a shell pre-check would mean solving the bootstrap
 // twice, so everything the agent needs is gathered here in one call.
 //
-//   node callbell-doctor.js [--apply] [--lens ops|code] [--target <dir>]
+//   node callbell-doctor.js [--apply] [--target <dir>]
 //
 // Default is report-only. --apply copies in what is missing and never touches what is there:
 // a user's .gitignore lines, a template they changed — all survive, because nothing is ever
@@ -23,7 +23,6 @@ const argv = process.argv.slice(2);
 const apply = argv.includes('--apply');
 const flag = (name) => { const i = argv.indexOf(name); return i >= 0 ? argv[i + 1] : null; };
 const target = flag('--target') ? path.resolve(flag('--target')) : process.cwd();
-const lens = ['ops', 'code'].includes(flag('--lens')) ? flag('--lens') : null;
 
 const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT || process.env.PLUGIN_ROOT
   || path.resolve(__dirname, '..');
@@ -112,36 +111,24 @@ for (const list of [missing, notes]) {
 // Compared file by file against the shipped bundle. This is what makes a version stamp unnecessary:
 // the question "is anything missing" is answered by looking, not by comparing numbers.
 
-// The lens tree mirrors the base tree exactly (_lens/<lens>/__callbell__/...), so both are the same
-// walk from a different root and no path mapping is needed. Without --lens only the base is checked,
-// and the lens extras are reported as unanswerable rather than silently skipped.
-const roots = [path.join(bundle, '__callbell__')];
-if (lens) roots.push(path.join(bundle, '_lens', lens, '__callbell__'));
-
-const absent = [];
-for (const root of roots) {
-  for (const rel of walk(root)) {
-    if (!fs.existsSync(path.join(target, '__callbell__', rel))) absent.push({ root, rel });
-  }
-}
+// One scaffold, no ops/code branch. The lens used to select extra files here; what it selected were two
+// framework.md that restated the filing rules, so the branch went with them. Templates are inert — an
+// unused one costs a file, while a branch costs an argument, a code path, and a way to be wrong.
+const base = path.join(bundle, '__callbell__');
+const absent = walk(base).filter(rel => !fs.existsSync(path.join(target, '__callbell__', rel)));
 
 // Under --apply this is about to be fixed, so it is reported as CREATED rather than twice.
 if (!apply) {
   if (!fs.existsSync(path.join(target, '__callbell__'))) {
     missing.push('scaffold: no __callbell__/ here, so no backlog, memory, or zones.');
   } else if (absent.length) {
-    missing.push('scaffold: ' + absent.length + ' file(s) missing — '
-      + absent.map(a => a.rel).join(', '));
+    missing.push('scaffold: ' + absent.length + ' file(s) missing — ' + absent.join(', '));
   }
-}
-if (!lens) {
-  notes.push('lens: not given, so the ops/code extras were not checked. Re-run with '
-    + '--lens ops|code once the repo type is settled.');
 }
 
 if (apply) {
-  for (const { root, rel } of absent) {
-    copy(path.join(root, rel), path.join(target, '__callbell__', rel));
+  for (const rel of absent) {
+    copy(path.join(base, rel), path.join(target, '__callbell__', rel));
     created.push('__callbell__/' + rel);
   }
 }

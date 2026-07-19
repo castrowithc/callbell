@@ -59,7 +59,7 @@ Plugin-Hooks von sich aus ausführen, siehst du den Kontext doppelt — dann die
 
 ## Was du installieren kannst
 
-- **`callbell`** — der Always-on-Core: die faule Skill-Familie, die Normen, der Session-Hook, das Onboarding.
+- **`callbell`** — der Always-on-Core: die Normen, der Session-Hook und `/callbell:start` als Einstieg.
   Mehr braucht es nicht.
 - **`callbell-server`** — ein Server-Manager-Pack: eine passive Sicherheitsschicht, die vor zerstörerischen
   Befehlen Erklärung und Bestätigung verlangt, dazu Skills, um einen Linux-Host aufzusetzen, zu härten, zu
@@ -73,11 +73,11 @@ Plugin-Hooks von sich aus ausführen, siehst du den Kontext doppelt — dann die
 ## Nutzung
 
 1. Wie oben **installieren**.
-2. Arbeiten. Die Skills und Normen sind sofort aktiv, in jedem Ordner.
-3. Optional `/callbell-onboarding` starten: der Agent führt dich durch das Setup und legt ein dauerhaftes
-   Projekt-Scaffold an (Kontext, Memory, Backlog, Zonen). Ein Scaffold anzulegen ist eine bewusste
-   Handlung und passiert deshalb nie automatisch. `/callbell-onboarding bare` überspringt das Interview und
-   legt nur das Gerüst an.
+2. **`/callbell:start`** in dem Ordner ausführen, in dem du arbeiten willst. Er prüft, was da ist — Node,
+   git, das Gerüst, dein Ruleset —, meldet nur das Fehlende und bietet an, es anzulegen. Geschrieben wird
+   erst, wenn du es sagst. Ruf ihn auf, wann immer du irgendwo neu anfängst; in einem eingerichteten
+   Ordner kostet er dich eine Zeile.
+3. Arbeiten. Die Skills und Normen sind sofort aktiv, in jedem Ordner.
 
 **Das Höchste, worum callbell dich je bittet: Node im PATH.** Der Session-Hook, der die Normen und den
 Projektkontext liefert, läuft über Node — `node` muss also im PATH sein (Nix/nvm: im PATH der

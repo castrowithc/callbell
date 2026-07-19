@@ -12,7 +12,7 @@
   "interface": {
     "displayName": "Callbell",
     "shortDescription": "Lazy senior mode for code and knowledge repos",
-    "longDescription": "Forces the leanest solution that holds (YAGNI, reuse, the smallest correct form) for code and for filing and structure, and ships the review, audit, and debt tools plus onboarding.",
+    "longDescription": "The interface between you and the agent: shared norms, a scaffold for backlog and memory, filing, import, planning, and git. /callbell:start is the way in — it checks what a folder is missing and lays it down.",
     "developerName": "Callbell",
     "category": "Productivity",
     "capabilities": ["Instructions", "Lifecycle hooks"],

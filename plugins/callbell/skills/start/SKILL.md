@@ -24,12 +24,8 @@ sonst ruft ihn niemand ein viertes Mal auf — und dann ist er kein Einstieg meh
 ## 1. Prüfen (ein Aufruf)
 
 ```
-node ${CLAUDE_PLUGIN_ROOT}/scripts/callbell-doctor.js [--lens ops|code]
+node ${CLAUDE_PLUGIN_ROOT}/scripts/callbell-doctor.js
 ```
-
-Setze `--lens`, sobald du den Typ kennst: `ops` für ein textgetragenes Repo, `code` für eine Codebasis.
-Der Session-Kontext gibt ihn als `PROJECT TYPE` aus; steht dort `unknown`, lass das Argument weg und
-hol es nach, sobald der Typ feststeht.
 
 **Schlägt der Aufruf selbst fehl, ist das die Antwort: Node fehlt.** Das ist der einzige Befund, der die
 Arbeit anhält statt sie zu begleiten — der Kontext-Hook ist selbst Node, also laden ohne ihn weder
@@ -48,7 +44,7 @@ erwähnst du nur, wenn sie für den nächsten Schritt zählen.
 Was ohne Rückfrage ergänzt werden darf, ist das Gerüst und die `.gitignore`:
 
 ```
-node ${CLAUDE_PLUGIN_ROOT}/scripts/callbell-doctor.js --apply [--lens ops|code]
+node ${CLAUDE_PLUGIN_ROOT}/scripts/callbell-doctor.js --apply
 ```
 
 Das Skript kopiert nur, was **fehlt**. Es vergleicht nie Inhalte, überschreibt nie und hängt an die
