@@ -1,21 +1,29 @@
 #!/usr/bin/env node
 'use strict';
 
-// callbell-sysadmin SessionStart hook. Server-specific, ships with the callbell-sysadmin pack, and is
-// deliberately separate from the core callbell-context.js: host identity is a server concept and is
-// absent on non-server hosts, so the core hook stays untouched.
+// SessionStart-Hook von callbell-sysadmin. Serverspezifisch, reist mit dem Pack und ist bewusst getrennt
+// vom Kern-Hook callbell-context.js: Host-Identität ist ein Server-Begriff und fehlt auf Nicht-Servern,
+// der Kern-Hook bleibt deshalb unberührt.
 //
-// The one fact this pack gates on is a declared host identity: __callbell__/.host-identity in the
-// project root, holding a bare host string (the working folder's name). When it is present this host
-// has a declared working domain, so the hook emits the scope and injects the passive server safety
-// layer (the pack's own rules/). When it is absent the hook emits nothing and nothing server-specific
-// loads. Graceful degradation without node is handled by the hook registration (; exit 0 / Windows
-// guard), so a missing node never blocks a session; the on-demand skills still work either way.
+// Das Pack hängt an einer einzigen Tatsache: __callbell__/.host-identity im Projekt-Root. Die Datei hat
+// drei Zustände, und sie sind auf Dateisystemebene unterscheidbar:
+//
+//   fehlt            -> kein Serverkontext. Der Hook gibt nichts aus, nichts Serverspezifisches lädt.
+//   da, leer         -> der Nutzer arbeitet von der eigenen Maschine aus per SSH; der Host wird im
+//                       Gespräch benannt. Die Sicherheitsschicht lädt, es ist keine Domäne gesetzt.
+//   da, mit Inhalt   -> der Agent läuft auf dem Host; der Inhalt ist der Name des Domänenordners.
+//
+// Der leere Fall muss die Sicherheitsschicht laden. Wer eine Kiste per SSH vom Laptop aus administriert,
+// setzt dieselben zerstörenden Befehle ab wie jemand, der davorsitzt, und eine passive Schutzschicht, die
+// nur einen von beiden schützt, schützt den falschen.
+//
+// Graceful degradation ohne node erledigt die Hook-Registrierung (; exit 0 / Windows-Guard), ein fehlendes
+// node blockiert also nie eine Sitzung; die abrufbaren Skills funktionieren so oder so.
 
 const fs = require('fs');
 const path = require('path');
 
-// Root resolution mirrors the core hook: Claude passes $CLAUDE_PROJECT_DIR, Codex passes {cwd} on stdin.
+// Root-Auflösung wie im Kern-Hook: Claude gibt $CLAUDE_PROJECT_DIR, Codex gibt {cwd} über stdin.
 function resolveRoot() {
   if (process.env.CLAUDE_PROJECT_DIR) return process.env.CLAUDE_PROJECT_DIR;
   if (!process.stdin.isTTY) {
@@ -31,21 +39,41 @@ function resolveRoot() {
 const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT || process.env.PLUGIN_ROOT || '';
 const root = resolveRoot();
 
+// null = Datei fehlt, '' = da und leer, sonst der Name des Domänenordners.
 const host = (() => {
   try { return fs.readFileSync(path.join(root, '__callbell__', '.host-identity'), 'utf8').trim(); }
-  catch { return ''; }
+  catch { return null; }
 })();
-if (!host) process.exit(0); // no host identity here -> nothing server-specific loads
+if (host === null) process.exit(0); // kein Serverkontext -> nichts Serverspezifisches lädt
 
 const blocks = [];
-blocks.push([
-  'HOST IDENTITY: ' + host,
-  'On this host you are "' + host + '". Your working domain is ' + host + '/ and __callbell__/.',
-  'Everything outside those two is taboo unless the user explicitly widens the scope.',
-].join('\n'));
+if (host) {
+  const domainExists = (() => {
+    try { return fs.statSync(path.join(root, host)).isDirectory(); }
+    catch { return false; }
+  })();
+  const lines = [
+    'HOST-IDENTITÄT: ' + host,
+    'Auf diesem Host bist du "' + host + '". Deine Arbeitsdomäne ist ' + host + '/ und __callbell__/.',
+    'Alles außerhalb dieser beiden ist tabu, solange der Nutzer den Rahmen nicht ausdrücklich weitet.',
+  ];
+  // Der Ordner ist der Kern des Versprechens. Fehlt er, sag es, statt den Agenten auf einen Pfad zu
+  // scopen, an dem nichts liegt — genau dieses stille Scheitern war der Anlass für die drei Zustände.
+  if (!domainExists) {
+    lines.push('Der Ordner ' + host + '/ liegt noch nicht vor. Lege ihn über /callbell-sysadmin:start an,' +
+      ' bevor du Material über diesen Host ablegst.');
+  }
+  blocks.push(lines.join('\n'));
+} else {
+  blocks.push([
+    'HOST-IDENTITÄT: keine gesetzt (Fernwartung von der Maschine des Nutzers aus).',
+    'Es ist keine Arbeitsdomäne gesetzt. Um welchen Host es geht, sagt der Nutzer im Gespräch; frag nach,',
+    'bevor du etwas ausführst, das einen bestimmten Host meint.',
+  ].join('\n'));
+}
 
-// The passive safety layer: the pack's rules/, injected whenever a host identity is present. The
-// on-demand skills stay dormant until invoked, so only these rules ride in at session start.
+// Die passive Sicherheitsschicht: die rules/ des Packs, eingespielt in beiden Identitätszuständen. Die
+// abrufbaren Skills bleiben schlafen, bis sie gerufen werden, es reisen also nur diese Regeln mit.
 function bodyOf(file) {
   let text = fs.readFileSync(file, 'utf8').replace(/^﻿/, '');    // strip BOM
   text = text.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, '');         // strip YAML frontmatter
@@ -70,7 +98,7 @@ if (pluginRoot) {
     if (body) parts.push('--- ' + path.relative(pluginRoot, f).split(path.sep).join('/') + ' ---\n' + body);
   }
   if (parts.length) {
-    blocks.push('Server safety layer (passive, in force while a host identity is present):');
+    blocks.push('Server-Sicherheitsschicht (passiv, in Kraft solange eine Host-Identität vorliegt):');
     blocks.push(parts.join('\n\n'));
   }
 }

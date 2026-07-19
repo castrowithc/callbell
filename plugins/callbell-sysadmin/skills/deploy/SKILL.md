@@ -11,7 +11,7 @@ edit: locked
 # Set Up a Docker Stack: Conventions and Procedure
 
 Applies to any Docker host. Server-specific extensions (reverse-proxy setup, stack list, SMTP/auth
-provider, concrete URLs/ports) belong in this server's context (its `__callbell__/` scaffold). This skill
+provider, concrete URLs/ports) belong in this server's domain (the `<host>/` folder). This skill
 provides **structure, patterns, and procedure**.
 
 ## Directory Layout
@@ -122,11 +122,11 @@ first; only on a startup failure add back the specific ones:
 
 - **No external Docker network:** each stack has its own internal network.
 - Port binding always on `127.0.0.1`; the reverse proxy connects via `127.0.0.1:<port>`.
-- Find the next free port on the server; after setup record it in this server's context (its
-  `__callbell__/` scaffold).
+- Find the next free port on the server; after setup record it in this server's domain (the `<host>/`
+  folder).
 - The reverse proxy terminates TLS; default security headers HSTS + X-Content-Type-Options +
   X-XSS-Protection; forward auth only for apps without their own OIDC integration. Concrete setup
-  (Caddy/Traefik/nginx) per server in this server's context (its `__callbell__/` scaffold).
+  (Caddy/Traefik/nginx) per server in this server's domain (the `<host>/` folder).
 
 ## SMTP
 
@@ -143,7 +143,7 @@ Sender and service domain can differ: do not assume, use a placeholder or ask.
 ## Authentication: OIDC via an Identity Provider
 
 Use an OIDC identity provider (Authentik, Keycloak, Zitadel, Authelia, or a hosted one); the concrete URL
-lives per server in this server's context (its `__callbell__/` scaffold). Create per service manually in
+lives per server in this server's domain (the `<host>/` folder). Create per service manually in
 the provider: a client or provider entry (OAuth2/OpenID) plus a linked application.
 
 **Do not copy endpoint paths from anywhere, including from here.** Every provider lays them out
@@ -220,7 +220,7 @@ OIDC_CLIENT_SECRET=<from-provider>
 12. [ ] OIDC configured (if the app supports it)
 13. [ ] SMTP with placeholders
 14. [ ] Reverse-proxy entry with security headers
-15. [ ] Port recorded in this server's context (its `__callbell__/` scaffold)
-16. [ ] Stack recorded in this server's context (its `__callbell__/` scaffold)
+15. [ ] Port recorded in this server's domain (the `<host>/` folder)
+16. [ ] Stack recorded in this server's domain (the `<host>/` folder)
 17. [ ] For a DB container: add it as a dump target in this server's backup context (skill `callbell-sysadmin:backup`)
 18. [ ] Ask the user whether to create a commit

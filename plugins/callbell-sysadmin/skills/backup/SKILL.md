@@ -11,8 +11,8 @@ edit: locked
 # Set Up a Backup: Borg + Borgmatic + Off-Site SSH/SFTP Storage
 
 Sets up the backup on one server, in a form that stays the same when there are more of them. Per-server
-values (sub-account, webhooks, keys, container list) belong in this server's backup context (its
-`__callbell__/` scaffold), **never** in the repo or plugin.
+values (sub-account, webhooks, keys, container list) belong in this server's domain (the `<host>/`
+folder), **never** in the repo or plugin.
 
 > **3-2-1 principle:** 3 copies, 2 storage technologies, 1 off-site (an off-site SSH/SFTP storage target,
 > e.g. a Hetzner Storage Box).

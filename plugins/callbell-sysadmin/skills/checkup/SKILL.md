@@ -23,11 +23,11 @@ host you suspect has been touched, `callbell-sysadmin:incident` is the sweep tha
 
 ## Procedure
 
-1. **Load the identity and target state.** Resolve this server's context (its `__callbell__/` scaffold) to
-   the working folder. The per-server documented actual state (security, backup) is in context at session
-   start anyway (server overlay + server context) and serves as the target reference for the comparison.
-   The generic target standards for hardening/backups are defined by the skills `callbell-sysadmin:harden`
-   and `callbell-sysadmin:backup`. A previous report in the server's report area serves as a format template.
+1. **Load the identity and target state.** The domain named at session start (the `<host>/` folder) is where
+   this server's documented actual state lives: `framework.md` for how it is run, `index.md` for what is on
+   it, including the hardening and backup entries. That is the reference the sweep is compared against. The
+   generic target standards for hardening/backups are defined by the skills `callbell-sysadmin:harden` and
+   `callbell-sysadmin:backup`. A previous report in the domain serves as a format template.
 2. **Run the sweep.** Run this skill folder's `checkup.sh` resource (read-only, gathers all metrics in one
    pass):
    ```bash

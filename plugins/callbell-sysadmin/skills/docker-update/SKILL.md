@@ -11,8 +11,8 @@ edit: locked
 # Docker Update Strategy
 
 Covers stack and Docker-engine updates on your Docker servers. The current image/version state is read
-live per server (`docker ps`). App-specific quirks and official sources live in this server's app notes (its
-`__callbell__/` scaffold), one file per app.
+live per server (`docker ps`). App-specific quirks and official sources live in this server's domain (the
+`<host>/` folder), one file per app.
 
 ## Update classes
 
