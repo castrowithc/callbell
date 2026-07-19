@@ -2,9 +2,11 @@
 name: worktree
 description: >
   Richtet einen Git-Worktree für parallele Arbeit ein: ein neuer Branch in einem eigenen Ordner, dieselbe
-  Git-Datenbank. Auf Anfrage oder nach einem Vorschlag; räumt nach dem Merge wieder auf.
+  Git-Datenbank, damit mehrere Themen sich nicht in die Quere kommen. Räumt nach dem Merge wieder auf.
+  Starte es, indem du /callbell:worktree tippst.
 type: skill
 edit: locked
+disable-model-invocation: true
 argument-hint: "[branch-name]"
 ---
 

@@ -140,3 +140,13 @@ Arbeitsbereich gilt, weil der Hook beim Start liest — in dieser hier kennst du
 noch nicht angesagt.
 
 War nichts zu tun, ist der Abschluss eine Zeile.
+
+**Eine Zeile mehr, aber nur auf einer frischen Maschine.** Du hast in Schritt 4 den Bestand gelesen und
+weißt damit, was du vor dir hast. Zeigt er kein Admin-Konto neben root, keine Firewall, keinen der
+Standard-Werkzeuge und keinen Sicherungs-Timer, dann steht hier eine unfertige Maschine, und du nennst
+`/callbell-sysadmin:setup` als den Weg, sie vollständig hochzubringen.
+
+**Nur dann.** Auf einem eingerichteten Server erscheint dieser Hinweis nicht — ein Zeiger, der immer feuert,
+ist Werbung, und er widerspricht der Regel dieses Skills, dass ein Lauf ohne Befund eine Zeile ist. Im
+Zweifel lässt du ihn weg: wer eine frische Maschine hat, merkt es auch ohne dich, wer eine laufende hat,
+wird von einem Angebot zur Erstinbetriebnahme nur beunruhigt.

@@ -1,17 +1,21 @@
 ---
 name: setup
 description: >
-  Bringt einen neuen Server von Grund auf hoch: Werkzeuge, Härtung, Sicherung und wahlweise Docker, in
-  der richtigen Reihenfolge und mit den Entscheidungen vorweg. Starte es, indem du
-  /callbell-sysadmin:setup tippst.
+  Stellt eine frische Maschine bereit: Entscheidungen vorweg, dann Admin-Benutzer, Werkzeuge, Härtung,
+  Sicherung und wahlweise Docker in der richtigen Reihenfolge. Nicht der Einstieg ins Pack — das ist
+  /callbell-sysadmin:start. Starte es, indem du /callbell-sysadmin:setup tippst.
 type: skill
 edit: locked
 disable-model-invocation: true
 ---
 
-# Einen neuen Server aufsetzen: der Ablauf
+# Eine frische Maschine bereitstellen: der Ablauf
 
-Dieser Skill führt die **vollständige Erstinbetriebnahme** eines Servers. Er ist der Taktgeber; die
+Dieser Skill führt die **vollständige Erstinbetriebnahme** eines Servers. Er ist nicht der Einstieg ins
+Pack — den macht `/callbell-sysadmin:start`, und der läuft auch auf Servern, die längst stehen. Hier geht es
+um eine Maschine, die noch nichts hat.
+
+Er ist der Taktgeber; die
 Einzelschritte liegen in den Begleitdateien dieses Ordners und in den eigenständigen Skills
 `callbell-sysadmin:harden`, `callbell-sysadmin:backup` und `callbell-sysadmin:deploy` (jeden bei Bedarf
 laden, nicht auf Vorrat).

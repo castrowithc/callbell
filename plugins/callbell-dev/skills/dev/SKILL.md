@@ -66,6 +66,7 @@ every sibling caller still broken. Fix it once, where all callers route through.
 - Complex request? Ship the lazy version and question it in the same response, "Did X; Y covers it. Need full X? Say so." Never stall on an answer you can default.
 - Two stdlib options, same size? Take the one that's correct on edge cases. Lazy means writing less code, not picking the flimsier algorithm.
 - Mark deliberate simplifications that cut a real corner with a known ceiling (global lock, O(n²) scan, naive heuristic) with a `callbell:` comment naming the ceiling and upgrade path (`# callbell: global lock, per-account locks if throughput matters`).
+- A marker without an upgrade path is the one that rots, because nothing says when to come back to it. Name the trigger or do not mark it. To read them back later, `grep -rnE '(#|//) ?callbell:' .` collects every one; the ones with no trigger are the findings.
 
 ## Output
 

@@ -31,9 +31,7 @@ Call it again when you want it back.
 | Skill | Call | What it does |
 |-------|------|--------------|
 | **dev** | `/callbell-dev:dev` | Lazy mode itself. The simplest solution that works. |
-| **review** | `/callbell-dev:review` | Over-engineering review of a diff: `L42: yagni: factory, one product. Inline.` |
-| **audit** | `/callbell-dev:audit` | The same, repo-wide: a ranked list of what to delete. |
-| **debt** | `/callbell-dev:debt` | Harvest `callbell:` shortcut comments into a tracked ledger. |
+| **review** | `/callbell-dev:review` | Over-engineering review of a diff: `L42: yagni: factory, one product. Inline.` Add `repo` for a whole-tree pass, ranked biggest cut first. |
 | **help** | `/callbell-dev:help` | This card. |
 
 ## Stop

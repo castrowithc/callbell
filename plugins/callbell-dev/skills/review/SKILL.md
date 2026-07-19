@@ -1,19 +1,32 @@
 ---
 name: review
 description: >
-  Code review focused exclusively on over-engineering. Finds what to delete:
-  reinvented standard library, unneeded dependencies, speculative abstractions,
-  dead flexibility. One line per finding: location, what to cut, what replaces
-  it. Use when the user says "review for over-engineering", "what can we
-  delete", "is this over-engineered", "simplify review", or invokes
-  /callbell-dev:review. Complements correctness-focused review, this one only
-  hunts complexity.
+  Code review focused exclusively on over-engineering, across a diff or a whole
+  repo. Finds what to delete: reinvented standard library, unneeded
+  dependencies, speculative abstractions, dead flexibility. One line per
+  finding: location, what to cut, what replaces it. Start it by typing
+  /callbell-dev:review, adding "repo" for a whole-tree pass.
 type: skill
 edit: locked
+disable-model-invocation: true
 ---
 
-Review diffs for unnecessary complexity. One line per finding: location, what
-to cut, what replaces it. The diff's best outcome is getting shorter.
+Review code for unnecessary complexity. One line per finding: location, what
+to cut, what replaces it. The best outcome is getting shorter.
+
+## Scope
+
+**A diff by default.** That is the common case and the cheapest one: what just
+changed, reviewed before it lands.
+
+**The whole tree when asked** — "review the repo", "audit this codebase", "what
+can I delete from here", or `/callbell-dev:review repo`. Same lens, same tags,
+same output; only the reading changes. Scan the tree instead of the diff and
+rank findings biggest cut first, because a repo pass has no natural order the
+way a diff does.
+
+If the scope is not obvious from the invocation and a diff exists, take the
+diff and say so in one line. Do not ask.
 
 ## Format
 
@@ -43,9 +56,17 @@ considered whether all these validation rules are needed at this stage?"
 
 ✅ `L30-44: shrink: manual loop builds dict. dict(zip(keys, values)), 1 line.`
 
+## Hunt (repo pass)
+
+Where to look when there is no diff to follow: deps the stdlib or platform
+already ships, single-implementation interfaces, factories with one product,
+wrappers that only delegate, files exporting one thing, dead flags and config,
+hand-rolled stdlib.
+
 ## Scoring
 
-End with the only metric that matters: `net: -<N> lines possible.`
+End with the only metric that matters: `net: -<N> lines possible.` On a repo
+pass add the dependencies: `net: -<N> lines, -<M> deps possible.`
 
 If there is nothing to cut, say `Lean already. Ship.` and stop.
 
