@@ -38,8 +38,21 @@ berichtet **nur Fehlendes**; was da ist, taucht nicht auf.
 
 ## 2. Berichten und ergänzen
 
-Fasse `MISSING` in der Sprache des Nutzers zusammen, kurz, ohne die Skriptzeilen zu zitieren. `NOTES`
-erwähnst du nur, wenn sie für den nächsten Schritt zählen.
+Berichte in zwei Zeilen, in der Sprache des Nutzers, ohne die Skriptzeilen zu zitieren. Erst was entstanden
+ist, dann was fehlt, jeweils mit Namen statt in Fließtext:
+
+```
+✅ Angelegt: __callbell__/, .gitignore
+❗ Fehlt: Git-Repo, Ruleset (AGENTS.md oder CLAUDE.md)
+
+Mehr dazu: /callbell:help
+```
+
+Eine Zeile entfällt, wenn sie leer wäre. `NOTES` erwähnst du nur, wenn sie für den nächsten Schritt zählen.
+
+**Was bereits da war, steht nirgends.** Der Nutzer will wissen, was passiert ist und was noch aussteht,
+nicht was schon vorher stimmte. In einem eingerichteten Repo bleibt es deshalb bei der einen Zeile aus
+Schritt 1, und ein `👍` davor genügt.
 
 Was ohne Rückfrage ergänzt werden darf, ist das Gerüst und die `.gitignore`:
 
@@ -75,7 +88,10 @@ Beides lebt in der `AGENTS.md` des Nutzers, nicht in einer callbell-eigenen Date
 - **Es gibt keine** — lege sie aus `${CLAUDE_PLUGIN_ROOT}/scaffold/agents-template.md` an und fülle sie
   im Gespräch. Schreibe erst nach Bestätigung.
 
-Das Gespräch ist kurz, zwei Fragen auf einmal, nicht mehr:
+Das Gespräch ist kurz, zwei Fragen auf einmal, nicht mehr. **Stelle sie als Text, nie über ein
+Auswahlwerkzeug.** Beide Antworten sind frei, und vorgegebene Optionen legten dem Nutzer sein eigenes
+Projekt in den Mund.
+
 1. **Zweck und Rahmen** — wofür der Repo da ist, was bewusst nicht dazugehört, und ob er privat ist
    (der Agent nimmt sonst öffentlich an).
 2. **Rollen und Stil** — wer der Nutzer ist, wie eigenständig der Agent handeln soll, und die zwei
@@ -88,7 +104,7 @@ seiner maschinenlokalen Agent-Datei, worum sich `callbell-language` kümmert.
 
 Ein bis zwei Sätze, nicht mehr. Nenne, dass `__callbell__/` jetzt da ist und die von callbell verwaltete
 Schicht trägt (Backlog, Gedächtnis, Zonen, Vorlagen); der Ordner erklärt sich in seiner `README.md`
-selbst, wenn der Nutzer nachfragt. Verweise auf `/callbell:help` für die Skills. Erkläre den Rest nicht
-ungefragt — wer mehr wissen will, fragt.
+selbst, wenn der Nutzer nachfragt. Auf `/callbell:help` hast du in Schritt 2 schon gezeigt, also nicht
+noch einmal. Erkläre den Rest nicht ungefragt, wer mehr wissen will, fragt.
 
 War nichts zu tun, ist der Abschluss die eine Zeile aus Schritt 1 und du gehst zur Arbeit über.
