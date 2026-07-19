@@ -6,8 +6,8 @@
 // SessionStart stdout as context.
 //
 //   Claude: registered by the plugin itself, via hooks/callbell-hooks.json (WITHOUT --rules).
-//           Root via $CLAUDE_PROJECT_DIR. Injects the context from __callbell__/context/,
-//           the memory index __callbell__/memory/MEMORY.md and the backlog index __callbell__/backlog/BACKLOG.md.
+//           Root via $CLAUDE_PROJECT_DIR. Injects the memory index __callbell__/memory/MEMORY.md
+//           and the backlog index __callbell__/backlog/BACKLOG.md.
 //           On Claude the project's own rules do NOT come from here, but natively from .claude/rules/
 //           (otherwise duplicate context).
 //   Codex:  registered by the USER, in a config-layer ~/.codex/hooks.json, WITH --rules.
@@ -36,9 +36,9 @@
 //           The plugin's rules come in two groups: rules/core/ always, rules/scaffold/ only where
 //           __callbell__/ exists. A repo without a scaffold is not billed for norms it cannot use.
 //
-// Scope deliberately narrow: only __callbell__/context/ (onboarding facts, a dynamic complement to
-// rules/skills), the memory index, and the backlog index (open work state). The individual
-// backlog files, templates, and deeper framework.md stay on demand (cascade), not always on.
+// Scope deliberately narrow: the memory index and the backlog index (open work state). The individual
+// backlog files, templates, and deeper framework.md stay on demand (cascade), not always on. Purpose
+// and roles are not here at all — they live in the user's own AGENTS.md, which the host already loads.
 //
 // YAML frontmatter and pure @-import lines are stripped.
 
@@ -120,39 +120,20 @@ function missingLanguageAnchor() {
   catch { return file; } // missing or unreadable: same outcome for the user
 }
 
-// A scaffold has three states and the hook could only ever see two of them. Presence it knew; staleness it
-// did not, so an already-onboarded repo silently kept whatever it was given at the time and a user's repos
-// drifted further apart with every release, with nothing ever saying so.
+// Derived, never declared. A stored lens needs somewhere to live and someone to keep it true, and both
+// cost more than the heuristic is worth: `/callbell:start` reports what is missing by looking at the
+// files, so nothing here depends on a field a user could leave stale.
 //
-// Reported like the language anchor: one line, only when there is something to say, and gone for good once
-// resolved. Comparing needs both sides, so a scaffold without a plugin (the frozen template fallback) is
-// not nagged — there is no shipped version to be behind. A scaffold that carries no stamp at all is
-// reported too: it predates stamping, which is exactly the drift this exists to surface.
-function scaffoldDrift(dir) {
-  if (!pluginRoot) return null;
-  let shipped;
-  try { shipped = fs.readFileSync(path.join(pluginRoot, 'VERSION'), 'utf8').trim(); }
-  catch { return null; }
-  if (!shipped) return null;
-  const m = frontmatterOf(path.join(dir, '__callbell__', 'context', 'repo.md'))
-    .match(/^scaffold-version:\s*(\S+)/mi);
-  const stamped = m ? m[1] : null;
-  return stamped === shipped ? null : { stamped, shipped };
-}
-
+// Code markers first: a markdown-only root would otherwise fall through to markdownHeavy -> ops.
 function resolveProjectType(dir) {
-  // Primary: onboarding writes `project-type: code|ops` into repo.md frontmatter. Every scaffold carries
-  // it, because onboarding is what lays a scaffold down.
-  const declared = frontmatterOf(path.join(dir, '__callbell__', 'context', 'repo.md'))
-    .match(/^project-type:\s*(code|ops)\b/mi);
-  if (declared) return declared[1].toLowerCase();
-  // Fallback for the window before onboarding has run, and for an arbitrary folder in ambient mode.
-  // Code markers first: a markdown-only root would otherwise fall through to markdownHeavy -> ops.
   const has = p => fs.existsSync(path.join(dir, p));
   const codeMarkers = ['package.json', 'tsconfig.json', 'pyproject.toml', 'requirements.txt',
     'Cargo.toml', 'go.mod', 'pom.xml', 'build.gradle', 'Gemfile', 'composer.json', 'src'];
   if (codeMarkers.some(has)) return 'code';
   if (markdownHeavy(dir)) return 'ops';
+  // A scaffold with no code markers is someone steering a topic in markdown. markdownHeavy alone misses
+  // this: a steering repo whose root holds only AGENTS.md and CLAUDE.md has too few files to count.
+  if (hasScaffold(dir)) return 'ops';
   return 'unknown';
 }
 
@@ -227,7 +208,7 @@ const projectType = resolveProjectType(root);
 const scaffold = hasScaffold(root);
 push([
   projectType === 'unknown'
-    ? 'PROJECT TYPE: unknown (no code or ops markers yet; derive it from the task, onboarding sets it durably)'
+    ? 'PROJECT TYPE: unknown (no code or ops markers yet; derive it from the task at hand)'
     : 'PROJECT TYPE: ' + projectType,
   scaffold
     ? 'CALLBELL SCAFFOLD: yes (__callbell__/ is present; its norms are in force)'
@@ -241,28 +222,20 @@ if (anchorFile) {
     ' is missing or empty (see callbell-language).');
 }
 
-// Same shape, same discipline: one line, only on a mismatch.
-const drift = scaffold ? scaffoldDrift(root) : null;
-if (drift) {
-  push('SCAFFOLD ' + (drift.stamped
-    ? 'OUTDATED: this repo is stamped ' + drift.stamped
-    : 'UNSTAMPED: this repo records no scaffold version') +
-    ', the plugin ships ' + drift.shipped + '. `/callbell-onboarding top-up` adds what is missing and ' +
-    'leaves everything you have edited untouched.');
-}
+// Project STATE, and only the two indices. Purpose and roles live in the user's own AGENTS.md, which the
+// host loads natively — carrying a second copy of them from here would double the payload and give the
+// two a way to disagree.
+const stateFiles = [
+  path.join(root, '__callbell__', 'memory', 'MEMORY.md'),
+  path.join(root, '__callbell__', 'backlog', 'BACKLOG.md'),
+].filter(f => fs.existsSync(f));
 
-const contextFiles = collect(path.join(root, '__callbell__', 'context'));
-const memoryIndex = path.join(root, '__callbell__', 'memory', 'MEMORY.md');
-if (fs.existsSync(memoryIndex)) contextFiles.push(memoryIndex);
-const backlogIndex = path.join(root, '__callbell__', 'backlog', 'BACKLOG.md');
-if (fs.existsSync(backlogIndex)) contextFiles.push(backlogIndex);
-
-const context = section(contextFiles, root);
-if (context.length) {
-  push('Way of working & context (loaded automatically at session start from __callbell__/context/, the memory index, and the backlog index):');
-  push(context.join('\n\n'));
+const state = section(stateFiles, root);
+if (state.length) {
+  push('Project state (loaded automatically at session start: the memory index and the backlog index):');
+  push(state.join('\n\n'));
 } else if (pluginRoot) {
-  push('No callbell project set up in this folder yet (ambient mode). Skills and rules are active everywhere, but this folder has no backlog, memory, or project context. Two ways to change that, either of them one turn: `/callbell-onboarding bare` lays the scaffold down straight away and asks nothing, `/callbell-onboarding` walks through the full setup (purpose, roles, areas). Nothing is written until you ask — laying down a scaffold stays deliberate.');
+  push('No callbell project set up in this folder yet (ambient mode). Skills and rules are active everywhere, but this folder has no backlog or memory. `/callbell:start` checks what is missing and lays it down — nothing is written until you ask.');
 }
 
 // Always-on payload: the rules (norms) and the minimal AGENTS.md ruleset.
@@ -293,15 +266,12 @@ if (pluginRoot) {
   // (filing, backlog, frontmatter, zones, memory) and are read when that activity happens — the same
   // shape the framework.md cascade already has, and the reason they are the ones demoted.
   //
-  // The order is by what it costs to be missing, not by size: a leaked address cannot be taken back, a
-  // clumsy commit message can. A rule that does not fit is not lost, it is announced.
+  // Ordered by filename. The kernel used to be seven files ranked by what it costs to be missing; they
+  // have since been folded into one, so the ranking had nothing left to rank and its name list pointed
+  // at files that no longer exist. Should the kernel ever split again, the order comes back with it.
   const owned = new Set(projectRules.map(f => path.basename(f)));
-  const KERNEL_ORDER = ['callbell-conventions.md', 'callbell-data-protection.md', 'callbell-language.md',
-    'callbell-governance.md', 'callbell-writing-style.md', 'callbell-references.md', 'callbell-git.md'];
-  const rank = f => { const i = KERNEL_ORDER.indexOf(path.basename(f)); return i < 0 ? KERNEL_ORDER.length : i; };
   const kernel = collect(path.join(pluginRoot, 'rules', 'core'))
-    .filter(f => !owned.has(path.basename(f)))
-    .sort((a, b) => rank(a) - rank(b));
+    .filter(f => !owned.has(path.basename(f)));
 
   // The cascade: announced always, inlined never. Gated on the scaffold, because a repo without one
   // cannot act on these at all.
@@ -320,19 +290,19 @@ if (pluginRoot) {
     ? NOTICE.length + [...lines.values()].join('\n').length + 2
     : 0;
 
+  // The heading is only pushed once a body is known to fit behind it. Announcing "always in force" and
+  // then listing nothing under it is worse than silence: it reads as though the norms arrived.
   const deferred = [];
   let heading = false;
+  const HEADING = 'Callbell rules (norms from the plugin, always in force):';
   for (const f of kernel) {
     const [body] = section([f], pluginRoot);
     if (!body) continue;
-    const fits = t => used + t.length + 2 <= BUDGET - reserve;
-    if (!heading) {
-      const h = 'Callbell rules (norms from the plugin, always in force):';
-      if (!fits(h)) { deferred.push(f); continue; }
-      push(h);
-      heading = true;
-    }
-    if (fits(body)) push(body); else deferred.push(f);
+    // Cost of this rule, plus the heading if it is not paid for yet.
+    const cost = body.length + 2 + (heading ? 0 : HEADING.length + 2);
+    if (used + cost > BUDGET - reserve) { deferred.push(f); continue; }
+    if (!heading) { push(HEADING); heading = true; }
+    push(body);
   }
 
   const announced = deferred.concat(cascade);

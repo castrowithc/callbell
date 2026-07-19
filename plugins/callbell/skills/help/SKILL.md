@@ -36,7 +36,7 @@ Die Stufe bleibt, bis sie geändert wird oder die Session endet.
 | **callbell-filing** *(ops)* | `/callbell-filing` | Entscheidet, wohin eine Datei gehört und wie der Baum wächst. |
 | **callbell-plan** | nur `/callbell-plan` | Macht aus einer Idee Arbeitspakete: Warum, Rahmen, Vorgehen, fertig. Du startest ihn; er startet sich nie selbst. |
 | **callbell-import** | "liegt in der Ablage", `/callbell-import` | Macht aus Rohmaterial in `__callbell__/zone-import/` geschwärzten, abgelegten Inhalt. |
-| **callbell-onboarding** | `/callbell-onboarding` | Einmalige Einrichtung des Repos: Zweck, Gerüste und wie ihr zusammenarbeitet. |
+| **start** | `/callbell:start` | Der Einstieg: prüft Abhängigkeiten und Gerüst, ergänzt was fehlt, klärt einmalig Zweck und Rollen. Läuft jedes Mal. |
 | **callbell-commit** | `/callbell-commit`, "committe das" | Committet über eine Nachricht, die du gelesen hast: entworfen, vollständig gezeigt, korrigiert, dann committet und gepusht. |
 | **callbell-worktree** | `/callbell-worktree` | Git-Worktree für parallele Arbeit, nach dem Merge aufgeräumt. |
 | **callbell-help** | `/callbell-help` | Diese Karte. |

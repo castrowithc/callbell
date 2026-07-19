@@ -24,7 +24,7 @@ structured way, creates and maintains it, and manages what the user sets out. Th
 
 ## Area registry
 The single source of truth for which areas and topics exist. The agent uses only what is here and invents
-nothing. New entries only after approval by the user (onboarding: `/callbell-onboarding`).
+nothing. New entries only after approval by the user.
 
 <!-- Enter your areas, one per line: `<area>-<topic>`: short description. -->
 
