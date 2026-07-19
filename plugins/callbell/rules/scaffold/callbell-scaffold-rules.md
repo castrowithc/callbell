@@ -115,8 +115,8 @@ Lesen:
 
 Schreiben:
 
-- Wann: wenn etwas über die Session hinaus zählt und sich nicht schon aus Code, Struktur, `context/` oder
-  den Regeln ergibt. Immer hier, wenn der Nutzer sich etwas gemerkt wünscht oder der Agent es sonst in sein
+- Wann: wenn etwas über die Session hinaus zählt und sich nicht schon aus Code, Struktur, der `AGENTS.md`
+  oder den Regeln ergibt. Immer hier, wenn der Nutzer sich etwas gemerkt wünscht oder der Agent es sonst in sein
   natives Gedächtnis legen würde. Das Repo-Gedächtnis tritt an dessen Stelle.
 - Wie: eine Datei in `__callbell__/memory/`, dazu eine Zeile im Index (`- [Titel](datei.md) - kurzer
   Aufhänger`). Deckt eine Datei das Thema schon ab, aktualisiere sie, statt zu doppeln. Lösche, was falsch

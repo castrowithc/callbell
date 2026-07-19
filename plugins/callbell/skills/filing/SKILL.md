@@ -27,9 +27,10 @@ This skill places content in the project **outside** `__callbell__/`. That layer
 
 Area folders are an **ops** structure, and so is their registry. In an ops repo, which areas and topics
 exist is stated in `__callbell__/framework.md`; the agent uses only what is there and creates no new area
-without approval. A **code** repo has no area registry and needs none: the root is the code project,
-documentation lives under `__callbell__/docs/`, and `__callbell__/docs/framework.md` is the root of that
-cascade. Read the lens before reaching for a registry.
+without approval. That file is not shipped with the scaffold — it comes into being with the first area,
+and until then there are no areas to register. A **code** repo has no area registry and needs none: the
+root is the code project and documentation lives under `__callbell__/docs/`. Read the lens before
+reaching for a registry.
 
 ## Look for a template first
 
@@ -63,7 +64,7 @@ an area overflows: do not guess, propose an adjustment and wait for approval.
 | `fact` · `knowledge` · `history` | Flat with a prefix `<area>-<topic>/<type>-<name>.md`; once more than 5 of the same type → a `<type>/` folder. |
 | `playbook` | Next to the recurring process it serves (`<area>-<topic>/[<subtopic>/]playbooks/`); otherwise flat `playbook-<name>.md`. |
 | `decision` | Central and dated in the area: `<area>-<topic>/decisions/YYYY-MM-DD-….md`. Structural and meta decisions concern the framework, not one area. |
-| `meta` | Flat, no prefix: `<area>-<topic>/framework.md` (root of the cascade: ops `__callbell__/framework.md`, code `__callbell__/docs/framework.md`). |
+| `meta` | Flat, no prefix: `<area>-<topic>/framework.md` (root of the cascade: ops `__callbell__/framework.md`, code `__callbell__/docs/framework.md` — each created when it is first needed). |
 | `task` | In `__callbell__/backlog/`, the versioned work trail. Location and life cycle are not a filing decision. |
 | `memory` | In `__callbell__/memory/`, opened by its index. Not a filing decision either. |
 

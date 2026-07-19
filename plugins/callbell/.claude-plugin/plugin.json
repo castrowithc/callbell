@@ -3,12 +3,12 @@
   "name": "callbell",
   "displayName": "Callbell",
   "version": "0.1.15",
-  "description": "Lazy senior mode for code and knowledge repos: adaptive skills, rules, and an always-on context loader.",
+  "description": "The interface between you and the agent: shared norms, a scaffold for backlog and memory, filing, import, planning, and git.",
   "author": { "name": "Callbell", "url": "https://github.com/castrowithc" },
   "homepage": "https://github.com/castrowithc/callbell",
   "repository": "https://github.com/castrowithc/callbell",
   "license": "MIT",
-  "keywords": ["yagni", "minimalism", "filing", "review", "productivity"],
+  "keywords": ["filing", "backlog", "memory", "scaffold", "productivity"],
   "skills": "./skills/",
   "hooks": "./hooks/callbell-hooks.json"
 }

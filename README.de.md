@@ -61,14 +61,14 @@ Plugin-Hooks von sich aus ausführen, siehst du den Kontext doppelt — dann die
 
 - **`callbell`** — der Always-on-Core: die Normen, der Session-Hook und `/callbell:start` als Einstieg.
   Mehr braucht es nicht.
-- **`callbell-server`** — ein Server-Manager-Pack: eine passive Sicherheitsschicht, die vor zerstörerischen
+- **`callbell-sysadmin`** — ein Server-Manager-Pack: eine passive Sicherheitsschicht, die vor zerstörerischen
   Befehlen Erklärung und Bestätigung verlangt, dazu Skills, um einen Linux-Host aufzusetzen, zu härten, zu
   sichern, zu bespielen und zu prüfen. **Vor der Installation:** es ist für die Arbeit *auf einem Server* —
   du brauchst Shell-Zugang zu diesem Host und root oder sudo darauf, und einige Skills setzen Docker voraus,
   wo dein Stack es nutzt. Es bleibt vollständig still, bis du eine Host-Identität deklarierst
   (`__callbell__/.host-identity`); geräteweit installiert kostet es deine Code-Repos also nichts.
-  Installation mit `claude plugin install callbell-server@callbell` bzw.
-  `codex plugin add callbell-server@callbell`.
+  Installation mit `claude plugin install callbell-sysadmin@callbell` bzw.
+  `codex plugin add callbell-sysadmin@callbell`.
 
 ## Nutzung
 

@@ -1,5 +1,5 @@
 {
-  "name": "callbell-server",
+  "name": "callbell-sysadmin",
   "version": "0.1.0",
   "description": "Server-manager pack for callbell: a passive safety layer plus on-demand server-ops skills, active where a host identity is declared.",
   "author": { "name": "Callbell" },
@@ -10,7 +10,7 @@
   "skills": "./skills/",
   "hooks": "./hooks/callbell-server-hooks.json",
   "interface": {
-    "displayName": "Callbell Server",
+    "displayName": "Callbell Sysadmin",
     "shortDescription": "Server-manager pack: safety layer plus server-ops skills",
     "longDescription": "Adds a passive server-safety layer and on-demand skills for setting up, hardening, backing up, and running servers and Docker stacks. Active on a host that declares its identity in __callbell__/.host-identity; otherwise nothing server-specific loads.",
     "developerName": "Callbell",

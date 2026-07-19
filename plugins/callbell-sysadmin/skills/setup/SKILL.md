@@ -34,13 +34,13 @@ Hardening and backup decisions are **not** made here: the firewall, SSH port, an
 
 ## Phase 1: scaffold and host identity
 callbell already lays the persistent per-server structure, so this replaces the hand-built bootstrap:
-1. **Lay the scaffold.** Run `/callbell-onboarding` in this server's working folder. It lays the
-   `__callbell__/` scaffold (context, memory, backlog, zones) that holds everything this server knows.
+1. **Lay the scaffold.** Run `/callbell:start` in this server's working folder. It lays the
+   `__callbell__/` scaffold (memory, backlog, zones) that holds everything this server knows.
 2. **Write the host identity.** Record the bare host name so the pack can scope work to it:
    ```bash
    echo "<host>" > __callbell__/.host-identity   # the working folder's name
    ```
-   From the next session start, `callbell-server` reads it, states the working domain (`<host>/` and
+   From the next session start, `callbell-sysadmin` reads it, states the working domain (`<host>/` and
    `__callbell__/`, everything else taboo), and activates the passive safety layer.
 3. **Capture the server's facts** in the scaffold's context: hostname, OS, provider, public IP, SSH port,
    admin user, CPU/RAM/disk, plus security, network, service, and backup specifics as they are set. These

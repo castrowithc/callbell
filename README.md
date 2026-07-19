@@ -60,13 +60,13 @@ hooks by itself, you will see the context twice — remove this entry then.
 
 - **`callbell`** — the always-on core: the norms, the session hook, and `/callbell:start` as the way in.
   Nothing else is required to use it.
-- **`callbell-server`** — a server-manager pack: a passive safety layer that asks for explanation and
+- **`callbell-sysadmin`** — a server-manager pack: a passive safety layer that asks for explanation and
   confirmation before destructive commands, plus skills to set up, harden, back up, deploy to, and check a
   Linux host. **Before you install it:** it is for working *on a server* — you need shell access to that
   host and root or sudo on it, and some skills assume Docker where your stack uses it. It stays completely
   silent until you declare a host identity (`__callbell__/.host-identity`), so installing it device-wide
-  costs your code repos nothing. Install with `claude plugin install callbell-server@callbell` or
-  `codex plugin add callbell-server@callbell`.
+  costs your code repos nothing. Install with `claude plugin install callbell-sysadmin@callbell` or
+  `codex plugin add callbell-sysadmin@callbell`.
 
 ## Usage
 

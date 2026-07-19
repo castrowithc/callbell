@@ -18,11 +18,12 @@ your content stays outside, the machinery stays in here, and one glance tells th
 ## What is inside
 
 Versioned managed state (carries frontmatter, travels with the repo):
-- `context/` — project and user facts loaded automatically at session start (what the repo is, roles, glossary).
 - `memory/` — durable memories that travel with the repo, opened by the index `MEMORY.md`.
 - `templates/` — scaffolds the agent copies from when it creates backlog entries and other files.
 - `backlog/` — the operational work trail (tasks, optionally grouped into projects), opened by the index `BACKLOG.md`.
-- `framework.md` (ops) or `docs/framework.md` (code) — the structural registry for the project.
+
+What this repo is and who works on it lives in your own `AGENTS.md` at the root, not in here — the agent
+reads it natively, and one place for it beats two that can disagree.
 
 Zones (volatile I/O buffers, not versioned, marked by the `zone-` prefix):
 - `zone-import/` — inbound raw inputs you hand to the agent (CSV, PDF, images, notes).

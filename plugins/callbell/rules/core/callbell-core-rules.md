@@ -1,12 +1,14 @@
 ---
 paths: ["**/*"]
 description: >
-  Noch offen
+  Die Normen, die in jedem callbell-Repo gelten, unabhängig von Gerüst und Typ: Namens- und
+  Formatkonventionen, Datenschutz, Git-Routine, Rollen und Freigaben, Interaktionssprache, Verweise und
+  Schreibstil.
 type: rule
 edit: locked
 ---
 
-# Allgemein glogabele callbell Regeln
+# Allgemein globale callbell Regeln
 
 Diese Regeln ergänzen die des Nutzers und ersetzen diese NIEMALS (CLAUDE.md | AGENTS.md). Die Nutzer-Regeln gehen vor.
 Manche können durch Skills die einen bestimmten Zweck verfolgen aufgeweicht oder abgelöst werden.
