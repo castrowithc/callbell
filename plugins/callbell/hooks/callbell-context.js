@@ -177,8 +177,9 @@ function section(files, base) {
 // arrives, 10 025 does not. It counts characters, not lines — 9 000 characters over 3 000 lines still
 // arrive. BUDGET keeps a margin under that for the wrapper the harness adds around our text.
 //
-// Everything below is assembled against this budget. What does not fit is not dropped silently: it is
-// announced with its path, so the session knows the norm exists and where to read it.
+// Since the rules became pointers this only governs the injected blocks that are left — the memory and
+// backlog indices, and the AGENTS.md ruleset in ambient mode. Those are project state, small, and worth
+// having verbatim. It stays as the guarantee at the bottom of the file, not as a live constraint.
 const BUDGET = 9000;
 const blocks = [];
 let used = 0;
@@ -192,14 +193,14 @@ function push(text) {
   return true;
 }
 
-// One line per rule that was not inlined: what it governs and where to read it. The wording comes from the
-// rule's own frontmatter description, so a reworded rule updates its own pointer and the two cannot drift.
-function pointer(file, base) {
+// What a rule governs, in its own words: the wording comes from the rule's frontmatter description, so a
+// reworded rule updates its own pointer and the two cannot drift. Used to decide WHETHER to open the file,
+// which is why the cascade carries it and the kernel (always read) does not.
+function governs(file) {
   const desc = frontmatterOf(file).match(/^description:\s*>?\s*([\s\S]*?)(?=^\S|\Z)/m);
   let text = desc ? desc[1].replace(/\s+/g, ' ').trim() : '';
   if (text.length > 140) text = text.slice(0, 137) + '...';
-  const rel = path.relative(base, file).split(path.sep).join('/');
-  return '- ' + path.basename(file, '.md') + ' (' + rel + '): ' + text;
+  return text;
 }
 
 // The two facts, emitted once each. Lens-bearing skills (callbell and the review/audit/debt family) read
@@ -252,61 +253,44 @@ if (state.length) {
 // them via --rules. The plugin's own rules have no native reader anywhere and are injected on both.
 const projectRules = collect(path.join(root, '.claude', 'rules'));
 if (withRules && projectRules.length) {
-  const rules = section(projectRules, root);
-  if (rules.length) {
-    push('Project rules (norms, always in force):');
-    push(rules.join('\n\n'));
-  }
+  // Pointed at, not injected, for the same reason as the plugin's own rules below: a project's rule set
+  // has no size limit either, and the agent can open a file that sits in the repo it is working in.
+  push('Project norms. Read these files NOW, before you answer, and follow them for the whole '
+    + 'session:\n' + projectRules.map(f => '- ' + f.split(path.sep).join('/')).join('\n'));
 }
 if (pluginRoot) {
-  // Two groups, and since 2026-07-18 they mean two different things rather than two sizes.
+  // The rules are POINTED AT, not injected. A pointer costs ~80 characters where a body costs ten
+  // thousand, so the budget stops being a constraint and the norms can grow to any size.
   //
-  // `core/` is the always-on KERNEL: inlined here, in the order below, for as much as the budget allows.
-  // `scaffold/` is the CASCADE: never inlined, only announced. Those norms govern specific activities
-  // (filing, backlog, frontmatter, zones, memory) and are read when that activity happens — the same
-  // shape the framework.md cascade already has, and the reason they are the ones demoted.
+  // This replaced inlining on 2026-07-19, after folding seven core rules into one produced a file
+  // larger than the entire budget — it could never be inlined, so the norms were resident nowhere.
+  // Verified before adopting: a hook emitting nothing but `Lies <path>` was followed, including
+  // through a three-file chain where each file pointed at the next.
   //
-  // Ordered by filename. The kernel used to be seven files ranked by what it costs to be missing; they
-  // have since been folded into one, so the ranking had nothing left to rank and its name list pointed
-  // at files that no longer exist. Should the kernel ever split again, the order comes back with it.
+  // What the two groups now differ in is the WORDING, which used to be carried by inlined-or-not:
+  //   core/     — read now, unconditionally.
+  //   scaffold/ — read on arrival in that area, the cascade it always was. Gated on the scaffold,
+  //               because a repo without one cannot act on these at all.
+  //
+  // The absolute path comes from the host's own substitution of CLAUDE_PLUGIN_ROOT / PLUGIN_ROOT, so
+  // the install version, the cache directory, and the host are all irrelevant here.
   const owned = new Set(projectRules.map(f => path.basename(f)));
+  const abs = f => f.split(path.sep).join('/');
   const kernel = collect(path.join(pluginRoot, 'rules', 'core'))
     .filter(f => !owned.has(path.basename(f)));
-
-  // The cascade: announced always, inlined never. Gated on the scaffold, because a repo without one
-  // cannot act on these at all.
   const cascade = scaffold
     ? collect(path.join(pluginRoot, 'rules', 'scaffold')).filter(f => !owned.has(path.basename(f)))
     : [];
 
-  // Reserve the announcement's worst case BEFORE inlining anything. Measured first without this, and the
-  // announcement was the block that fell out when the budget got tight — losing the very index that says
-  // which norms exist. The index is what makes deferral honest, so it is paid for first and the kernel
-  // competes for what is left.
-  const NOTICE = 'Callbell norms not inlined here. They are in force all the same — read the file before '
-    + 'you act in its area, the way a framework.md is read on arrival:\n';
-  const lines = new Map(kernel.concat(cascade).map(f => [f, pointer(f, pluginRoot)]));
-  const reserve = kernel.concat(cascade).length
-    ? NOTICE.length + [...lines.values()].join('\n').length + 2
-    : 0;
-
-  // The heading is only pushed once a body is known to fit behind it. Announcing "always in force" and
-  // then listing nothing under it is worse than silence: it reads as though the norms arrived.
-  const deferred = [];
-  let heading = false;
-  const HEADING = 'Callbell rules (norms from the plugin, always in force):';
-  for (const f of kernel) {
-    const [body] = section([f], pluginRoot);
-    if (!body) continue;
-    // Cost of this rule, plus the heading if it is not paid for yet.
-    const cost = body.length + 2 + (heading ? 0 : HEADING.length + 2);
-    if (used + cost > BUDGET - reserve) { deferred.push(f); continue; }
-    if (!heading) { push(HEADING); heading = true; }
-    push(body);
+  if (kernel.length) {
+    push('Callbell norms. Read these files NOW, before you answer, and follow them for the whole '
+      + 'session:\n' + kernel.map(f => '- ' + abs(f)).join('\n'));
   }
-
-  const announced = deferred.concat(cascade);
-  if (announced.length) push(NOTICE + announced.map(f => lines.get(f)).join('\n'));
+  if (cascade.length) {
+    push('Callbell norms for specific areas. They are in force; read the file before you act in its '
+      + 'area, the way a framework.md is read on arrival:\n'
+      + cascade.map(f => '- ' + abs(f) + '\n  ' + governs(f)).join('\n'));
+  }
   // The AGENTS.md ruleset auto-merges natively only inside the project tree; the plugin's copy sits
   // outside it, so inject it here — but only when the project carries no root ruleset of its own,
   // which the host has then already loaded.
