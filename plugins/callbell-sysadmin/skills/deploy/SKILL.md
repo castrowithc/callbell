@@ -10,13 +10,16 @@ edit: locked
 
 # Set Up a Docker Stack: Conventions and Procedure
 
-Binding for every Docker host you run. Server-specific extensions (reverse-proxy setup, stack list,
-SMTP/auth provider, concrete URLs/ports) belong in this server's context (its `__callbell__/` scaffold).
-This skill provides **structure, patterns, and procedure**.
-
-All stacks live under `/opt/stack/<service-name>/`.
+Applies to any Docker host. Server-specific extensions (reverse-proxy setup, stack list, SMTP/auth
+provider, concrete URLs/ports) belong in this server's context (its `__callbell__/` scaffold). This skill
+provides **structure, patterns, and procedure**.
 
 ## Directory Layout
+
+One directory per stack, all of them under a common parent. This procedure uses
+`/opt/stack/<service-name>/` and stays consistent with it throughout. If the host already places its
+stacks somewhere else, that convention wins: an existing layout everyone knows beats a new one that only
+this skill knows. Pick one and hold it, whichever it is.
 
 ```
 /opt/stack/<service-name>/
@@ -41,7 +44,7 @@ services:
     cap_drop:
       - ALL
     # cap_add: only if needed (reference below)
-    pids_limit: 256
+    pids_limit: 256                               # starting value, see the note under the DB block
     ports:
       - "127.0.0.1:<host-port>:<container-port>"  # localhost only
     environment:
@@ -77,6 +80,12 @@ services:
     networks:
       - default
 ```
+
+> **On the `pids_limit` figures:** 256 for an app and 128 for a database or cache are starting values that
+> hold for typical single-service stacks, not requirements. The point is that the limit exists at all, so a
+> runaway process cannot exhaust the host's process table. An app that legitimately forks more (a worker
+> pool, a browser engine, a CI runner) gets a higher number; find it by watching the container under real
+> load rather than by raising it after the first crash.
 
 ### Redis/Valkey (if needed)
 ```yaml
@@ -133,18 +142,30 @@ Sender and service domain can differ: do not assume, use a placeholder or ask.
 
 ## Authentication: OIDC via an Identity Provider
 
-Use an OIDC identity provider (e.g. Authentik); the concrete URL lives per server in this server's
-context (its `__callbell__/` scaffold). Create per service manually in the provider: a provider entry
-(OAuth2/OpenID) plus a linked application. OIDC variables with placeholders:
+Use an OIDC identity provider (Authentik, Keycloak, Zitadel, Authelia, or a hosted one); the concrete URL
+lives per server in this server's context (its `__callbell__/` scaffold). Create per service manually in
+the provider: a client or provider entry (OAuth2/OpenID) plus a linked application.
+
+**Do not copy endpoint paths from anywhere, including from here.** Every provider lays them out
+differently, and a wrong path fails as a confusing redirect rather than a clear error. Fetch them from the
+provider's own discovery document, which every OIDC-compliant provider serves:
+
+```bash
+curl -s https://<oidc-host>/.well-known/openid-configuration | jq '{issuer, authorization_endpoint, token_endpoint, userinfo_endpoint, jwks_uri}'
+```
+
+Map what it returns onto whatever variable names the app uses. The names differ per app; these are common:
 ```env
 OIDC_CLIENT_ID=<from-provider>
 OIDC_CLIENT_SECRET=<from-provider>
-OIDC_ISSUER=https://<oidc-host>/application/o/<app-slug>/
-OIDC_AUTH_URL=https://<oidc-host>/application/o/authorize/
-OIDC_TOKEN_URL=https://<oidc-host>/application/o/token/
-OIDC_USERINFO_URL=https://<oidc-host>/application/o/userinfo/
+OIDC_ISSUER=<issuer, from the discovery document>
+OIDC_AUTH_URL=<authorization_endpoint>
+OIDC_TOKEN_URL=<token_endpoint>
+OIDC_USERINFO_URL=<userinfo_endpoint>
 OIDC_SCOPES=openid email profile
 ```
+Many apps need only the issuer and discover the rest themselves. Set the individual endpoints only where
+the app has no discovery of its own.
 
 ## Security-Relevant App Variables
 
@@ -180,7 +201,7 @@ OIDC_CLIENT_SECRET=<from-provider>
 
 ## Typical Exceptions to the Prohibitions (with Approval)
 
-- **docker.sock** (`:ro`): e.g. an Authentik worker (outpost deployment).
+- **docker.sock** (`:ro`): e.g. an identity-provider outpost or a reverse proxy that discovers containers.
 - **network_mode: host:** e.g. RustDesk (UDP hole punching).
 
 ## Checklist for New Stacks
@@ -188,7 +209,7 @@ OIDC_CLIENT_SECRET=<from-provider>
 1. [ ] Image pinned to an exact version
 2. [ ] `security_opt: [no-new-privileges:true]` on app containers
 3. [ ] `cap_drop: [ALL]`, only minimal `cap_add` if needed
-4. [ ] `pids_limit` set (256 app, 128 DB/Redis)
+4. [ ] `pids_limit` set at all, at a value chosen for this app
 5. [ ] Port bound to `127.0.0.1` only
 6. [ ] Healthchecks for DB/Redis
 7. [ ] Volumes under `./data/`

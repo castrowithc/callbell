@@ -2,7 +2,7 @@
 description: >
   Resource for callbell-sysadmin:harden: a check checklist for new and existing servers (sign-off / audit).
   Document the status per server in that server's security context.
-type: skill
+type: playbook
 edit: locked
 ---
 

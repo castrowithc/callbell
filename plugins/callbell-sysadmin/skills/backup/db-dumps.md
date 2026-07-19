@@ -2,7 +2,7 @@
 description: >
   Resource for callbell-sysadmin:backup (Docker servers only): consistent DB dumps before the Borg backup
   via a before_backup hook. Container list per server in this server's backup context.
-type: skill
+type: playbook
 edit: locked
 ---
 

@@ -1,12 +1,13 @@
 ---
 name: checkup
 description: >
-  Periodic all-round health check of one of your servers: system (kernel/reboot/disk/time/resources),
+  Periodic all-round health check of a server: system (kernel/reboot/disk/time/resources),
   pending updates, hardening drift, backup liveness, checked against the documented facts, result as a
-  dated report. Trigger: "check the server", "is everything running smoothly", "all-round / health check",
-  "check the status".
+  dated report. For the routine question "is everything still running smoothly". Start it by typing
+  /callbell-sysadmin:checkup.
 type: skill
 edit: locked
+disable-model-invocation: true
 ---
 
 # Server Checkup: Operational Sweep, Drift, Report
@@ -17,7 +18,8 @@ change the system configuration. Findings are reported and fixed only on request
 **Boundary (not a duplicate):** The target values of the hardening (SSH, firewall, fail2ban, users) are
 defined by `callbell-sysadmin:harden`; the backup setup is defined by `callbell-sysadmin:backup`. This skill
 **checks** the running state against that baseline and against the per-server documented actual facts, it
-does not redefine the baseline. For a deeper audit or re-hardening, load `callbell-sysadmin:harden`.
+does not redefine the baseline. For a deeper audit or re-hardening, load `callbell-sysadmin:harden`. For a
+host you suspect has been touched, `callbell-sysadmin:incident` is the sweep that asks that question.
 
 ## Procedure
 
@@ -65,8 +67,9 @@ does not redefine the baseline. For a deeper audit or re-hardening, load `callbe
 | Backup | `borgmatic.timer` active + next run; last run result; newest archive + gap check |
 
 `/etc/shadow` is deliberately **not** read (safety rule); an empty-password audit only on explicit request.
-Deeper forensics (recursive file-change scan, cron audit) is not part of the sweep; on suspicion, check
-manually and specifically.
+Deeper forensics (authorized_keys across all users, cron and unit audit, recursive file-change scan,
+processes and outbound connections) is not part of this sweep, because it answers a different question.
+If anything here looks like someone was on the host, that is the suspicion path: `callbell-sysadmin:incident`.
 
 ## Report Schema
 

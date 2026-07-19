@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# server-checkup: read-only health sweep for one of your servers.
+# server-checkup: read-only health sweep for a server.
 # Gathers system / update / hardening / backup metrics in one pass. Changes NOTHING.
 # Run as root (sudo) so sshd -T, ufw, fail2ban-client and borgmatic are readable.
 # Distro assumption: Debian/Ubuntu + systemd + UFW. Non-matching blocks are skipped
@@ -44,7 +44,9 @@ fi
 hr "UPDATES"
 if have apt; then
   up="$(apt list --upgradable 2>/dev/null | grep -vc '^Listing')"
-  sec="$(apt list --upgradable 2>/dev/null | grep -ic security)"
+  # Match the security suffix in the origin field only (pkg/suite-security ...). Matching the word
+  # anywhere in the line counts package names like libsecurity-foo and reads higher than it is.
+  sec="$(apt list --upgradable 2>/dev/null | grep -c '/[^ ]*-security')"
   echo "upgradable     : $up"
   echo "  of which sec : $sec"
   held="$(apt-mark showhold 2>/dev/null)"

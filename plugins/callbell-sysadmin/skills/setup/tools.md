@@ -2,7 +2,7 @@
 description: >
   Resource for callbell-sysadmin:setup: install the standard CLI tools (micro, mc, fzf, tmux, git)
   multi-distro and apply the tmux config.
-type: skill
+type: playbook
 edit: locked
 ---
 
