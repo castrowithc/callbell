@@ -63,8 +63,8 @@ hooks by itself, you will see the context twice — remove this entry then.
   what the packs below decide.
 - **`callbell-dev`** — a code pack: a lazy senior developer at three levels (`lite`, `full`, `ultra`) who
   asks whether a thing needs to exist before building it, reaches for the standard library and the platform
-  before writing custom code, and leaves one runnable check behind. Four more skills review a diff, audit a
-  repo, harvest the shortcuts you deferred, and show the measured impact. Install with
+  before writing custom code, and leaves one runnable check behind. Three more skills review a diff, audit
+  a repo, and harvest the shortcuts you deferred. Install with
   `claude plugin install callbell-dev@callbell` or `codex plugin add callbell-dev@callbell`.
 - **`callbell-sysadmin`** — a server-manager pack: a passive safety layer that asks for explanation and
   confirmation before destructive commands, plus skills to set up, harden, back up, deploy to, and check a

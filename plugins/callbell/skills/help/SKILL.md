@@ -38,7 +38,7 @@ Marktplatz einzeln zuschaltest — keines ist vorausgewählt:
 
 | Paket | Wofür |
 |-------|-------|
-| **callbell-dev** | Code: die faulste Lösung, die wirklich trägt, in drei Stufen, plus Review, Audit, Schuldenverzeichnis und Anzeigetafel. `/callbell-dev:help` |
+| **callbell-dev** | Code: die faulste Lösung, die wirklich trägt, in drei Stufen, plus Review, Audit und Schuldenverzeichnis. `/callbell-dev:help` |
 | **callbell-sysadmin** | Server: eine stille Sicherheitsschicht plus Skills für den Betrieb. `/callbell-sysadmin:help` |
 
 ## Wie ihr zusammenarbeitet

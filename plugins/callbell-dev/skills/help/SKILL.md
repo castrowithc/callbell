@@ -11,8 +11,8 @@ edit: locked
 
 # callbell-dev
 
-The code pack: one lazy senior developer and the four skills that check its
-work. Display this card when invoked. One-shot — do NOT change any level,
+The code pack: one lazy senior developer and the skills that check its work.
+Display this card when invoked. One-shot — do NOT change any level,
 write flag files, or persist anything.
 
 ## Levels
@@ -34,7 +34,6 @@ Call it again when you want it back.
 | **review** | `/callbell-dev:review` | Over-engineering review of a diff: `L42: yagni: factory, one product. Inline.` |
 | **audit** | `/callbell-dev:audit` | The same, repo-wide: a ranked list of what to delete. |
 | **debt** | `/callbell-dev:debt` | Harvest `callbell:` shortcut comments into a tracked ledger. |
-| **gain** | `/callbell-dev:gain` | Measured-impact scoreboard: less code, less cost, more speed. |
 | **help** | `/callbell-dev:help` | This card. |
 
 ## Stop

@@ -64,9 +64,9 @@ Plugin-Hooks von sich aus ausführen, siehst du den Kontext doppelt — dann die
   Packs darunter.
 - **`callbell-dev`** — ein Code-Pack: ein fauler Senior-Entwickler in drei Stufen (`lite`, `full`, `ultra`),
   der zuerst fragt, ob eine Sache überhaupt existieren muss, nach Standardbibliothek und Plattform greift,
-  bevor er eigenen Code schreibt, und eine lauffähige Prüfung hinterlässt. Vier weitere Skills prüfen ein
-  Diff, durchsuchen ein ganzes Repo, sammeln die aufgeschobenen Abkürzungen und zeigen die gemessene
-  Wirkung. Installation mit `claude plugin install callbell-dev@callbell` bzw.
+  bevor er eigenen Code schreibt, und eine lauffähige Prüfung hinterlässt. Drei weitere Skills prüfen ein
+  Diff, durchsuchen ein ganzes Repo und sammeln die aufgeschobenen Abkürzungen.
+  Installation mit `claude plugin install callbell-dev@callbell` bzw.
   `codex plugin add callbell-dev@callbell`.
 - **`callbell-sysadmin`** — ein Server-Manager-Pack: eine passive Sicherheitsschicht, die vor zerstörerischen
   Befehlen Erklärung und Bestätigung verlangt, dazu Skills, um einen Linux-Host aufzusetzen, zu härten, zu
