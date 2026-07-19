@@ -1,8 +1,8 @@
 ---
-name: callbell-commit
+name: commit
 description: >
   Committen über die Nachricht, die der Nutzer wirklich gelesen hat: entwerfen, vollständig zeigen,
-  Korrekturen aufnehmen, committen, pushen. Nutze bei /callbell-commit, "commit this", "commit and push",
+  Korrekturen aufnehmen, committen, pushen. Nutze bei /callbell:commit, "commit this", "commit and push",
   "committe das", "commit und push", oder immer wenn eine fertige Änderung in die dauerhafte Historie
   eingeht. Das Zeigen ist der Punkt, nicht das Committen.
 type: skill
@@ -10,14 +10,14 @@ edit: locked
 argument-hint: "[worum es bei der Änderung geht]"
 ---
 
-# /callbell-commit
+# /callbell:commit
 
 Committet eine fertige Änderung über eine Nachricht, die der Nutzer gesehen hat, **bevor** sie in die
 Historie eingeht. Der Commit selbst ist der leichte Teil; diesen Skill gibt es, weil das Zeigen verloren
 geht.
 
 ## Wann
-- Bei `/callbell-commit`, oder wenn der Nutzer in irgendeiner Formulierung um einen Commit bittet.
+- Bei `/callbell:commit`, oder wenn der Nutzer in irgendeiner Formulierung um einen Commit bittet.
 - Wenn du im Begriff bist, selbst etwas zu committen. Greife neben diesem Skill nicht selbst zu
   `git commit`: genau dieser Weg verliert die Nachricht.
 - Schlage ihn vor, wenn eine inhaltliche Änderung fertig und uncommittet ist.

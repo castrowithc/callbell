@@ -1,51 +1,45 @@
 ---
-name: callbell-help
+name: help
 description: >
-  Kurzreferenz zu callbell in diesem Repo: die Faulheitsstufen, welche Skills es gibt und wie Agent und
-  Nutzer zusammenarbeiten. Einmalige Anzeige, kein dauerhafter Modus. Auslöser: /callbell-help,
-  "callbell help", "callbell hilfe", "was kann callbell", "welche callbell befehle", "wie arbeite ich hier".
+  Kurzreferenz zu callbell in diesem Repo: welche Skills der Kern mitbringt, welche Pakete es sonst noch
+  gibt und wie Agent und Nutzer zusammenarbeiten. Einmalige Anzeige, kein dauerhafter Modus. Auslöser:
+  /callbell:help, "callbell help", "callbell hilfe", "was kann callbell", "welche callbell befehle",
+  "wie arbeite ich hier".
 type: skill
 edit: locked
 ---
 
 # Callbell Hilfe
 
-Zeige diese Karte, wenn du aufgerufen wirst. Einmalig, kein Moduswechsel, nichts wird gespeichert. Zeige
-den fachlich einzigartigen Skill für die aktuelle Sicht (`PROJECT TYPE`): **callbell-gain** für code,
-**callbell-filing** für ops.
+Zeige diese Karte, wenn du aufgerufen wirst. Einmalig, kein Moduswechsel, nichts wird gespeichert.
 
-## Stufen
-
-| Stufe | Auslöser | Was sich ändert |
-|-------|----------|-----------------|
-| **muffin** | `/callbell muffin` | Bau, was verlangt ist, und nenne die faulere Alternative in einer Zeile. |
-| **cake** | `/callbell cake` (oder bloßes `/callbell`) | Die Leiter durchgesetzt: YAGNI → Wiederverwenden → Plattform/flach → eine Zeile → Minimum. Standard. |
-| **buffet** | `/callbell buffet` | YAGNI-Extremist. Löschen vor Hinzufügen, die Anforderung selbst infrage stellen. |
-
-Die Stufe bleibt, bis sie geändert wird oder die Session endet.
+Der Kern ist die Schnittstelle zwischen dir und dem Agenten: gemeinsame Normen, ein Gerüst für Backlog und
+Gedächtnis, Ablage, Import, Planung und Git. Er trägt keinen eigenen Zweck — was gearbeitet wird,
+entscheiden die Pakete.
 
 ## Skills
 
 | Skill | Auslöser | Was er tut |
 |-------|----------|------------|
-| **callbell** | `/callbell` | Der faule Modus selbst: das Einfachste und Schlankeste, das funktioniert, in Code oder Struktur. |
-| **callbell-review** | `/callbell-review` | Prüft eine Änderung auf Overengineering oder Überstrukturierung. Eine Zeile pro Fund. |
-| **callbell-audit** | `/callbell-audit` | Prüfung über den ganzen Baum: geordnete Liste, was zu streichen, zusammenzuführen oder zu verflachen ist. |
-| **callbell-debt** | `/callbell-debt` | Sammelt jede `callbell:`-Markierung in ein Schuldenverzeichnis. |
-| **callbell-gain** *(code)* | `/callbell-gain` | Anzeigetafel der gemessenen Wirkung: weniger Code, weniger Kosten, mehr Tempo. |
-| **callbell-filing** *(ops)* | `/callbell-filing` | Entscheidet, wohin eine Datei gehört und wie der Baum wächst. |
-| **callbell-plan** | nur `/callbell-plan` | Macht aus einer Idee Arbeitspakete: Warum, Rahmen, Vorgehen, fertig. Du startest ihn; er startet sich nie selbst. |
-| **callbell-import** | "liegt in der Ablage", `/callbell-import` | Macht aus Rohmaterial in `__callbell__/zone-import/` geschwärzten, abgelegten Inhalt. |
 | **start** | `/callbell:start` | Der Einstieg: prüft Abhängigkeiten und Gerüst, ergänzt was fehlt, klärt einmalig Zweck und Rollen. Läuft jedes Mal. |
-| **callbell-commit** | `/callbell-commit`, "committe das" | Committet über eine Nachricht, die du gelesen hast: entworfen, vollständig gezeigt, korrigiert, dann committet und gepusht. |
-| **callbell-worktree** | `/callbell-worktree` | Git-Worktree für parallele Arbeit, nach dem Merge aufgeräumt. |
-| **callbell-help** | `/callbell-help` | Diese Karte. |
+| **filing** | `/callbell:filing` | Entscheidet, wohin eine Datei gehört und wie der Baum wächst. |
+| **plan** | nur `/callbell:plan` | Macht aus einer Idee Arbeitspakete: Warum, Rahmen, Vorgehen, fertig. Du startest ihn; er startet sich nie selbst. |
+| **import** | "liegt in der Ablage", `/callbell:import` | Macht aus Rohmaterial in `__callbell__/zone-import/` geschwärzten, abgelegten Inhalt. |
+| **commit** | `/callbell:commit`, "committe das" | Committet über eine Nachricht, die du gelesen hast: entworfen, vollständig gezeigt, korrigiert, dann committet und gepusht. |
+| **worktree** | `/callbell:worktree` | Git-Worktree für parallele Arbeit, nach dem Merge aufgeräumt. |
+| **help** | `/callbell:help` | Diese Karte. |
 
-Jeder Skill ist überall installiert; die Sicht schaltet sie nicht frei oder ab. Die Marken `(code)` und
-`(ops)` sagen, für welche Art Repo ein Skill gedacht ist, nicht ob du ihn hast.
+Codex nutzt dieselben Skills mit dem Präfix `@`; Claude nutzt die `/`-Formen oben.
 
-Codex nutzt dieselben Skills mit dem Präfix `@` (`@callbell`, `@callbell-review` und so weiter); Claude
-nutzt die `/`-Formen oben.
+## Pakete
+
+Der Kern allein entscheidet nicht, *welche* Arbeit getan wird. Dafür gibt es Pakete, die du im selben
+Marktplatz einzeln zuschaltest — keines ist vorausgewählt:
+
+| Paket | Wofür |
+|-------|-------|
+| **callbell-dev** | Code: die faulste Lösung, die wirklich trägt, in drei Stufen, plus Review, Audit, Schuldenverzeichnis und Anzeigetafel. `/callbell-dev:help` |
+| **callbell-sysadmin** | Server: eine stille Sicherheitsschicht plus Skills für den Betrieb. `/callbell-sysadmin:help` |
 
 ## Wie ihr zusammenarbeitet
 
@@ -60,6 +54,6 @@ nutzt die `/`-Formen oben.
 
 ## Namensraum
 
-`callbell-*` ist für die Skills reserviert, die die Vorlage mitliefert. Lege eigene Skills außerhalb dieses
-Präfixes an, damit Vorlagen- und Nutzer-Skills unterscheidbar bleiben. Abschalten: "stop callbell" oder
-"normaler Modus".
+Die Skills des Kerns tragen keinen Präfix im Namen — der Namensraum `callbell:` trennt sie bereits von
+allem anderen. Deine eigenen Skills legst du außerhalb der Pakete an; sie können nicht kollidieren.
+Abschalten: "stop callbell" oder "normaler Modus".

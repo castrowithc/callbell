@@ -1,12 +1,12 @@
 ---
-name: callbell-filing
+name: filing
 description: >
   Decide where a file belongs and how the folder tree grows. Use this whenever
   you create, place, move, promote, or restructure a content file: which area
   folder, flat-with-prefix vs. a type folder, which zone (work / zone-import / zone-export),
   and how a draft becomes active through its status. Also use on "where does this
   go", "restructure this", "promote this", "callbell-filing", or
-  "/callbell-filing".
+  "/callbell:filing".
 type: skill
 edit: locked
 ---
@@ -124,7 +124,7 @@ first `business-finance/<subtopic-1>/knowledge/`, then `business-finance/<subtop
 ## Cascade
 
 One `framework.md` per area or subtopic, **lazy and as an overlay**: it comes into being only when the
-folder needs its own growing work rules (what the backbone from `__callbell__/context`, rules, and skills does
+folder needs its own growing work rules (what the backbone from `AGENTS.md`, rules, and skills does
 not already cover), and it describes how work is done there (search, identification, local guardrails). It
 is read only when work happens there. No nested `AGENTS.md`/`CLAUDE.md` down in the depth: the cascade runs
 solely through the `framework.md` files by path (read from the root), not through harness auto-loading.

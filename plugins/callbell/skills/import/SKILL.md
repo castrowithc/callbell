@@ -1,5 +1,5 @@
 ---
-name: callbell-import
+name: import
 description: >
   Nimm Rohmaterial, das der Nutzer in __callbell__/zone-import/ abgelegt hat, und mache abgelegtes Wissen
   daraus. Nutze dies immer, wenn der Nutzer in irgendeiner Formulierung oder Sprache signalisiert, dass er
@@ -8,7 +8,7 @@ description: >
   (Bilder, PDF, Office, Exporte) und Text ab (Markdown, txt, Obsidian-Notizen, Claude-Code-Web-Exporte).
   Wandelt nach Markdown, schwärzt gemäß callbell-data-protection, legt das Ergebnis über die Ablagelogik der
   Vorlage ab und verschiebt danach das Original ins Archiv. Nutze es auch bei "verarbeite meinen Import",
-  "wandle diese Datei um", "callbell-import" oder "/callbell-import".
+  "wandle diese Datei um", "callbell-import" oder "/callbell:import".
 type: skill
 edit: locked
 ---

@@ -1,5 +1,5 @@
 ---
-name: callbell-worktree
+name: worktree
 description: >
   Richtet einen Git-Worktree für parallele Arbeit ein: ein neuer Branch in einem eigenen Ordner, dieselbe
   Git-Datenbank. Auf Anfrage oder nach einem Vorschlag; räumt nach dem Merge wieder auf.
@@ -8,7 +8,7 @@ edit: locked
 argument-hint: "[branch-name]"
 ---
 
-# /callbell-worktree
+# /callbell:worktree
 
 Richtet über `git worktree` einen zweiten Arbeitsstrang ein, ohne den offenen Stand im Hauptordner
 wegzuräumen. Für mehrere Sessions oder Themen gleichzeitig.

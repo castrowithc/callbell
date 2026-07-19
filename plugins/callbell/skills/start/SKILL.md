@@ -88,7 +88,7 @@ seiner maschinenlokalen Agent-Datei, worum sich `callbell-language` kümmert.
 
 Ein bis zwei Sätze, nicht mehr. Nenne, dass `__callbell__/` jetzt da ist und die von callbell verwaltete
 Schicht trägt (Backlog, Gedächtnis, Zonen, Vorlagen); der Ordner erklärt sich in seiner `README.md`
-selbst, wenn der Nutzer nachfragt. Verweise auf `/callbell:callbell-help` für die Skills. Erkläre den Rest nicht
+selbst, wenn der Nutzer nachfragt. Verweise auf `/callbell:help` für die Skills. Erkläre den Rest nicht
 ungefragt — wer mehr wissen will, fragt.
 
 War nichts zu tun, ist der Abschluss die eine Zeile aus Schritt 1 und du gehst zur Arbeit über.

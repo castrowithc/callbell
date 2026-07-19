@@ -4,6 +4,7 @@
   "description": "Callbell steering, distributed as a plugin: one always-on core plus optional purpose packs.",
   "plugins": [
     { "name": "callbell", "source": "./plugins/callbell", "category": "productivity", "defaultEnabled": true },
-    { "name": "callbell-sysadmin", "source": "./plugins/callbell-sysadmin", "category": "productivity" }
+    { "name": "callbell-dev", "source": "./plugins/callbell-dev", "category": "productivity", "description": "Code pack: the laziest solution that actually works, at three levels, plus review, audit, debt and gain. Requires the callbell core." },
+    { "name": "callbell-sysadmin", "source": "./plugins/callbell-sysadmin", "category": "productivity", "description": "Sysadmin pack: a passive safety layer plus on-demand server-ops skills, active where a host identity is declared. Requires the callbell core." }
   ]
 }

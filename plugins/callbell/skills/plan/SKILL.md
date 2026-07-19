@@ -1,8 +1,8 @@
 ---
-name: callbell-plan
+name: plan
 description: >
   Aus einer Idee einen Plan machen: sie im Gespräch klären, dann in sich geschlossene Arbeitspakete (Tasks)
-  zuschneiden, mit Warum, Rahmen, Vorgehen und Definition of Done. Wird vom Nutzer mit /callbell-plan
+  zuschneiden, mit Warum, Rahmen, Vorgehen und Definition of Done. Wird vom Nutzer mit /callbell:plan
   gestartet, nie von allein: nur der Nutzer weiß, ob er das gebaut haben will oder noch darüber nachdenkt,
   und von außen sehen diese beiden gleich aus.
 type: skill
@@ -10,7 +10,7 @@ edit: locked
 disable-model-invocation: true
 ---
 
-# /callbell-plan
+# /callbell:plan
 
 Die Planungssitzung: eine Idee geht hinein, ein Projekt und seine Arbeitspakete kommen heraus. Danach ist
 das erledigt, und die Arbeit wächst von dort im Gespräch weiter.

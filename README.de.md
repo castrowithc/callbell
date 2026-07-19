@@ -17,11 +17,11 @@ Skills, die Normen und einen Session-Hook, der den Kontext liefert. Installieren
 kopieren, nichts zu konfigurieren. Optionale Zweck-Packs installieren sich genauso aus demselben
 Marketplace, nur wenn du sie willst.
 
-Der Core bedient beide Arten von Arbeit aus einer Installation. Ein Session-Hook löst zur Laufzeit die
-**Linse** auf: ob ein Repo primär ausführbarer Code ist oder primär Markdown, das ein Thema steuert. Die
-faule Skill-Familie liest diese Linse und passt sich an. Code-Projekte bekommen die Code-Ausprägung,
-operative Arbeit (Personal OS, Business OS, Wiki & Docs) die Ops-Ausprägung plus das Ablage-System, und der
-Backbone darunter ist geteilt: Konventionen, Frontmatter, Zonen, Backlog, Memory, Datenschutz, Git.
+Der Core ist bewusst zweckneutral. Er verändert, wie du und der Agent zusammenarbeiten — Konventionen,
+Frontmatter, Zonen, Backlog, Memory, Datenschutz, Git und wohin eine Datei gehört — und hat keine Meinung
+dazu, *woran* du arbeitest. Diese Meinung bringt ein Pack mit, und du installierst nur die, die du willst.
+Ein Repo voller Code und ein Repo voller Markdown, das ein Thema steuert, bekommen denselben Core; sie
+unterscheiden sich darin, welches Pack daneben steht.
 
 ## Installation
 
@@ -60,7 +60,14 @@ Plugin-Hooks von sich aus ausführen, siehst du den Kontext doppelt — dann die
 ## Was du installieren kannst
 
 - **`callbell`** — der Always-on-Core: die Normen, der Session-Hook und `/callbell:start` als Einstieg.
-  Mehr braucht es nicht.
+  Mehr braucht es nicht. Er trägt keinen eigenen Zweck — welche Art Arbeit getan wird, entscheiden die
+  Packs darunter.
+- **`callbell-dev`** — ein Code-Pack: ein fauler Senior-Entwickler in drei Stufen (`lite`, `full`, `ultra`),
+  der zuerst fragt, ob eine Sache überhaupt existieren muss, nach Standardbibliothek und Plattform greift,
+  bevor er eigenen Code schreibt, und eine lauffähige Prüfung hinterlässt. Vier weitere Skills prüfen ein
+  Diff, durchsuchen ein ganzes Repo, sammeln die aufgeschobenen Abkürzungen und zeigen die gemessene
+  Wirkung. Installation mit `claude plugin install callbell-dev@callbell` bzw.
+  `codex plugin add callbell-dev@callbell`.
 - **`callbell-sysadmin`** — ein Server-Manager-Pack: eine passive Sicherheitsschicht, die vor zerstörerischen
   Befehlen Erklärung und Bestätigung verlangt, dazu Skills, um einen Linux-Host aufzusetzen, zu härten, zu
   sichern, zu bespielen und zu prüfen. **Vor der Installation:** es ist für die Arbeit *auf einem Server* —
@@ -82,18 +89,18 @@ Plugin-Hooks von sich aus ausführen, siehst du den Kontext doppelt — dann die
 **Das Höchste, worum callbell dich je bittet: Node im PATH.** Der Session-Hook, der die Normen und den
 Projektkontext liefert, läuft über Node — `node` muss also im PATH sein (Nix/nvm: im PATH der
 *non-interactive* Shell). Fehlt es, bricht nichts lautstark — keine Fehler, keine abgebrochenen Prompts —,
-aber alles, was der Hook liefert, fällt weg: die Always-on-Normen, der Projektkontext, die Memory- und
-Backlog-Indizes und die Linse. Die Skills selbst laden und laufen weiter; die linsenlesenden (`callbell`,
-`callbell-review`, `callbell-audit`, `callbell-help`) leiten die Linse dann aus der Aufgabe ab, was
-unzuverlässiger ist, als sie gesagt zu bekommen. Ein Notbetrieb, kein unterstützter Zustand.
+aber alles, was der Hook liefert, fällt weg: die Always-on-Normen, der Projektkontext und die Memory- und
+Backlog-Indizes. Die Skills selbst laden und laufen weiter, aber ohne die Normen, die sie prägen sollen.
+Ein Notbetrieb, kein unterstützter Zustand.
 
-## Der `callbell`-Namensraum
+## Namensräume
 
-`callbell-*` ist **reserviert** für die vom Plugin gelieferten Skills und Rules. Der faule Flagship-Modus
-heißt schlicht `callbell` und flavored sich über die Linse.
+Jedes Plugin ist sein eigener Namensraum, und genau das hält die Namen auseinander: die Skills des Kerns
+heißen `/callbell:start`, `/callbell:filing`, `/callbell:plan` und so weiter, die eines Packs
+`/callbell-dev:review`, `/callbell-sysadmin:harden`. Der Skill-Name wiederholt den Plugin-Namen nie — das
+Präfix sagt ihn bereits.
 
-Deine **eigenen** Skills legst du **außerhalb** dieses Präfixes an (eigener Name oder eigenes Präfix). So
-bleiben Plugin- und User-Skills jederzeit unterscheidbar, auch wenn du sie zwischen Projekten mischst.
+Deine **eigenen** Skills liegen ganz außerhalb der Plugins und können mit alldem nicht kollidieren.
 
 ## Dieses Repo
 
@@ -102,16 +109,15 @@ ein eigenes installierbares Plugin unter `plugins/`. Es gibt keinen Build-Schrit
 generiert: jedes Plugin wird hier direkt geschrieben, und was du liest, ist das, was installiert wird.
 
 - `plugins/callbell/` — die Collection, das, was du installierst und always-on läuft:
-  - `skills/` — ein flacher Ordner; die Linse entscheidet zur Laufzeit über Code oder Ops, nicht die Ablage.
+  - `skills/` — ein flacher Ordner, sieben Skills: Einstieg, Ablage, Planung, Import, Commit, Worktree, Hilfe.
   - `rules/core/` — Normen, die in jedem Repo gelten. Die Session weist den Agenten an, sie sofort zu lesen.
   - `rules/scaffold/` — Normen, die nur dort etwas bedeuten, wo ein `__callbell__/`-Gerüst existiert
     (Backlog, Zonen, Frontmatter, Memory, Struktur). Nur dort genannt und beim Betreten ihres Bereichs
     gelesen; ein Repo ohne Gerüst zahlt nichts.
-  - `hooks/callbell-context.js` — der SessionStart-Hook: löst die Linse auf, meldet das Gerüst, injiziert
-    die Memory- und Backlog-Indizes und verweist den Agenten auf die Regeln. Claude führt ihn aus dem Plugin
-    aus; unter Codex muss er von Hand registriert werden (siehe Installation).
-- `.claude-plugin/marketplace.json`, `.agents/plugins/marketplace.json` — die Marketplace-Kataloge, einer
-  je Host, die die Collection und etwaige Packs listen.
+  - `hooks/callbell-context.js` — der SessionStart-Hook: meldet das Gerüst, injiziert die Memory- und
+    Backlog-Indizes und verweist den Agenten auf die Regeln. Claude führt ihn aus dem Plugin aus; unter
+    Codex muss er von Hand registriert werden (siehe Installation).
+- `.claude-plugin/marketplace.json` — der Marketplace-Katalog, der die Collection und jedes Pack listet.
 - `node scripts/callbell-publish.js` — Version stempeln, committen, pushen.
 
 ## Lizenz

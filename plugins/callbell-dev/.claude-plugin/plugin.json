@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "callbell-dev",
+  "displayName": "Callbell Dev",
+  "version": "0.1.0",
+  "description": "Code pack for callbell: a lazy senior developer who builds the simplest thing that works, plus the review, audit, debt and gain skills that check it.",
+  "author": { "name": "Callbell", "url": "https://github.com/castrowithc" },
+  "homepage": "https://github.com/castrowithc/callbell",
+  "repository": "https://github.com/castrowithc/callbell",
+  "license": "MIT",
+  "keywords": ["code", "yagni", "minimalism", "review", "refactoring"],
+  "skills": "./skills/"
+}
