@@ -103,12 +103,13 @@ generiert: jedes Plugin wird hier direkt geschrieben, und was du liest, ist das,
 
 - `plugins/callbell/` — die Collection, das, was du installierst und always-on läuft:
   - `skills/` — ein flacher Ordner; die Linse entscheidet zur Laufzeit über Code oder Ops, nicht die Ablage.
-  - `rules/core/` — Normen, die in jedem Repo gelten. Immer injiziert.
+  - `rules/core/` — Normen, die in jedem Repo gelten. Die Session weist den Agenten an, sie sofort zu lesen.
   - `rules/scaffold/` — Normen, die nur dort etwas bedeuten, wo ein `__callbell__/`-Gerüst existiert
-    (Backlog, Zonen, Frontmatter, Memory, Struktur). Nur dort injiziert; ein Repo ohne Gerüst zahlt nichts.
-  - `hooks/callbell-context.js` — der SessionStart-Hook: löst die Linse auf, meldet das Gerüst und injiziert
-    Kontext und Regeln. Claude führt ihn aus dem Plugin aus; unter Codex muss er von Hand registriert werden
-    (siehe Installation).
+    (Backlog, Zonen, Frontmatter, Memory, Struktur). Nur dort genannt und beim Betreten ihres Bereichs
+    gelesen; ein Repo ohne Gerüst zahlt nichts.
+  - `hooks/callbell-context.js` — der SessionStart-Hook: löst die Linse auf, meldet das Gerüst, injiziert
+    die Memory- und Backlog-Indizes und verweist den Agenten auf die Regeln. Claude führt ihn aus dem Plugin
+    aus; unter Codex muss er von Hand registriert werden (siehe Installation).
 - `.claude-plugin/marketplace.json`, `.agents/plugins/marketplace.json` — die Marketplace-Kataloge, einer
   je Host, die die Collection und etwaige Packs listen.
 - `node scripts/callbell-publish.js` — Version stempeln, committen, pushen.

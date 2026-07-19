@@ -101,12 +101,13 @@ authored here directly, and what you read is what gets installed.
 
 - `plugins/callbell/` — the collection, what you install and run always-on:
   - `skills/` — one flat folder; the lens decides code vs ops at runtime, not the file layout.
-  - `rules/core/` — norms that hold in any repo. Always injected.
+  - `rules/core/` — norms that hold in any repo. The session tells the agent to read them straight away.
   - `rules/scaffold/` — norms that only mean anything where a `__callbell__/` scaffold exists (backlog,
-    zones, frontmatter, memory, structure). Injected only there, so a repo without one pays nothing for them.
-  - `hooks/callbell-context.js` — the SessionStart hook: resolves the lens, reports the scaffold, and
-    injects context and rules. Claude runs it from the plugin; on Codex it has to be registered by hand
-    (see Install).
+    zones, frontmatter, memory, structure). Named only there, and read on arrival in their area, so a repo
+    without a scaffold pays nothing for them.
+  - `hooks/callbell-context.js` — the SessionStart hook: resolves the lens, reports the scaffold, injects
+    the memory and backlog indexes, and points the agent at the rules. Claude runs it from the plugin; on
+    Codex it has to be registered by hand (see Install).
 - `.claude-plugin/marketplace.json`, `.agents/plugins/marketplace.json` — the marketplace catalogs, one
   per host, listing the collection and any packs.
 - `node scripts/callbell-publish.js` — stamp the version, commit, push.
