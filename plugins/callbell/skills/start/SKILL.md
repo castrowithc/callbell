@@ -43,10 +43,13 @@ ist, dann was fehlt, jeweils mit Namen statt in Fließtext:
 
 ```
 ✅ Angelegt: __callbell__/, .gitignore
-❗ Fehlt: Git-Repo, Ruleset (AGENTS.md oder CLAUDE.md)
+❗ Fehlt: Git-Repo, Ruleset (AGENTS.md / CLAUDE.md)
 
-Mehr dazu: /callbell:help
+Mehr dazu: callbell:help
 ```
+
+Den Skillnamen **ohne Präfix** nennen. Der Schrägstrich ist die Schreibweise eines einzelnen Hosts, und
+andere rufen denselben Skill anders auf.
 
 Eine Zeile entfällt, wenn sie leer wäre. `NOTES` erwähnst du nur, wenn sie für den nächsten Schritt zählen.
 
@@ -79,7 +82,7 @@ Projekt, weil Pfade bei jedem Umbenennen, Klonen und Worktree brechen.
 ## 3. Zweck und Rollen (einmalig, im Ruleset)
 
 Der Agent braucht zwei Dinge über das Gerüst hinaus: **was dieses Repo ist** und **mit wem er arbeitet**.
-Beides lebt in der `AGENTS.md` des Nutzers, nicht in einer callbell-eigenen Datei.
+Beides lebt im Ruleset des Nutzers (`AGENTS.md` / `CLAUDE.md`), nicht in einer callbell-eigenen Datei.
 
 **Erst die Zieldatei bestimmen, dann lesen, dann fragen.** Das Skript sagt, welche Rulesets es gibt; welche
 davon die inhaltliche ist, entscheidest du:
@@ -90,8 +93,10 @@ davon die inhaltliche ist, entscheidest du:
   eigentlichen Ruleset vorbei.
 - **Beide da, ohne Verbindung** — frag, welche gilt. Zwei Rulesets nebeneinander sind eine Aussage über das
   Repo, die du nicht raten kannst.
-- **Keine da** — lege `AGENTS.md` aus `${CLAUDE_PLUGIN_ROOT}/scaffold/agents-template.md` an. `AGENTS.md`,
-  weil Codex nur diese liest und Claude beide.
+- **Keine da** — lege **beide** an: `AGENTS.md` aus `${CLAUDE_PLUGIN_ROOT}/scaffold/agents-template.md`
+  trägt den Inhalt, und die `CLAUDE.md` daneben besteht aus der einen Zeile `@AGENTS.md`. Codex liest nur
+  `AGENTS.md`, Claude bevorzugt `CLAUDE.md`; die Weiche bedient damit beide Hosts, ohne den Inhalt zu
+  doppeln. Gedoppelt wäre er sofort zweierlei, sobald einer der beiden gepflegt wird.
 
 **Lies die Zieldatei, bevor du fragst, und frag nur nach dem, was fehlt.** Zweck und Rollen sind zwei
 getrennte Befunde, nicht einer:
@@ -120,7 +125,7 @@ seiner maschinenlokalen Agent-Datei, worum sich `callbell-language` kümmert.
 
 Ein bis zwei Sätze, nicht mehr. Nenne, dass `__callbell__/` jetzt da ist und die von callbell verwaltete
 Schicht trägt (Backlog, Gedächtnis, Zonen, Vorlagen); der Ordner erklärt sich in seiner `README.md`
-selbst, wenn der Nutzer nachfragt. Auf `/callbell:help` hast du in Schritt 2 schon gezeigt, also nicht
+selbst, wenn der Nutzer nachfragt. Auf `callbell:help` hast du in Schritt 2 schon gezeigt, also nicht
 noch einmal. Erkläre den Rest nicht ungefragt, wer mehr wissen will, fragt.
 
 War nichts zu tun, ist der Abschluss die eine Zeile aus Schritt 1 und du gehst zur Arbeit über.
