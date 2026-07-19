@@ -13,14 +13,23 @@ edit: locked
 
 # Filing: where a file belongs and how the tree grows
 
-Placement follows the invariants in the rule `callbell-structure`. This skill is the procedure behind
-them.
+This skill places content in the project **outside** `__callbell__/`. That layer is filed by its own rule
+(`callbell-scaffold-rules`), never by hand, and nothing here applies to it.
+
+## The path is the structural truth
+
+- **No `domain/area/topic` hierarchy.** The area folder is the top level; depth grows only inside it, and
+  only where it is needed.
+- Area and topic live in the **folder name**, never in frontmatter.
+- The type is visible in the path too: as a prefix `<type>-<name>.md` while filing stays flat, or as a
+  folder `<type>/` once grouped. **Where path and frontmatter disagree, the frontmatter wins.** Raw zones
+  carry no type at all.
 
 Area folders are an **ops** structure, and so is their registry. In an ops repo, which areas and topics
 exist is stated in `__callbell__/framework.md`; the agent uses only what is there and creates no new area
-without approval (see `callbell-governance`). A **code** repo has no area registry and needs none: the root
-is the code project, documentation lives under `__callbell__/docs/`, and `__callbell__/docs/framework.md` is
-the root of that cascade. Read the lens before reaching for a registry.
+without approval. A **code** repo has no area registry and needs none: the root is the code project,
+documentation lives under `__callbell__/docs/`, and `__callbell__/docs/framework.md` is the root of that
+cascade. Read the lens before reaching for a registry.
 
 ## Look for a template first
 
@@ -55,11 +64,11 @@ an area overflows: do not guess, propose an adjustment and wait for approval.
 | `playbook` | Next to the recurring process it serves (`<area>-<topic>/[<subtopic>/]playbooks/`); otherwise flat `playbook-<name>.md`. |
 | `decision` | Central and dated in the area: `<area>-<topic>/decisions/YYYY-MM-DD-….md`. Structural and meta decisions concern the framework, not one area. |
 | `meta` | Flat, no prefix: `<area>-<topic>/framework.md` (root of the cascade: ops `__callbell__/framework.md`, code `__callbell__/docs/framework.md`). |
-| `task` | In `__callbell__/backlog/` (versioned work trail, not a zone). Location and life cycle are set by `callbell-backlog`. |
-| `memory` | `__callbell__/memory/*.md` (see `callbell-memory`). |
+| `task` | In `__callbell__/backlog/`, the versioned work trail. Location and life cycle are not a filing decision. |
+| `memory` | In `__callbell__/memory/`, opened by its index. Not a filing decision either. |
 
-Rules and skills are not placed by hand: they live natively in `.claude/rules/` and `.claude/skills/`
-(Codex mirror: `.agents/skills/`).
+Rules and skills are never placed by hand. They ship with the plugin and are injected into the session; a
+copy of them in the repo is a defect, not a placement.
 
 **Precedence** (decide in this order): a central `decision` → `meta`/framework (flat) → `playbook`
 (process) → the rest, flat with a prefix.
@@ -75,7 +84,7 @@ Rules and skills are not placed by hand: they live natively in `.claude/rules/` 
 
 ## Zones
 
-The zones are central (see `callbell-zones`). Relevant for filing:
+The two `__callbell__/` zones are governed centrally. Relevant for filing:
 
 - **`<area>-<topic>/work/`**: the area's workbench: raw, header-less work in progress, internal
   substructure allowed (for example `work/2025/`). It keeps the area level **readable**: `<area>-<topic>/`
@@ -89,14 +98,14 @@ The zones are central (see `callbell-zones`). Relevant for filing:
 
 There is **no separate draft zone**. A draft is a file with `status: draft` in its proper place, and it
 matures there in place. "Promotion" is a **change of status** (`draft → active`), not a move; it requires
-approval (see `callbell-governance`).
+approval.
 
 - **`fact`/`knowledge`** are created directly in the right `<area>-<topic>/`, first `status: draft`, then
   `status: active`.
 - **`decision`**: `status: draft` while it is being weighed; on approval `status: active`, date = release
   date (not draft date), dated in `decisions/…`.
 - **Standing rules** of an area move into its `framework.md`.
-- **Backlog**: maturity and completion are set by `callbell-backlog` (`__callbell__/backlog/` → `__callbell__/backlog/done/`).
+- **Backlog**: maturity and completion follow the backlog's own life cycle, not this skill.
 
 ## Lazy depth: two separate thresholds
 
