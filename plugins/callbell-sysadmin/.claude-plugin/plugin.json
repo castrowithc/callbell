@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "callbell-sysadmin",
   "displayName": "Callbell Sysadmin",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Server-manager pack for callbell: a passive safety layer plus on-demand server-ops skills, active where a host identity is declared.",
   "author": { "name": "Callbell", "url": "https://github.com/castrowithc" },
   "homepage": "https://github.com/castrowithc/callbell",
