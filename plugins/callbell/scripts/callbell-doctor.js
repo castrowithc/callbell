@@ -181,8 +181,9 @@ const rulesets = ['AGENTS.md', 'CLAUDE.md'].filter(f => fs.existsSync(path.join(
 if (!rulesets.length) {
   missing.push('ruleset: neither AGENTS.md nor CLAUDE.md. Purpose and roles have nowhere to live.');
 } else {
-  notes.push('ruleset: ' + rulesets.join(' + ') + ' present — read it and check whether it already '
-    + 'states purpose and roles before asking the user anything.');
+  notes.push('ruleset: ' + rulesets.join(' + ') + ' present — '
+    + (rulesets.length > 1 ? 'decide which one carries the content, read it' : 'read it')
+    + ', and ask only for what it does not already state.');
 }
 
 // --- report -----------------------------------------------------------------

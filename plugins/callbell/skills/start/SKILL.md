@@ -81,14 +81,30 @@ Projekt, weil Pfade bei jedem Umbenennen, Klonen und Worktree brechen.
 Der Agent braucht zwei Dinge über das Gerüst hinaus: **was dieses Repo ist** und **mit wem er arbeitet**.
 Beides lebt in der `AGENTS.md` des Nutzers, nicht in einer callbell-eigenen Datei.
 
-- **Es gibt eine `AGENTS.md` oder `CLAUDE.md` und sie trägt beides schon** — dann bist du fertig. Frag
-  nichts. Das ist der Normalfall ab dem zweiten Lauf.
-- **Es gibt eine, aber ohne diese Angaben** — führe das Gespräch unten und **hänge an, ersetze nie**.
-  Diese Datei gehört dem Nutzer, dieselbe Regel wie bei der `.gitignore`.
-- **Es gibt keine** — lege sie aus `${CLAUDE_PLUGIN_ROOT}/scaffold/agents-template.md` an und fülle sie
-  im Gespräch. Schreibe erst nach Bestätigung.
+**Erst die Zieldatei bestimmen, dann lesen, dann fragen.** Das Skript sagt, welche Rulesets es gibt; welche
+davon die inhaltliche ist, entscheidest du:
 
-Das Gespräch ist kurz, zwei Fragen auf einmal, nicht mehr. **Stelle sie als Text, nie über ein
+- **Genau eine da** (`AGENTS.md` oder `CLAUDE.md`) — die ist es.
+- **Beide da und eine importiert die andere** (eine Zeile, die nur aus `@datei.md` besteht) — dann gilt die
+  importierte. Die importierende ist eine Weiche, kein Inhalt, und etwas dort anzuhängen schreibt am
+  eigentlichen Ruleset vorbei.
+- **Beide da, ohne Verbindung** — frag, welche gilt. Zwei Rulesets nebeneinander sind eine Aussage über das
+  Repo, die du nicht raten kannst.
+- **Keine da** — lege `AGENTS.md` aus `${CLAUDE_PLUGIN_ROOT}/scaffold/agents-template.md` an. `AGENTS.md`,
+  weil Codex nur diese liest und Claude beide.
+
+**Lies die Zieldatei, bevor du fragst, und frag nur nach dem, was fehlt.** Zweck und Rollen sind zwei
+getrennte Befunde, nicht einer:
+
+- **Beides steht schon da** — du bist fertig, frag nichts. Das ist der Normalfall ab dem zweiten Lauf.
+- **Eins von beidem steht da** — frag nur nach dem anderen. Was beschrieben ist, wird nicht noch einmal
+  aufgemacht; danach zu fragen sagt dem Nutzer, dass du seine Datei nicht gelesen hast.
+- **Nichts davon steht da** — beide Fragen, siehe unten.
+
+Ergänzt wird immer durch **Anhängen, nie durch Ersetzen**. Die Datei gehört dem Nutzer, dieselbe Regel wie
+bei der `.gitignore`. Geschrieben wird erst nach Bestätigung.
+
+Das Gespräch ist kurz, höchstens zwei Fragen, und die auf einmal. **Stelle sie als Text, nie über ein
 Auswahlwerkzeug.** Beide Antworten sind frei, und vorgegebene Optionen legten dem Nutzer sein eigenes
 Projekt in den Mund.
 
