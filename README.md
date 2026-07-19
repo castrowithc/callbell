@@ -70,9 +70,11 @@ hooks by itself, you will see the context twice — remove this entry then.
   confirmation before destructive commands, plus skills to set up, harden, back up, deploy to, and check a
   Linux host. **Before you install it:** it is for working *on a server* — you need shell access to that
   host and root or sudo on it, and some skills assume Docker where your stack uses it. It stays completely
-  silent until you declare a host identity (`__callbell__/.host-identity`), so installing it device-wide
+  silent until a host identity is declared (`__callbell__/.host-identity`), so installing it device-wide
   costs your code repos nothing. Install with `claude plugin install callbell-sysadmin@callbell` or
-  `codex plugin add callbell-sysadmin@callbell`.
+  `codex plugin add callbell-sysadmin@callbell`, then run **`/callbell-sysadmin:start`** in the folder you
+  administer from: it lays out a folder per host, reads that machine's inventory itself, and writes the
+  identity.
 
 ## Usage
 

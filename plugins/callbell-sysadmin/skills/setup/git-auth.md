@@ -1,99 +1,114 @@
 ---
 description: >
-  Resource for callbell-sysadmin:setup: set up git forge access for the repo clone. A scoped token
-  (default), a deploy key, or an account SSH key, with the GitHub procedure worked through in full.
+  Begleitdatei zu callbell-sysadmin:setup: den Zugang zur Git-Forge für das Klonen einrichten. Ein
+  eingegrenzter Token (Normalfall), ein Deploy-Key oder ein Konto-SSH-Schlüssel, mit dem Weg über GitHub
+  vollständig durchgespielt.
 type: playbook
 edit: locked
 ---
 
-# Set Up Git Auth
+# Git-Zugang einrichten
 
-Before cloning, pick the auth mechanism. The three shapes below exist on every major forge (GitHub,
-GitLab, Gitea, Forgejo, Bitbucket); what differs is the name, the menu path, and how finely a token can be
-scoped. The decision is the same everywhere, so make it first and look up the specifics second.
+Vor dem Klonen entscheidest du den Mechanismus. Die drei Formen unten gibt es auf jeder größeren Forge
+(GitHub, GitLab, Gitea, Forgejo, Bitbucket); anders sind nur der Name, der Menüpfad und wie fein ein Token
+eingegrenzt werden kann. Die Entscheidung ist überall dieselbe, triff sie also zuerst und schlag die
+Einzelheiten danach nach.
 
-## Decision matrix
+## Entscheidungsmatrix
 
-| Mechanism | When to choose | Trade-off |
+| Mechanismus | Wann | Preis |
 |---|---|---|
-| **Scoped token** *(default)* | several repos; account and/or org; least privilege; expiry, revocation, and audit wanted | bearer token (store it safely), expires (rotation), HTTPS remote |
-| **Deploy key** | the server touches **exactly one** repo, maximum isolation, no expiry | one key per repo; does not scale to many repos |
-| **Account SSH key** | a fully trusted admin box with no sensitive or customer repos | no scoping, so an account-wide blast radius; no expiry |
-| **App / bot identity** | org-wide automation at scale, short-lived tokens | overkill for a single server |
+| **Eingegrenzter Token** *(Normalfall)* | mehrere Repos; Konto und/oder Organisation; möglichst wenig Rechte; Ablauf, Widerruf und Nachvollziehbarkeit erwünscht | Bearer-Token (sicher verwahren), läuft ab (Rotation), HTTPS-Remote |
+| **Deploy-Key** | der Server berührt **genau ein** Repo, größte Abschottung, kein Ablauf | ein Schlüssel je Repo; skaliert nicht auf viele |
+| **Konto-SSH-Schlüssel** | eine vollständig vertrauenswürdige Admin-Kiste ohne sensible oder Kunden-Repos | keine Eingrenzung, also Wirkung auf das ganze Konto; kein Ablauf |
+| **App- oder Bot-Identität** | Automatisierung über eine ganze Organisation, kurzlebige Tokens | für einen einzelnen Server überdimensioniert |
 
-### What the scoped token is called, per forge
+### Wie der eingegrenzte Token je Forge heißt
 
-The one thing to check before you start, because the granularity differs and it decides how tightly you
-can scope:
+Das Einzige, was du vorher nachsehen solltest, weil die Feinheit sich unterscheidet und darüber entscheidet,
+wie eng du eingrenzen kannst:
 
-| Forge | Name | Scoping |
+| Forge | Name | Eingrenzung |
 |---|---|---|
-| GitHub | Fine-grained personal access token | per repository, per permission |
-| GitLab | Project or group access token (personal access token as the wider fallback) | per project or group, by scope |
-| Gitea / Forgejo | Access token with selected scopes | by scope; repository-level granularity varies by version |
-| Bitbucket | Repository, project, or workspace access token | per resource, by scope |
+| GitHub | Fine-grained personal access token | je Repository, je Berechtigung |
+| GitLab | Project- oder Group-Access-Token (Personal Access Token als weiterer Rückfall) | je Projekt oder Gruppe, nach Scope |
+| Gitea / Forgejo | Access-Token mit gewählten Scopes | nach Scope; die Feinheit auf Repository-Ebene hängt von der Version ab |
+| Bitbucket | Repository-, Project- oder Workspace-Access-Token | je Ressource, nach Scope |
 
-Read the forge's own token documentation for the current permission names. They change, and a token
-created with the wrong permission fails at push time with an error that rarely names the missing one.
+Lies die Token-Dokumentation der Forge für die aktuellen Namen der Berechtigungen. Sie ändern sich, und ein
+Token mit der falschen Berechtigung scheitert erst beim Push, mit einer Fehlermeldung, die die fehlende
+selten benennt.
 
-### Mapping by server type
-- **Simple server** (touches a few clearly scoped repos): one **scoped token** each, limited exactly to the
-  needed repos, read-write on contents and nothing else, with an expiry (e.g. 90 days). For one especially
-  sensitive repo, use a **deploy key** instead.
-- **Dev / org server** (works across a personal account **and** an organization): **two** tokens to keep
-  them apart, one per owner, the org one with owner approval and no admin or secrets permissions. Avoid an
-  account SSH key here.
+### Zuordnung nach Servertyp
 
-## Default: scoped token plus credential-store
+- **Einfacher Server** (berührt wenige, klar umrissene Repos): je ein **eingegrenzter Token**, genau auf die
+  nötigen Repos begrenzt, lesend und schreibend auf Inhalte und sonst nichts, mit Ablauf (etwa 90 Tage). Für
+  ein besonders sensibles Repo stattdessen einen **Deploy-Key**.
+- **Entwicklungs- oder Organisationsserver** (arbeitet über ein persönliches Konto **und** eine
+  Organisation): **zwei** Tokens, um beides getrennt zu halten, einer je Eigentümer, der für die
+  Organisation mit Freigabe des Inhabers und ohne Admin- oder Secrets-Berechtigungen. Einen
+  Konto-SSH-Schlüssel hier vermeiden.
 
-Worked through on GitHub. On another forge the steps are the same in order and meaning; only the menu path
-and the permission names change.
+## Normalfall: eingegrenzter Token plus credential-store
+
+Durchgespielt an GitHub. Auf einer anderen Forge sind die Schritte in Reihenfolge und Bedeutung dieselben;
+nur der Menüpfad und die Namen der Berechtigungen ändern sich.
 
 1. GitHub, Settings, Developer settings, **Fine-grained personal access tokens**, *Generate new token*.
-2. **Resource owner:** your personal account (or the org).
-3. **Repository access:** *Only select repositories*, the needed repos (a dev server may need *All*).
-4. **Permissions:** `Contents: Read and write`, `Metadata: Read-only` (Metadata is mandatory).
-5. **Expiration:** e.g. 90 days; note a rotation reminder.
-6. Copy the token **once**, store it safely, **never** in the repo, **never** in the chat:
+2. **Resource owner:** dein persönliches Konto (oder die Organisation).
+3. **Repository access:** *Only select repositories*, die nötigen Repos (ein Entwicklungsserver braucht
+   womöglich *All*).
+4. **Permissions:** `Contents: Read and write`, `Metadata: Read-only` (Metadata ist Pflicht).
+5. **Expiration:** etwa 90 Tage; eine Erinnerung zur Rotation notieren.
+6. Den Token **einmal** kopieren, sicher verwahren, **nie** ins Repo, **nie** in den Chat:
 
 ```bash
-# credential-store to a 600 file (no plaintext in the repo)
-git config --global credential.helper 'store --file=/home/<user>/.git-credentials'
-chmod 600 /home/<user>/.git-credentials
-# On the first push/pull: username = your forge login, password = the token, which then gets stored
+# credential-store in eine 600er Datei (kein Klartext im Repo)
+git config --global credential.helper 'store --file=/home/<benutzer>/.git-credentials'
+chmod 600 /home/<benutzer>/.git-credentials
+# Beim ersten Push oder Pull: Benutzername = dein Login der Forge, Passwort = der Token, der dann
+# gespeichert wird
 ```
 
-> Also keep the token in a secrets vault (e.g. a password manager) for recovery after device or server loss.
+> Leg den Token zusätzlich in einen Passwortspeicher, damit er nach Verlust von Gerät oder Server wieder da
+> ist.
 
-> **Watch out, the VS Code Remote-SSH effect:** if the server is edited over VS Code, VS Code sets
-> `GIT_ASKPASS` and, with an **empty** credential-store, automatically supplies an account-wide token
-> (instead of the scoped PAT), with no password prompt. So deposit the scoped PAT **actively** in
-> `~/.git-credentials` (the `store` helper wins over `GIT_ASKPASS`). Check with
+> **Achtung, der Effekt von VS Code Remote-SSH:** wird der Server über VS Code bearbeitet, setzt VS Code
+> `GIT_ASKPASS` und liefert bei **leerem** credential-store automatisch einen kontoweiten Token (statt des
+> eingegrenzten PAT), ohne nach einem Passwort zu fragen. Hinterleg den eingegrenzten PAT deshalb **aktiv**
+> in `~/.git-credentials` (der `store`-Helper schlägt `GIT_ASKPASS`). Prüfen mit
 > `env | grep -E 'ASKPASS|VSCODE_GIT'`.
 
-Clone and connection test:
+Klonen und Verbindungstest:
+
 ```bash
-git clone https://github.com/<owner>/<repo>.git ~/repos/<repo>
-git ls-remote https://github.com/<owner>/<repo>.git >/dev/null && echo "OK"
+git clone https://github.com/<eigentuemer>/<repo>.git ~/repos/<repo>
+git ls-remote https://github.com/<eigentuemer>/<repo>.git >/dev/null && echo "OK"
 ```
 
-## Alternative A: deploy key (exactly one repo)
+## Alternative A: Deploy-Key (genau ein Repo)
+
 ```bash
 ssh-keygen -t ed25519 -f ~/.ssh/deploy_<repo> -C "<host> deploy <repo>"
 cat ~/.ssh/deploy_<repo>.pub   # GitHub: Repo, Settings, Deploy keys, Add (Allow write access)
 ```
-Add an SSH config entry and clone via `git@github.com-<repo>:<owner>/<repo>.git` (a host alias per key).
 
-Every forge has deploy keys under the repository's own settings, and the host-alias trick above is plain
-SSH config, so it carries over unchanged. Note the one difference worth checking: some forges refuse to
-register the same deploy key on two repositories, which is what forces one key per repo.
+Einen Eintrag in der SSH-Konfiguration ergänzen und über
+`git@github.com-<repo>:<eigentuemer>/<repo>.git` klonen (ein Host-Alias je Schlüssel).
 
-## Alternative B: account SSH key (only a fully trusted box with no customer repos)
+Deploy-Keys liegen auf jeder Forge in den Einstellungen des Repositorys, und der Host-Alias oben ist reine
+SSH-Konfiguration, überträgt sich also unverändert. Ein Unterschied lohnt die Nachfrage: manche Forges
+lehnen denselben Deploy-Key auf zwei Repositorys ab, und genau das erzwingt einen Schlüssel je Repo.
+
+## Alternative B: Konto-SSH-Schlüssel (nur auf einer voll vertrauenswürdigen Kiste ohne Kunden-Repos)
+
 ```bash
 ssh-keygen -t ed25519 -f ~/.ssh/github_<host> -C "<host> github key"
 cat ~/.ssh/github_<host>.pub   # GitHub: Settings, SSH and GPG keys, New SSH key
 ```
+
 `~/.ssh/config`:
+
 ```
 Host github.com
     HostName github.com
@@ -101,6 +116,7 @@ Host github.com
     IdentityFile ~/.ssh/github_<host>
     AddKeysToAgent yes
 ```
-Test: `ssh -T git@github.com` (expected: `Hi <your-login>! ...`). Clone via
-`git@github.com:<owner>/<repo>.git`. On another forge, substitute its host throughout; the greeting on a
-successful test differs in wording but the mechanism is identical.
+
+Test: `ssh -T git@github.com` (erwartet: `Hi <dein-login>! ...`). Klonen über
+`git@github.com:<eigentuemer>/<repo>.git`. Auf einer anderen Forge durchgehend deren Host einsetzen; die
+Begrüßung bei erfolgreichem Test ist anders formuliert, der Mechanismus derselbe.

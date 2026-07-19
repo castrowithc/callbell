@@ -1,106 +1,109 @@
 ---
 name: checkup
 description: >
-  Periodic all-round health check of a server: system (kernel/reboot/disk/time/resources),
-  pending updates, hardening drift, backup liveness, checked against the documented facts, result as a
-  dated report. For the routine question "is everything still running smoothly". Start it by typing
-  /callbell-sysadmin:checkup.
+  Regelmäßiger Rundum-Check eines Servers: System (Kernel, Neustart, Platte, Zeit, Ressourcen), offene
+  Updates, Abweichungen von der Härtung, Lebendigkeit der Sicherung, verglichen mit dem, was über den Host
+  festgehalten ist, als datierter Bericht. Für die Routinefrage "läuft noch alles rund". Starte es, indem
+  du /callbell-sysadmin:checkup tippst.
 type: skill
 edit: locked
 disable-model-invocation: true
 ---
 
-# Server Checkup: Operational Sweep, Drift, Report
+# Server-Checkup: Rundgang, Abweichung, Bericht
 
-Periodic health check of an already set-up server. **Read-only operation** plus a report, it does **not**
-change the system configuration. Findings are reported and fixed only on request.
+Regelmäßige Prüfung eines bereits eingerichteten Servers. **Nur lesend** plus ein Bericht, die
+Systemkonfiguration wird **nicht** verändert. Befunde werden gemeldet und nur auf Wunsch behoben.
 
-**Boundary (not a duplicate):** The target values of the hardening (SSH, firewall, fail2ban, users) are
-defined by `callbell-sysadmin:harden`; the backup setup is defined by `callbell-sysadmin:backup`. This skill
-**checks** the running state against that baseline and against the per-server documented actual facts, it
-does not redefine the baseline. For a deeper audit or re-hardening, load `callbell-sysadmin:harden`. For a
-host you suspect has been touched, `callbell-sysadmin:incident` is the sweep that asks that question.
+**Abgrenzung, damit hier nichts doppelt steht:** Die Zielwerte der Härtung (SSH, Firewall, fail2ban,
+Benutzer) legt `callbell-sysadmin:harden` fest, den Aufbau der Sicherung `callbell-sysadmin:backup`. Dieser
+Skill **prüft** den laufenden Zustand gegen diese Baseline und gegen das, was über den Host festgehalten
+ist; er definiert die Baseline nicht neu. Für eine tiefere Prüfung oder erneutes Härten lade
+`callbell-sysadmin:harden`. Bei einem Host, von dem du vermutest, dass jemand daran war, stellt
+`callbell-sysadmin:incident` genau diese Frage.
 
-## Procedure
+## Vorgehen
 
-1. **Load the identity and target state.** The domain named at session start (the `<host>/` folder) is where
-   this server's documented actual state lives: `framework.md` for how it is run, `index.md` for what is on
-   it, including the hardening and backup entries. That is the reference the sweep is compared against. The
-   generic target standards for hardening/backups are defined by the skills `callbell-sysadmin:harden` and
-   `callbell-sysadmin:backup`. A previous report in the domain serves as a format template.
-2. **Run the sweep.** Run this skill folder's `checkup.sh` resource (read-only, gathers all metrics in one
-   pass):
+1. **Identität und Sollzustand laden.** Die beim Sitzungsstart genannte Domäne (Ordner `<host>/`) hält
+   fest, was über diesen Server bekannt ist: `framework.md`, wie er betrieben wird, `index.md`, was auf ihm
+   steht, samt der Einträge zu Härtung und Sicherung. Das ist die Vergleichsgrundlage für den Rundgang. Die
+   allgemeinen Zielstandards für Härtung und Sicherung liegen in den Skills `callbell-sysadmin:harden` und
+   `callbell-sysadmin:backup`. Ein früherer Bericht in der Domäne dient als Formatvorlage.
+2. **Den Rundgang laufen lassen.** Führ die Begleitdatei `checkup.sh` dieses Skill-Ordners aus (nur lesend,
+   erhebt alle Kennzahlen in einem Durchgang):
    ```bash
    sudo bash checkup.sh
    ```
-   Distro/tool deviations are caught in the script (`command -v` guards); on non-systemd or non-UFW
-   servers, fill in the missing blocks manually with the distro equivalent (firewalld/nftables, Plesk
-   firewall, cron instead of timers).
-3. **Compare against the target state (drift).** Compare each block with the per-server documented
-   security/backup state and the generic standard (`callbell-sysadmin:harden`/`callbell-sysadmin:backup`). Any
-   deviation = a finding. Typical drift: an SSH value changed, a jail inactive, a timer disabled, an
-   archive older than one interval, a disk threshold, running kernel != newest installed without a reboot
-   plan.
-4. **Assess.** Per finding, a severity plus whether action is needed. Security updates from the
-   unattended-upgrades allowlist (`*-security`) are **not** a finding as long as u-u is active, they are
-   installed automatically; just mention them.
-5. **Write the report.** A new dated report file in the server's report area (`type: knowledge`,
-   `edit: shared`). Schema below. **No secrets** in the report (webhook URLs/keys/IPs used sparingly).
-6. **Handle findings.** Fix only on explicit approval. The actual-facts files and the server overlay are
-   `edit: locked`; after a fix, update the affected actual-facts file or the server's check history only
-   **on instruction**.
+   Abweichungen bei Distribution und Werkzeugen fängt das Skript ab (`command -v`-Wächter); auf Servern
+   ohne systemd oder ohne UFW ergänzt du die fehlenden Blöcke von Hand mit dem Gegenstück der Distribution
+   (firewalld/nftables, Plesk-Firewall, cron statt Timer).
+3. **Gegen den Sollzustand vergleichen (Abweichung).** Vergleich jeden Block mit dem, was über Sicherheit
+   und Sicherung dieses Servers festgehalten ist, und mit dem allgemeinen Standard
+   (`callbell-sysadmin:harden`/`callbell-sysadmin:backup`). Jede Abweichung ist ein Befund. Typisch: ein
+   geänderter SSH-Wert, ein inaktives Jail, ein abgeschalteter Timer, ein Archiv älter als ein Intervall,
+   eine Schwelle bei der Plattenbelegung, laufender Kernel ungleich neuestem installiertem ohne Neustartplan.
+4. **Bewerten.** Je Befund eine Schwere und ob Handlungsbedarf besteht. Sicherheitsupdates aus der
+   Freigabeliste von unattended-upgrades (`*-security`) sind **kein** Befund, solange u-u aktiv ist, sie
+   werden automatisch eingespielt; erwähne sie nur.
+5. **Den Bericht schreiben.** Eine neue, datierte Berichtsdatei in der Domäne dieses Hosts
+   (`type: knowledge`, `edit: shared`). Aufbau siehe unten. **Keine Geheimnisse** im Bericht (Webhook-
+   Adressen, Schlüssel und IPs sparsam).
+6. **Mit Befunden umgehen.** Behebe nur nach ausdrücklicher Freigabe. Die festgehaltenen Tatsachen und der
+   Rahmen des Hosts sind `edit: locked`; nach einer Behebung aktualisierst du die betroffene Datei oder die
+   Prüfhistorie des Hosts nur **auf Anweisung**.
 
-## What is checked
+## Was geprüft wird
 
-| Area | Metrics |
+| Bereich | Kennzahlen |
 |---|---|
-| System | Uptime; running vs. newest installed kernel; `reboot-required` flag; timezone + NTP sync; disk usage of `/` |
-| Resources | RAM/swap usage; top CPU/RAM processes |
-| Services | Running services, compared against the documented `services` facts (unexpected/missing = a finding) |
-| Updates | Total pending; of which `*-security`; `held` packages; last u-u run |
-| SSH | Effective values via `sshd -T` (RootLogin, PasswordAuth, MaxAuthTries, LoginGraceTime, ClientAlive*, X11, AllowUsers, Port) |
-| Firewall | UFW status + open ports (or firewalld/nftables) |
-| fail2ban | Active jails; `dbpurgeage`; currently/total banned per jail |
-| Users | UID-0 accounts != root; sudo/wheel members |
-| Logins | Recent logins; failed SSH logins + top source IPs |
-| System updates | `unattended-upgrades` active; auto-reboot time |
-| Backup | `borgmatic.timer` active + next run; last run result; newest archive + gap check |
+| System | Laufzeit; laufender gegen neuesten installierten Kernel; `reboot-required`-Merker; Zeitzone und NTP-Abgleich; Belegung von `/` |
+| Ressourcen | RAM- und Swap-Belegung; die stärksten CPU- und RAM-Prozesse |
+| Dienste | laufende Dienste, verglichen mit den festgehaltenen Diensten (unerwartet oder fehlend ist ein Befund) |
+| Updates | offene insgesamt; davon `*-security`; zurückgehaltene Pakete; letzter u-u-Lauf |
+| SSH | wirksame Werte über `sshd -T` (RootLogin, PasswordAuth, MaxAuthTries, LoginGraceTime, ClientAlive*, X11, AllowUsers, Port) |
+| Firewall | UFW-Status und offene Ports (oder firewalld/nftables) |
+| fail2ban | aktive Jails; `dbpurgeage`; aktuell und insgesamt gesperrt je Jail |
+| Benutzer | Konten mit UID 0 außer root; Mitglieder von sudo/wheel |
+| Anmeldungen | jüngste Anmeldungen; fehlgeschlagene SSH-Anmeldungen und häufigste Quell-IPs |
+| Systemupdates | `unattended-upgrades` aktiv; Zeit für automatischen Neustart |
+| Sicherung | `borgmatic.timer` aktiv und nächster Lauf; Ergebnis des letzten Laufs; neuestes Archiv und Lückenprüfung |
 
-`/etc/shadow` is deliberately **not** read (safety rule); an empty-password audit only on explicit request.
-Deeper forensics (authorized_keys across all users, cron and unit audit, recursive file-change scan,
-processes and outbound connections) is not part of this sweep, because it answers a different question.
-If anything here looks like someone was on the host, that is the suspicion path: `callbell-sysadmin:incident`.
+`/etc/shadow` wird bewusst **nicht** gelesen (Sicherheitsregel); eine Prüfung auf leere Passwörter nur auf
+ausdrückliche Anforderung. Tiefere Forensik (authorized_keys über alle Benutzer, Prüfung von cron und Units,
+rekursive Suche nach Dateiänderungen, Prozesse und ausgehende Verbindungen) gehört nicht in diesen Rundgang,
+weil sie eine andere Frage beantwortet. Sieht hier etwas danach aus, als sei jemand auf dem Host gewesen,
+ist das der Verdachtspfad: `callbell-sysadmin:incident`.
 
-## Report Schema
+## Aufbau des Berichts
 
 ```markdown
 ---
 description: >
-  Server checkup report YYYY-MM-DD: all-round health check, result snapshot.
+  Server-Checkup-Bericht JJJJ-MM-TT: Rundum-Check, Momentaufnahme des Ergebnisses.
 type: knowledge
 edit: shared
-created: YYYY-MM-DD
-updated: YYYY-MM-DD
+created: JJJJ-MM-TT
+updated: JJJJ-MM-TT
 ---
 
-# Server Checkup: YYYY-MM-DD
+# Server-Checkup: JJJJ-MM-TT
 
-## Summary
-<1-3 sentences: overall picture, number of findings, drift yes/no.>
+## Zusammenfassung
+<1 bis 3 Sätze: Gesamtbild, Zahl der Befunde, Abweichung ja/nein.>
 
 ## System
-### [OK|INFO|FINDING|FIXED] <title>
-- <finding with number/evidence>
+### [OK|INFO|BEFUND|BEHOBEN] <Titel>
+- <Befund mit Zahl oder Beleg>
 
-## Hardening
+## Härtung
 ...
 
-## Backup
+## Sicherung
 ...
 
-## Open Items
-- [ ] <what remains, with date/condition>, or "None."
+## Offene Punkte
+- [ ] <was aussteht, mit Datum oder Bedingung>, oder "Keine."
 ```
 
-Markers: `[OK]` conform · `[INFO]` worth mentioning, no action needed · `[FINDING]` deviation still open ·
-`[FIXED]` corrected in this session.
+Marker: `[OK]` konform · `[INFO]` erwähnenswert, kein Handlungsbedarf · `[BEFUND]` Abweichung noch offen ·
+`[BEHOBEN]` in dieser Sitzung korrigiert.
