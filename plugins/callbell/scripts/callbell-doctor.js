@@ -88,6 +88,27 @@ if (!has('git', ['lfs', 'version'])) {
     + 'optional, not a defect.');
 }
 
+// The host appends an attribution trailer to every commit message unless told not to, and the commit
+// skill forbids one. Two norms pointing opposite ways is a fight the skill loses eventually: it has to
+// win at every single commit, the setting has to be set once. So this reports the setting rather than
+// relying on vigilance. Read-only — this is the user's own host configuration and callbell does not
+// write into it. Absent ~/.claude/ means the user is not on this host, so there is nothing to say.
+const hostSettings = path.join(os.homedir(), '.claude', 'settings.json');
+if (fs.existsSync(path.dirname(hostSettings))) {
+  let host = {};
+  try { host = JSON.parse(fs.readFileSync(hostSettings, 'utf8')); } catch { /* absent or invalid */ }
+  // Name what is missing, never what is set: half-configured has to read differently from untouched,
+  // or the user who already set one of the two concludes their setting had no effect.
+  const want = [];
+  if (!(host.attribution && host.attribution.commit === '')) want.push('"attribution": {"commit": "", "pr": ""}');
+  if (host.includeGitInstructions !== false) want.push('"includeGitInstructions": false');
+  if (want.length) {
+    notes.push('attribution: the host adds commit text of its own unless told not to. In '
+      + hostSettings + ' set ' + want.join(' and ') + '. Takes effect for commits at once, for the '
+      + 'instruction itself in the next session.');
+  }
+}
+
 // --- user-level decisions ---------------------------------------------------
 // Machine-wide, agent-independent, and deliberately outside ~/.claude/. It holds what the user has
 // DECIDED, never what was found. No paths go in it: a value that needs a path to be meaningful
