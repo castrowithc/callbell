@@ -16,9 +16,14 @@
 //           The runtime has caught up: field-verified on 2026-07-20, plugin 0.1.18, Codex on Windows.
 //           The manual entry is therefore gone, and --rules is only honoured for anyone still running one.
 //           One gate is left, and it has no Claude equivalent: a plugin-bundled hook is non-managed, so
-//           Codex skips it until the user trusts it via `/hooks`. Trust hangs on the hook's hash, so
-//           every published version costs that freeing again and the first session after an upgrade
-//           runs without any of this. Nothing injected here may be a precondition for a skill.
+//           Codex skips it until the user trusts it via `/hooks`. Trust hangs on the hash of the hook
+//           DEFINITION — the command entry in callbell-hooks.json — NOT of this script's contents. So an
+//           update that only changes this file keeps the trust: verified 2026-07-21 against Codex's hook
+//           docs (learn.chatgpt.com/docs/hooks) and the owner's own install, where plugins auto-update and
+//           the hook stays trusted across versions. The gate therefore costs ONCE, at the very first install
+//           before the first trust — a version bump does not re-trigger it. It would return only if the
+//           command string in callbell-hooks.json changed, so that string stays fixed. For that one
+//           first-ever session before any trust, nothing injected here may be a precondition for a skill.
 //           Root via stdin JSON {cwd}. Codex has no Markdown rules folder, so the norms from
 //           .claude/rules/ are injected here as well.
 //   Plugin (ambient mode): installed per device and started in an arbitrary or empty folder.
