@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "callbell-dev",
   "displayName": "Callbell Dev",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Code pack for callbell: a lazy senior developer who builds the simplest thing that works, plus the review, audit and debt skills that check it.",
   "author": { "name": "Callbell", "url": "https://github.com/castrowithc" },
   "homepage": "https://github.com/castrowithc/callbell",
