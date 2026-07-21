@@ -56,8 +56,8 @@ berichtet **nur Fehlendes**; was da ist, taucht nicht auf.
 wenn es vorher entstanden ist. Wer hier zuerst berichtet, berichtet über einen Ordner, den er gleich
 selbst hätte anlegen sollen, und hört dann auf.
 
-Meldet das Skript ein fehlendes Gerüst oder eine fehlende `.gitignore`, **lege sie sofort an**. Ohne
-Rückfrage, ohne Ankündigung, im selben Zug:
+Meldet das Skript ein fehlendes Gerüst, eine fehlende `.gitignore` oder ein fehlendes Ruleset, **lege alles
+sofort an**. Ohne Rückfrage, ohne Ankündigung, im selben Zug:
 
 ```
 node <plugin-root>/scripts/callbell-doctor.js --apply
@@ -65,14 +65,18 @@ node <plugin-root>/scripts/callbell-doctor.js --apply
 
 Das Skript kopiert nur, was **fehlt**. Es vergleicht nie Inhalte, überschreibt nie und hängt an die
 `.gitignore` an, statt sie zu ersetzen — die Zeilen darin gehören dem Nutzer, und sie zu überschreiben
-wäre Datenverlust.
+wäre Datenverlust. Fehlen **beide** Ruleset-Dateien, legt `--apply` sie mit an: `AGENTS.md` aus der Vorlage
+trägt den Inhalt, `CLAUDE.md` ist die eine Zeile `@AGENTS.md`. Liegt schon eines von beiden, rührt es keins
+an — das gehört dem Nutzer.
 
-Drei Befunde brauchen dagegen eine Entscheidung und werden **gefragt, nie getan**:
+Zwei Befunde brauchen dagegen eine Entscheidung und werden **gefragt, nie getan**:
 - **kein Git-Repo** — biete `git init` an.
 - **Git-Identität fehlt** — frage, welchen Namen und welche E-Mail die Commits tragen sollen, üblich der
   GitHub-Name und die No-Reply-Adresse. Nimm nie eine Identität aus der Session und erfinde nie eine.
   Biete global (`--global`) oder nur für dieses Repo an.
-- **kein Ruleset** — siehe Schritt 3.
+
+Das Ruleset ist damit als leeres Gerüst da; **gefragt** wird nur sein *Inhalt* — Zweck und Rollen —, und der
+wird nachgetragen, siehe Schritt 3. Bleibt er zunächst aus, ist das kein Grund, etwas nicht anzulegen.
 
 Will der Nutzer eine Prüfung dauerhaft loswerden (typisch `git lfs`), trag ihren Schlüssel in
 `~/.callbell/settings.json` unter `mute` ein: `{"mute": ["git lfs"]}`. Dort stehen **Entscheidungen des
@@ -85,8 +89,8 @@ Zwei Zeilen, in der Sprache des Nutzers, ohne die Skriptzeilen zu zitieren. Erst
 was fehlt, jeweils mit Namen statt in Fließtext:
 
 ```
-✅ Angelegt: __callbell__/, .gitignore
-❗ Fehlt: Git-Repo, Ruleset (AGENTS.md / CLAUDE.md)
+✅ Angelegt: __callbell__/, .gitignore, AGENTS.md, CLAUDE.md
+❗ Fehlt: Git-Repo
 
 Mehr dazu: callbell:help
 ```
@@ -105,19 +109,16 @@ Schritt 1, und ein `👍` davor genügt.
 Der Agent braucht zwei Dinge über das Gerüst hinaus: **was dieses Repo ist** und **mit wem er arbeitet**.
 Beides lebt im Ruleset des Nutzers (`AGENTS.md` / `CLAUDE.md`), nicht in einer callbell-eigenen Datei.
 
-**Erst die Zieldatei bestimmen, dann lesen, dann fragen.** Das Skript sagt, welche Rulesets es gibt; welche
-davon die inhaltliche ist, entscheidest du:
+**Hier wird nur Inhalt nachgetragen, keine Datei mehr angelegt** — die liegen seit Schritt 2. Bestimme die
+inhaltliche Datei, lies sie, frag nur nach dem, was fehlt. Das Skript sagt, welche Rulesets es gibt:
 
 - **Genau eine da** (`AGENTS.md` oder `CLAUDE.md`) — die ist es.
 - **Beide da und eine importiert die andere** (eine Zeile, die nur aus `@datei.md` besteht) — dann gilt die
   importierte. Die importierende ist eine Weiche, kein Inhalt, und etwas dort anzuhängen schreibt am
-  eigentlichen Ruleset vorbei.
+  eigentlichen Ruleset vorbei. Das ist auch der Fall eines frisch angelegten Repos: Schritt 2 hat
+  `CLAUDE.md` als `@AGENTS.md`-Weiche geschrieben, also ist `AGENTS.md` die inhaltliche.
 - **Beide da, ohne Verbindung** — frag, welche gilt. Zwei Rulesets nebeneinander sind eine Aussage über das
   Repo, die du nicht raten kannst.
-- **Keine da** — lege **beide** an: `AGENTS.md` aus `<plugin-root>/scaffold/agents-template.md`
-  trägt den Inhalt, und die `CLAUDE.md` daneben besteht aus der einen Zeile `@AGENTS.md`. Codex liest nur
-  `AGENTS.md`, Claude bevorzugt `CLAUDE.md`; die Weiche bedient damit beide Hosts, ohne den Inhalt zu
-  doppeln. Gedoppelt wäre er sofort zweierlei, sobald einer der beiden gepflegt wird.
 
 **Lies die Zieldatei, bevor du fragst, und frag nur nach dem, was fehlt.** Zweck und Rollen sind zwei
 getrennte Befunde, nicht einer:
@@ -128,7 +129,9 @@ getrennte Befunde, nicht einer:
 - **Nichts davon steht da** — beide Fragen, siehe unten.
 
 Ergänzt wird immer durch **Anhängen, nie durch Ersetzen**. Die Datei gehört dem Nutzer, dieselbe Regel wie
-bei der `.gitignore`. Geschrieben wird erst nach Bestätigung.
+bei der `.gitignore`. Geschrieben wird erst nach Bestätigung. **Gibt der Nutzer den Inhalt noch nicht** („nur
+ein Testprojekt, Infos folgen"), ist das kein Grund zu drängen: die Dateien liegen als Vorlage, du trägst
+nach, wenn es kommt.
 
 Das Gespräch ist kurz, höchstens zwei Fragen, und die auf einmal. **Stelle sie als Text, nie über ein
 Auswahlwerkzeug.** Beide Antworten sind frei, und vorgegebene Optionen legten dem Nutzer sein eigenes
@@ -139,8 +142,9 @@ Projekt in den Mund.
 2. **Rollen und Stil** — wer der Nutzer ist, wie eigenständig der Agent handeln soll, und die zwei
    getrennten Achsen Ausführlichkeit (knapp oder ausführlich) und Ton (direkt oder warm).
 
-Die **Interaktionssprache** wird hier nicht gefragt: sie gilt pro Nutzer über alle Projekte und lebt in
-seiner maschinenlokalen Agent-Datei, worum sich `callbell-language` kümmert.
+Die **Interaktionssprache** wird hier nicht gefragt und von callbell nicht verwaltet: sie gilt pro Nutzer
+über alle Projekte und lebt in seiner maschinenlokalen Agent-Datei (`~/.claude/CLAUDE.md`,
+`~/.codex/AGENTS.md`). Wie man sie dort setzt, steht in der README.
 
 ## 4. Abschluss
 

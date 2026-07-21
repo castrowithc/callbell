@@ -44,7 +44,8 @@ codex plugin add callbell@callbell
 Unter Codex folgt ein Handgriff: **tippe `/hooks` und gib den callbell-Hook frei.** Codex behandelt Hooks,
 die in einem Plugin stecken, als nicht verwaltet und überspringt sie, bis du die Definition gesehen und
 freigegeben hast. Bis dahin funktionieren zwar die Skills, aber es gibt keine Normen, keinen Projektkontext
-und keine Linse. Die Freigabe hängt am Inhalt des Hooks, eine neue Version fragt also noch einmal.
+und keine Linse. Die Freigabe hängt an der Registrierung des Hooks, nicht an seinem Skript, also gibst du
+sie einmal bei der Erstinstallation frei und Updates behalten sie.
 
 Hast du den Hook unter einer früheren Version von Hand in `~/.codex/hooks.json` eingetragen, entferne den
 Eintrag jetzt, sonst kommt der Kontext doppelt.
@@ -86,6 +87,14 @@ Projektkontext liefert, läuft über Node — `node` muss also im PATH sein (Nix
 aber alles, was der Hook liefert, fällt weg: die Always-on-Normen, der Projektkontext und die Memory- und
 Backlog-Indizes. Die Skills selbst laden und laufen weiter, aber ohne die Normen, die sie prägen sollen.
 Ein Notbetrieb, kein unterstützter Zustand.
+
+## Interaktionssprache
+
+callbell folgt deiner Sprache ab deiner ersten Nachricht, innerhalb der Session. Damit sie über Sessions
+hinweg hält, setzt du eine Zeile in deiner **eigenen** maschinenlokalen Agent-Datei — `~/.claude/CLAUDE.md`
+unter Claude, `~/.codex/AGENTS.md` unter Codex — in deinen eigenen Worten, z. B. `Antworte mir immer auf
+Deutsch (Chat und sichtbares Reasoning).` Diese Datei gehört dir; callbell verwaltet sie nicht, und ohne
+so eine Zeile driftet die Interaktionssprache zurück ins Englische.
 
 ## Der Ordner `__callbell__`
 

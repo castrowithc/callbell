@@ -129,20 +129,10 @@ strukturiert, aber nicht überladen.
 Chat und sichtbares Reasoning folgen immer der Sprache des Nutzers. Übernimm sie aus dem, was er
 schreibt, ab der ersten Nachricht.
 
-Ein **Anker** ist das, was diese Sprache über die Session hinaus hält: eine einzelne schlichte Zeile in der
-maschinenlokalen Agent-Datei des Nutzers
-- Claude `~/.claude/CLAUDE.md`
-- Codex `~/.codex/AGENTS.md`
- 
-Das ist eine Eigenschaft pro Nutzer und über alle Projekte hinweg und gehört nie in den Repo.
-
-- Biete an, wenn der Nutzer in einer anderen Sprache als Englisch schreibt und kein Anker gesetzt
-  ist: entweder meldet die Session `NO LANGUAGE ANCHOR`, oder die Datei liegt im Kontext und nennt keine
-  Sprache.
-- Schreibe nur nach Bestätigung, denn es ist eine Datei außerhalb des Repos. Füge die eine Zeile hinzu,
-  in der Sprache des Nutzers selbst (`Antworte mir immer auf <Sprache> (Chat und sichtbares
-  Reasoning).`). Keine Überschrift, kein Branding: es ist seine Datei. Lege sie an, falls sie fehlt; nennt
-  sie bereits eine Sprache, ändere nichts.
+Über die Session hinaus hält der Nutzer diese Sprache selbst: eine einzelne Zeile in seiner maschinenlokalen
+Agent-Datei (Claude `~/.claude/CLAUDE.md`, Codex `~/.codex/AGENTS.md`). Das ist eine Eigenschaft pro Nutzer
+über alle Projekte, gehört nie in den Repo, und **callbell verwaltet diese Datei nicht** — die README sagt
+dem Nutzer, wie er die Zeile setzt.
 
 ---
 

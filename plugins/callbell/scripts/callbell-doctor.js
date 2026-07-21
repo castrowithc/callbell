@@ -173,13 +173,23 @@ if (!ignoreText.includes(zoneRule)) {
 }
 
 // --- the ruleset ------------------------------------------------------------
-// Purpose and roles live in the user's own AGENTS.md, not in a callbell-owned context folder. The
-// script only reports which of the two files exist; whether one already carries the information is
-// a reading job, and the agent is the one doing it.
+// A fresh repo gets both files laid down unconditionally, like the scaffold and the .gitignore — the files
+// never wait on the information arriving. AGENTS.md from the template carries the content; CLAUDE.md is the
+// one-line `@AGENTS.md` switch, so Claude and Codex read the same ruleset without a second copy. Purpose and
+// roles are then APPENDED to AGENTS.md when the user shares them (the skill's job). When a ruleset already
+// exists it is the user's: the script only reports it, and which file carries the content is a reading job.
 
 const rulesets = ['AGENTS.md', 'CLAUDE.md'].filter(f => fs.existsSync(path.join(target, f)));
 if (!rulesets.length) {
-  missing.push('ruleset: neither AGENTS.md nor CLAUDE.md. Purpose and roles have nowhere to live.');
+  if (!apply) {
+    missing.push('ruleset: neither AGENTS.md nor CLAUDE.md — both are created (AGENTS.md from the template, '
+      + 'CLAUDE.md as the @AGENTS.md switch); purpose and roles are then appended to AGENTS.md.');
+  } else {
+    fs.writeFileSync(path.join(target, 'AGENTS.md'),
+      fs.readFileSync(path.join(bundle, 'agents-template.md'), 'utf8'));
+    fs.writeFileSync(path.join(target, 'CLAUDE.md'), '@AGENTS.md\n');
+    created.push('AGENTS.md', 'CLAUDE.md (@AGENTS.md)');
+  }
 } else {
   notes.push('ruleset: ' + rulesets.join(' + ') + ' present — '
     + (rulesets.length > 1 ? 'decide which one carries the content, read it' : 'read it')

@@ -41,7 +41,6 @@
 // YAML frontmatter and pure @-import lines are stripped.
 
 const fs = require('fs');
-const os = require('os');
 const path = require('path');
 
 // Set when running as a plugin: the plugin's own root, carrying the bundled always-on payload.
@@ -96,24 +95,6 @@ function markdownHeavy(dir) {
 function hasScaffold(dir) {
   try { return fs.statSync(path.join(dir, '__callbell__')).isDirectory(); }
   catch { return false; }
-}
-
-// The interaction language drifts against English rules unless one line in the user's machine-local agent
-// file holds it — and most users do not know that file exists. So report when it does not.
-//
-// Only the ABSENCE of the file is reported, and only the part the agent cannot see for itself: the host
-// loads that file's contents natively, so if it exists the agent reads it and judges whether it names a
-// language. What the agent cannot notice is a file that was never there. Once an anchor exists this emits
-// nothing, so the mechanic costs nothing after the first session. `callbell-language` says what to do.
-//
-// Each host keeps the anchor in its own machine-local agent file, so this has to resolve per host
-// (see codexHost above for how the two are told apart).
-function missingLanguageAnchor() {
-  const file = codexHost
-    ? path.join(os.homedir(), '.codex', 'AGENTS.md')   // Codex
-    : path.join(os.homedir(), '.claude', 'CLAUDE.md'); // Claude
-  try { return fs.readFileSync(file, 'utf8').trim() ? null : file; }
-  catch { return file; } // missing or unreadable: same outcome for the user
 }
 
 // Derived, never declared. A stored lens needs somewhere to live and someone to keep it true, and both
@@ -209,13 +190,6 @@ push([
   ...(pluginRoot ? ['CALLBELL PLUGIN ROOT: ' + pluginRoot.split(path.sep).join('/')
     + ' (bundled scripts and templates live here)'] : []),
 ].join('\n'));
-
-// Reported only when absent, so this line disappears for good once an anchor exists.
-const anchorFile = missingLanguageAnchor();
-if (anchorFile) {
-  push('NO LANGUAGE ANCHOR: ' + anchorFile.split(path.sep).join('/') +
-    ' is missing or empty (see callbell-language).');
-}
 
 // Project STATE, and only the two indices. Purpose and roles live in the user's own AGENTS.md, which the
 // host loads natively — carrying a second copy of them from here would double the payload and give the

@@ -43,7 +43,7 @@ codex plugin add callbell@callbell
 On Codex, one step follows: **type `/hooks` and trust the callbell hook.** Codex treats hooks that ship
 inside a plugin as non-managed and skips them until you have seen and approved the definition, so until you
 do, the skills work but you get no norms, no project context, and no lens. Trust is tied to the hook's
-contents, so a new version asks you once more.
+registration, not its script, so you approve it once at first install and updates keep it.
 
 If you registered the hook by hand in `~/.codex/hooks.json` under an earlier version, remove that entry now
 or the context arrives twice.
@@ -83,6 +83,13 @@ shell's PATH). Without it nothing breaks loudly — no errors, no failed prompts
 hook delivers: the always-on norms, the project context, and the memory and backlog indexes. The skills
 themselves still load and run, but they run without the norms that are supposed to shape them. Treat it as
 a degraded mode, not a supported one.
+
+## Interaction language
+
+callbell follows your language from your first message within a session. To keep it across sessions, pin one
+line in your **own** machine-local agent file — `~/.claude/CLAUDE.md` on Claude, `~/.codex/AGENTS.md` on
+Codex — in your own words, e.g. `Always answer me in German (chat and visible reasoning).` That file is
+yours; callbell does not manage it, and without such a line the interaction language drifts back to English.
 
 ## The `__callbell__` folder
 
