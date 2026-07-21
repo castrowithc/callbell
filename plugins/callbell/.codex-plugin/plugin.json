@@ -1,6 +1,6 @@
 {
   "name": "callbell",
-  "version": "0.1.20",
+  "version": "0.1.21",
   "description": "The interface between you and the agent: shared norms, a scaffold for backlog and memory, filing, import, planning, and git.",
   "author": { "name": "Callbell" },
   "homepage": "https://github.com/castrowithc/callbell",
