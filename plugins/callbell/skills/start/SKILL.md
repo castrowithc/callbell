@@ -35,7 +35,7 @@ als `CALLBELL PLUGIN ROOT`, sonst liegt er zwei Ebenen über dieser `SKILL.md`. 
 abgetippten Pfad ein, er trägt die Versionsnummer und ist nach dem nächsten Update falsch.
 
 **Bevor du prüfst, sichere die Normen.** Hat der Sitzungskontext dich schon auf die Kern-Normen gezeigt
-(`Callbell norms. Read these files NOW`), ist nichts zu tun — der Hook hat sie geliefert. Andernfalls, und
+(`Callbell-Normen. Lies diese Dateien JETZT`), ist nichts zu tun — der Hook hat sie geliefert. Andernfalls, und
 das ist die erste Codex-Sitzung nach einem Update, in der der Trust-Gate den Hook noch schluckt, lies jetzt
 `<plugin-root>/rules/core/*.md`; ist ein `__callbell__/`-Gerüst da oder legst du es in Schritt 2 gerade an,
 dann auch `<plugin-root>/rules/scaffold/*.md`. Dieser Skill handelt in genau deren Bereich, also gelten sie

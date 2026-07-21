@@ -1,16 +1,16 @@
 ---
 description: >
-  Shared memory index for all agents: one line per memory (one fact or piece of
-  feedback per file in this folder). Takes the place of the agent's native memory,
-  which would otherwise exist only locally and per agent. That way memories stay in
-  the repo and are available to every agent. Likewise for memories that matter to the user.
+  Gemeinsamer Speicher-Index für alle Agenten: eine Zeile pro Memory (ein Fakt oder ein Stück
+  Feedback pro Datei in diesem Ordner). Tritt an die Stelle des nativen Gedächtnisses des Agenten,
+  das sonst nur lokal und pro Agent existieren würde. So bleiben Memories im
+  Repo und sind für jeden Agenten verfügbar. Ebenso für Memories, die für den Nutzer wichtig sind.
 type: memory
 edit: shared
 ---
 
 # Memory
 
-<!-- Instead of living in a single agent's native memory (only local on the machine),
-     memories are stored here in the repo and travel with the project.
+<!-- Statt im nativen Gedächtnis eines einzelnen Agenten zu leben (nur lokal auf der Maschine),
+     werden Memories hier im Repo gespeichert und reisen mit dem Projekt.
 
-     One entry per memory, one line: - [Title](file.md) - short hook. -->
+     Ein Eintrag pro Memory, eine Zeile: - [Title](file.md) - kurzer Aufhänger. -->

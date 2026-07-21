@@ -1,52 +1,53 @@
 ---
 paths: ["**/*"]
 description: >
-  Policy for Docker stacks: never output or persist secret values (reading your own compose to document it
-  is fine), no docker.sock/privileged/host-net without asking, no :latest or root, no hardcoded secrets,
-  SMTP placeholders.
+  Richtlinie für Docker-Stacks: niemals Secret-Werte ausgeben oder persistieren (das eigene Compose zum
+  Dokumentieren zu lesen ist in Ordnung), kein docker.sock/privileged/host-net ohne Rückfrage, kein :latest
+  oder root, keine hartcodierten Secrets, SMTP-Platzhalter.
 type: rule
 edit: locked
 ---
 
-# Docker Stacks: Policy and Prohibitions
+# Docker-Stacks: Richtlinie und Verbote
 
-## Principle
-Reading to understand or document is allowed. Outputting secret **values**, or writing them into the repo
-(git, then push), is forbidden. The protection is on the *values*, not the structure.
+## Grundsatz
+Lesen zum Verstehen oder Dokumentieren ist erlaubt. Secret-**Werte** auszugeben oder sie ins Repo zu
+schreiben (git, dann push), ist verboten. Der Schutz liegt auf den *Werten*, nicht auf der Struktur.
 
-## Secrets: always off-limits
-- **Never output `.env` values** in the chat or write them into a repo file.
-- **Never run `docker exec … printenv` or read the `docker inspect` env field.** Both resolve secret values.
-- Variable **names** may be named. **Values** never.
-- For a new stack, create an `.env` template with placeholders; the user fills it in.
-- Never hardcode secrets (see below). If an inline secret ever appears in a compose file, the value is
-  **not** carried over.
+## Secrets: immer tabu
+- **Niemals `.env`-Werte ausgeben** im Chat oder in eine Repo-Datei schreiben.
+- **Niemals `docker exec … printenv` ausführen oder das `docker inspect`-env-Feld lesen.** Beides löst Secret-Werte auf.
+- Variablen-**Namen** dürfen genannt werden. **Werte** nie.
+- Für einen neuen Stack ein `.env`-Template mit Platzhaltern anlegen; der Nutzer füllt es aus.
+- Niemals Secrets hartcodieren (siehe unten). Taucht je ein Inline-Secret in einer Compose-Datei auf, wird
+  der Wert **nicht** übernommen.
 
-## Reading to document: allowed
-- A stack's **own** `compose.yaml`/`*.yml` may be read to document that exact stack (image, ports, volumes,
-  env *keys*, networks).
-- `.env.example`/`.env.template` (public key templates) may be read and used. If no local template exists,
-  take the key list from the official upstream repo.
-- `.env` *values* stay out. They live in `.env`, not in the compose file.
+## Lesen zum Dokumentieren: erlaubt
+- Die **eigene** `compose.yaml`/`*.yml` eines Stacks darf gelesen werden, um genau diesen Stack zu
+  dokumentieren (Image, Ports, Volumes, env-*Keys*, Netzwerke).
+- `.env.example`/`.env.template` (öffentliche Key-Templates) dürfen gelesen und genutzt werden. Gibt es kein
+  lokales Template, nimm die Key-Liste aus dem offiziellen Upstream-Repo.
+- `.env`-*Werte* bleiben draußen. Sie leben in `.env`, nicht in der Compose-Datei.
 
-## Do not copy conventions from other stacks
-- **Do not look into other stacks' compose files to learn conventions**, not even "just to check". This is
-  about cargo-culting, not about documenting your own stack.
-- Follow your own established stack conventions instead (structure, security, patterns).
+## Keine Konventionen von anderen Stacks kopieren
+- **Schau nicht in die Compose-Dateien anderer Stacks, um Konventionen zu lernen**, nicht mal "nur zum
+  Nachsehen". Es geht um Cargo-Culting, nicht ums Dokumentieren des eigenen Stacks.
+- Folge stattdessen deinen eigenen etablierten Stack-Konventionen (Struktur, Sicherheit, Muster).
 
-## Security for new stacks
-- Check the official Docker docs or repos (image, variables, volumes).
-- **Never mount docker.sock** without explicitly asking the user.
-- **Never set privileged.**
-- **Never set `network_mode: host`** without explicitly asking.
-- **Never use `:latest` or an untagged image.** Always pin a concrete version for a reproducible state.
-- **Avoid `user: root` in the container.** Set an unprivileged user where the app allows it.
-- **Never hardcode secrets.** Only via `.env` or placeholders, never in the compose or image.
-- Determine all security-relevant app variables and configure them restrictively (registration, telemetry,
-  debug, API access, rate limiting).
+## Sicherheit für neue Stacks
+- Prüfe die offiziellen Docker-Docs oder -Repos (Image, Variablen, Volumes).
+- **Niemals docker.sock mounten** ohne den Nutzer ausdrücklich zu fragen.
+- **Niemals privileged setzen.**
+- **Niemals `network_mode: host` setzen** ohne ausdrückliche Rückfrage.
+- **Niemals `:latest` oder ein ungetaggtes Image verwenden.** Immer eine konkrete Version pinnen für einen
+  reproduzierbaren Zustand.
+- **Vermeide `user: root` im Container.** Setze einen unprivilegierten User, wo die App es erlaubt.
+- **Niemals Secrets hartcodieren.** Nur über `.env` oder Platzhalter, nie in Compose oder Image.
+- Ermittle alle sicherheitsrelevanten App-Variablen und konfiguriere sie restriktiv (Registrierung,
+  Telemetrie, Debug, API-Zugriff, Rate-Limiting).
 
 ## SMTP
-- Do not assume which domain is used for the sender.
-- Use a placeholder: `noreply@<domain>`.
-- The sender domain may differ from the service domain.
-- When unclear, ask.
+- Nimm nicht an, welche Domain als Absender genutzt wird.
+- Nutze einen Platzhalter: `noreply@<domain>`.
+- Die Absender-Domain kann von der Dienst-Domain abweichen.
+- Bei Unklarheit: fragen.

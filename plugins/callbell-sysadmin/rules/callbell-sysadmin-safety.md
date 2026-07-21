@@ -1,52 +1,54 @@
 ---
 paths: ["**/*"]
 description: >
-  Protection against destructive server operations: never reveal secrets, explain and confirm destructive
-  commands before running them, and change SSH or the firewall only under the two-connection pattern.
+  Schutz vor destruktiven Server-Operationen: niemals Geheimnisse offenlegen, destruktive Befehle vor der
+  Ausführung erklären und bestätigen lassen, und SSH oder die Firewall nur nach dem
+  Zwei-Verbindungen-Muster ändern.
 type: rule
 edit: locked
 ---
 
-# Server Safety: Guarding Against Destructive Operations
+# Server-Sicherheit: Schutz vor destruktiven Operationen
 
-On a server, commands have real and often irreversible effects. These norms hold whenever a host identity
-is declared (see the pack's session context).
+Auf einem Server haben Befehle echte und oft irreversible Wirkung. Diese Normen gelten, sobald eine
+Host-Identität deklariert ist (siehe den Session-Kontext des Packs).
 
-## Never reveal sensitive data
-- No passwords, hashes, private keys, or tokens in the chat.
-- Do not read `/etc/shadow` or `/etc/gshadow`.
-- Do not print private SSH keys (`~/.ssh/id_*` without `.pub`).
-- Do not output `.env` files in the chat.
-- Mask sensitive fields in API responses.
+## Niemals sensible Daten offenlegen
+- Keine Passwörter, Hashes, privaten Schlüssel oder Tokens im Chat.
+- `/etc/shadow` oder `/etc/gshadow` nicht lesen.
+- Private SSH-Schlüssel nicht ausgeben (`~/.ssh/id_*` ohne `.pub`).
+- `.env`-Dateien nicht im Chat ausgeben.
+- Sensible Felder in API-Antworten maskieren.
 
-## Destructive operations
-Before **any** of the following, explain what the command does, explain what happens if it goes wrong, ask
-whether a backup is needed or present, then get explicit confirmation.
+## Destruktive Operationen
+Vor **jeder** der folgenden Aktionen: erkläre, was der Befehl tut, erkläre, was passiert, wenn es
+schiefgeht, frage, ob ein Backup nötig oder vorhanden ist, und hol dann die ausdrückliche Bestätigung ein.
 
-The list: `rm -rf` (outside temporary files); `systemctl stop`/`restart` on critical services (SSH,
-firewall); `ufw disable`, `iptables -F`; `userdel`, `usermod`, `passwd`; `visudo` and sudoers changes;
-`reboot`, `shutdown`; `chmod`/`chown` on system files (`/etc/`, `/usr/`, `/var/`); package-manager
-`remove`/`purge`.
+Die Liste: `rm -rf` (außerhalb temporärer Dateien); `systemctl stop`/`restart` bei kritischen Diensten (SSH,
+Firewall); `ufw disable`, `iptables -F`; `userdel`, `usermod`, `passwd`; `visudo` und sudoers-Änderungen;
+`reboot`, `shutdown`; `chmod`/`chown` auf Systemdateien (`/etc/`, `/usr/`, `/var/`);
+Paketmanager-`remove`/`purge`.
 
-## SSH and firewall changes: the two-connection pattern
-On **every** change to SSH or the firewall:
-1. Ask the user to keep a **second** SSH session open.
-2. Apply the new configuration.
-3. Ask the user to test in the second session.
-4. Wait for confirmation.
-5. **Only then** remove the old configuration.
+## SSH- und Firewall-Änderungen: das Zwei-Verbindungen-Muster
+Bei **jeder** Änderung an SSH oder der Firewall:
+1. Bitte den Nutzer, eine **zweite** SSH-Sitzung offen zu halten.
+2. Wende die neue Konfiguration an.
+3. Bitte den Nutzer, in der zweiten Sitzung zu testen.
+4. Warte auf Bestätigung.
+5. **Erst dann** entferne die alte Konfiguration.
 
-Before any SSH or firewall change, check the one question that matters: does this block the current way in?
+Vor jeder SSH- oder Firewall-Änderung prüfe die eine Frage, die zählt: Blockiert das den aktuellen Weg
+hinein?
 
-## No unverified packages or scripts
-- Use official package sources only.
-- No `curl | bash` or `wget | sh` without inspecting the script first.
-- No PPAs or repositories from unknown sources.
-- For third-party repos, verify the GPG key and the source.
+## Keine ungeprüften Pakete oder Skripte
+- Nur offizielle Paketquellen verwenden.
+- Kein `curl | bash` oder `wget | sh`, ohne das Skript vorher zu inspizieren.
+- Keine PPAs oder Repositories aus unbekannten Quellen.
+- Bei Fremd-Repos den GPG-Schlüssel und die Quelle verifizieren.
 
-## Back up before critical changes
-Back up before changing these files (`cp {file} {file}.bak.{YYYYMMDD}`): `/etc/ssh/sshd_config`, firewall
-rules, sudoers files, service configs under `/etc/`.
+## Vor kritischen Änderungen sichern
+Vor dem Ändern dieser Dateien sichern (`cp {file} {file}.bak.{YYYYMMDD}`): `/etc/ssh/sshd_config`,
+Firewall-Regeln, sudoers-Dateien, Dienst-Konfigurationen unter `/etc/`.
 
-## File permissions
-- Never `777` on system files. Not once.
+## Dateiberechtigungen
+- Niemals `777` auf Systemdateien. Kein einziges Mal.

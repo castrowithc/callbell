@@ -1,36 +1,37 @@
 # __callbell__/
 
-This folder is the **callbell-managed layer** of your project. Everything the agent needs to steer the
-project, but that is not your own content, lives here in one place, kept apart from the root where your
-work sits.
+Dieser Ordner ist die **von callbell verwaltete Schicht** deines Projekts. Alles, was der Agent zum Steuern des
+Projekts braucht, aber nicht dein eigener Inhalt ist, liegt hier an einem Ort, getrennt von der Wurzel, wo deine
+Arbeit sitzt.
 
-## Why it exists
+## Warum es ihn gibt
 
-Agentic tools tend to scatter their state: memory in one machine-local place, notes in another, rules
-somewhere else. Move the repo or clone it on a second machine and that state is gone or out of reach. And
-in the project root it is never clear which files are yours and which belong to the tooling.
+Agentische Werkzeuge neigen dazu, ihren Zustand zu verstreuen: Gedächtnis an einem maschinenlokalen Ort, Notizen an
+einem anderen, Regeln irgendwo anders. Verschiebe das Repo oder klone es auf einer zweiten Maschine, und dieser Zustand
+ist weg oder außer Reichweite. Und in der Projektwurzel ist nie klar, welche Dateien deine sind und welche zum
+Werkzeug gehören.
 
-`__callbell__/` solves both. It **gathers the framework state in a single, self-documenting folder** that
-**travels with the repo** (versioned, except the volatile zones below), so memory, context, and the work
-trail are never lost and read the same for every agent on every machine. And it **keeps your root clean**:
-your content stays outside, the machinery stays in here, and one glance tells the two apart.
+`__callbell__/` löst beides. Es **sammelt den Framework-Zustand in einem einzigen, selbstdokumentierenden Ordner**, der
+**mit dem Repo reist** (versioniert, außer den flüchtigen Zonen unten), sodass Gedächtnis, Kontext und der
+Arbeitspfad nie verloren gehen und für jeden Agenten auf jeder Maschine gleich lesen. Und es **hält deine Wurzel sauber**:
+Dein Inhalt bleibt außerhalb, die Maschinerie bleibt hier drin, und ein Blick unterscheidet die beiden.
 
-## What is inside
+## Was drin ist
 
-Versioned managed state (carries frontmatter, travels with the repo):
-- `memory/` — durable memories that travel with the repo, opened by the index `MEMORY.md`.
-- `templates/` — scaffolds the agent copies from when it creates backlog entries and other files.
-- `backlog/` — the operational work trail (tasks, optionally grouped into projects), opened by the index `BACKLOG.md`.
+Versionierter verwalteter Zustand (trägt Frontmatter, reist mit dem Repo):
+- `memory/` — dauerhafte Memories, die mit dem Repo reisen, geöffnet durch den Index `MEMORY.md`.
+- `templates/` — Scaffolds, von denen der Agent kopiert, wenn er Backlog-Einträge und andere Dateien anlegt.
+- `backlog/` — der operative Arbeitspfad (Aufgaben, optional in Projekte gruppiert), geöffnet durch den Index `BACKLOG.md`.
 
-What this repo is and who works on it lives in your own `AGENTS.md` at the root, not in here — the agent
-reads it natively, and one place for it beats two that can disagree.
+Was dieses Repo ist und wer daran arbeitet, steht in deiner eigenen `AGENTS.md` an der Wurzel, nicht hier drin — der Agent
+liest sie nativ, und ein Ort dafür schlägt zwei, die sich widersprechen können.
 
-Zones (volatile I/O buffers, not versioned, marked by the `zone-` prefix):
-- `zone-import/` — inbound raw inputs you hand to the agent (CSV, PDF, images, notes).
-- `zone-export/` — outbound deliverables you take out of the repo, filled only on request.
+Zonen (flüchtige I/O-Puffer, nicht versioniert, gekennzeichnet durch das Präfix `zone-`):
+- `zone-import/` — eingehende Rohdaten, die du dem Agenten übergibst (CSV, PDF, Bilder, Notizen).
+- `zone-export/` — ausgehende Lieferungen, die du aus dem Repo nimmst, nur auf Anfrage gefüllt.
 
-## Working with it
+## Damit arbeiten
 
-You never sort anything in here by hand. The agent files, names, and maintains this layer by its rules.
-Drop raw material into `zone-import/` and ask the agent to process it; ask for a deliverable and it lands
-in `zone-export/`. Everything else the agent places where it belongs.
+Du sortierst hier drin nie etwas von Hand. Der Agent legt ab, benennt und pflegt diese Schicht nach seinen Regeln.
+Wirf Rohmaterial in `zone-import/` und bitte den Agenten, es zu verarbeiten; bitte um eine Lieferung, und sie landet
+in `zone-export/`. Alles Übrige legt der Agent dorthin, wo es hingehört.

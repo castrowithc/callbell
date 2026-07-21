@@ -1,81 +1,85 @@
 ---
 name: review
 description: >
-  A deliberate over-engineering pass you run on a diff or a whole repo, not an
-  automatic check and not a correctness or security review. Finds what to delete:
-  reinvented standard library, unneeded dependencies, speculative abstractions,
-  dead flexibility, one line per finding (location, what to cut, what replaces
-  it). Run it by typing /callbell-dev:review, add "repo" for a whole-tree pass.
-  The model does not start it on its own; the user owns the timing.
+  Ein bewusster Over-Engineering-Durchgang, den du auf einem Diff oder einem
+  ganzen Repo laufen lässt — kein automatischer Check und kein Correctness- oder
+  Security-Review. Findet, was zu löschen ist: nachgebaute Standardbibliothek,
+  unnötige Abhängigkeiten, spekulative Abstraktionen, tote Flexibilität, eine
+  Zeile pro Fund (Stelle, was raus muss, was es ersetzt). Starte ihn durch
+  Tippen von /callbell-dev:review, häng "repo" an für einen Durchgang über den
+  ganzen Baum. Das Modell startet ihn nicht von selbst; der Nutzer bestimmt den
+  Zeitpunkt.
 type: skill
 edit: locked
 disable-model-invocation: true
 ---
 
-Review code for unnecessary complexity. One line per finding: location, what
-to cut, what replaces it. The best outcome is getting shorter.
+Prüfe Code auf unnötige Komplexität. Eine Zeile pro Fund: Stelle, was raus muss,
+was es ersetzt. Das beste Ergebnis ist: es wird kürzer.
 
-## Scope
+## Umfang
 
-**A diff by default.** That is the common case and the cheapest one: what just
-changed, reviewed before it lands.
+**Ein Diff standardmäßig.** Das ist der Normalfall und der billigste: was sich
+gerade geändert hat, geprüft bevor es landet.
 
-**The whole tree when asked** — "review the repo", "audit this codebase", "what
-can I delete from here", or `/callbell-dev:review repo`. Same lens, same tags,
-same output; only the reading changes. Scan the tree instead of the diff and
-rank findings biggest cut first, because a repo pass has no natural order the
-way a diff does.
+**Der ganze Baum, wenn verlangt** — "review das Repo", "audit diese Codebasis",
+"was kann ich hier löschen" oder `/callbell-dev:review repo`. Gleiche Linse,
+gleiche Tags, gleicher Output; nur das Lesen ändert sich. Scanne den Baum statt
+des Diffs und sortiere die Funde nach größtem Schnitt zuerst, denn ein
+Repo-Durchgang hat keine natürliche Reihenfolge wie ein Diff.
 
-If the scope is not obvious from the invocation and a diff exists, take the
-diff and say so in one line. Do not ask.
+Ist der Umfang aus dem Aufruf nicht offensichtlich und ein Diff existiert, nimm
+den Diff und sag es in einer Zeile. Frag nicht.
 
 ## Format
 
-`L<line>: <tag> <what>. <replacement>.`, or `<file>:L<line>: ...` for
-multi-file diffs.
+`L<Zeile>: <tag> <was>. <Ersatz>.`, oder `<Datei>:L<Zeile>: ...` bei
+Diffs über mehrere Dateien.
 
 Tags:
 
-- `delete:` dead code, unused flexibility, speculative feature. Replacement: nothing.
-- `stdlib:` hand-rolled thing the standard library ships. Name the function.
-- `native:` dependency or code doing what the platform already does. Name the feature.
-- `yagni:` abstraction with one implementation, config nobody sets, layer with one caller.
-- `shrink:` same logic, fewer lines. Show the shorter form.
+- `delete:` toter Code, ungenutzte Flexibilität, spekulatives Feature. Ersatz: nichts.
+- `stdlib:` handgebautes Ding, das die Standardbibliothek mitliefert. Nenn die Funktion.
+- `native:` Abhängigkeit oder Code, der tut, was die Plattform schon tut. Nenn das Feature.
+- `yagni:` Abstraktion mit einer Implementierung, Config, die niemand setzt, Schicht mit einem Aufrufer.
+- `shrink:` gleiche Logik, weniger Zeilen. Zeig die kürzere Form.
 
-## Examples
+## Beispiele
 
-❌ "This EmailValidator class might be more complex than necessary, have you
-considered whether all these validation rules are needed at this stage?"
+❌ "Diese EmailValidator-Klasse ist vielleicht komplexer als nötig, hast du
+überlegt, ob all diese Validierungsregeln in diesem Stadium gebraucht werden?"
 
-✅ `L12-38: stdlib: 27-line validator class. "@" in email, 1 line, real validation is the confirmation mail.`
+✅ `L12-38: stdlib: 27-Zeilen-Validator-Klasse. "@" in E-Mail, 1 Zeile, echte Validierung ist die Bestätigungsmail.`
 
-✅ `L4: native: moment.js imported for one format call. Intl.DateTimeFormat, 0 deps.`
+✅ `L4: native: moment.js importiert für einen einzigen Format-Aufruf. Intl.DateTimeFormat, 0 deps.`
 
-✅ `repo.py:L88: yagni: AbstractRepository with one implementation. Inline it until a second one exists.`
+✅ `repo.py:L88: yagni: AbstractRepository mit einer Implementierung. Inline es, bis eine zweite existiert.`
 
-✅ `L52-71: delete: retry wrapper around an idempotent local call. Nothing replaces it.`
+✅ `L52-71: delete: Retry-Wrapper um einen idempotenten lokalen Aufruf. Ersatz: nichts.`
 
-✅ `L30-44: shrink: manual loop builds dict. dict(zip(keys, values)), 1 line.`
+✅ `L30-44: shrink: manuelle Schleife baut ein dict. dict(zip(keys, values)), 1 Zeile.`
 
-## Hunt (repo pass)
+## Jagd (Repo-Durchgang)
 
-Where to look when there is no diff to follow: deps the stdlib or platform
-already ships, single-implementation interfaces, factories with one product,
-wrappers that only delegate, files exporting one thing, dead flags and config,
-hand-rolled stdlib.
+Wo man schaut, wenn kein Diff zum Folgen da ist: deps, die die Stdlib oder
+Plattform schon mitliefert, Interfaces mit einer einzigen Implementierung,
+Factories mit einem Produkt, Wrapper, die nur delegieren, Dateien, die genau
+eine Sache exportieren, tote Flags und Config, handgebaute Stdlib.
 
-## Scoring
+## Bewertung
 
-End with the only metric that matters: `net: -<N> lines possible.` On a repo
-pass add the dependencies: `net: -<N> lines, -<M> deps possible.`
+Schließ mit der einzigen Kennzahl, die zählt: `net: -<N> Zeilen möglich.` Bei
+einem Repo-Durchgang häng die Abhängigkeiten an: `net: -<N> Zeilen, -<M> deps
+möglich.`
 
-If there is nothing to cut, say `Lean already. Ship.` and stop.
+Ist nichts zu schneiden, sag `Schon schlank. Ship.` und stopp.
 
-## Boundaries
+## Grenzen
 
-Scope: over-engineering and complexity only. Correctness bugs, security holes,
-and performance are explicitly out of scope. Route them to a normal review
-pass, not this one. A single smoke test or `assert`-based self-check is the
-minimum this pack asks for, not bloat, never flag it for deletion.
-Does not apply the fixes, only lists them.
-"stop" or "normal mode": revert to verbose review style.
+Umfang: ausschließlich Over-Engineering und Komplexität. Correctness-Bugs,
+Sicherheitslücken und Performance sind ausdrücklich außerhalb des Umfangs. Leite
+sie an einen normalen Review-Durchgang, nicht an diesen. Ein einzelner
+Smoke-Test oder ein `assert`-basierter Selbstcheck ist das Minimum, das dieser
+Pack verlangt, kein Bloat — markier ihn nie zum Löschen. Wendet die Fixes nicht
+an, listet sie nur.
+"stop" oder "normaler Modus": zurück zum ausführlichen Review-Stil.

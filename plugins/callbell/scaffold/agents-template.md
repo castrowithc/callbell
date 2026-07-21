@@ -1,34 +1,34 @@
 # <repo name>
 
-<!-- What callbell fills in here is the minimum an agent needs to work with you: what this repo is,
-and who it is working with. Everything else about the repo lives in the repo. -->
+<!-- Was callbell hier ausfüllt, ist das Minimum, das ein Agent braucht, um mit dir zu arbeiten: was dieses Repo ist
+und mit wem es arbeitet. Alles Weitere über das Repo lebt im Repo. -->
 
-## Purpose
-<!-- What does this exist for? One or two sentences. -->
+## Zweck
+<!-- Wofür existiert das? Ein oder zwei Sätze. -->
 
-## Visibility
-<!-- The agent assumes PUBLIC unless this says otherwise. State "private" only if it is, and note that
-private is no license to relax data protection: history persists and a private repo can be shared
-later. -->
+## Sichtbarkeit
+<!-- Der Agent nimmt ÖFFENTLICH an, sofern hier nichts anderes steht. Gib "privat" nur an, wenn es das ist, und beachte, dass
+privat kein Freibrief ist, den Datenschutz zu lockern: Historie bleibt bestehen, und ein privates Repo kann später
+geteilt werden. -->
 
-## Scope
-<!-- What is part of it, and what is deliberately not. The second half prevents more confusion than
-the first. -->
+## Umfang
+<!-- Was Teil davon ist und was bewusst nicht. Die zweite Hälfte verhindert mehr Verwirrung als
+die erste. -->
 
-## Your role
-<!-- Who you are: profession, function, or field. -->
+## Deine Rolle
+<!-- Wer du bist: Beruf, Funktion oder Fachgebiet. -->
 
-## The agent's role
-<!-- How independently should it act? Proactive advisor, implementer, sparring partner, quiet
-executor. This sets stance and initiative. -->
+## Die Rolle des Agenten
+<!-- Wie eigenständig soll er handeln? Proaktiver Berater, Umsetzer, Sparringspartner, stiller
+Ausführer. Das setzt Haltung und Initiative. -->
 
-## Style
-<!-- Two separate axes: how much (brief or detailed) and how (direct or warm). They are independent —
-brief and warm is a real combination. -->
+## Stil
+<!-- Zwei getrennte Achsen: wie viel (knapp oder ausführlich) und wie (direkt oder warm). Sie sind unabhängig —
+knapp und warm ist eine reale Kombination. -->
 
-## Special rules
-<!-- Your own directives beyond the fixed rules. Data protection is already a rule; only what goes
-beyond it belongs here. -->
+## Sonderregeln
+<!-- Deine eigenen Vorgaben über die festen Regeln hinaus. Datenschutz ist bereits eine Regel; nur was darüber
+hinausgeht, gehört hierher. -->
 
-<!-- Interaction language is not set here. It is a property of you across all projects and lives in
-your machine-local agent file (~/.claude/CLAUDE.md, ~/.codex/AGENTS.md). -->
+<!-- Die Interaktionssprache wird nicht hier gesetzt. Sie ist eine Eigenschaft von dir über alle Projekte hinweg und lebt in
+deiner maschinenlokalen Agentendatei (~/.claude/CLAUDE.md, ~/.codex/AGENTS.md). -->
