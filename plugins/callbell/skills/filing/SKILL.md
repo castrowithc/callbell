@@ -30,7 +30,7 @@ Bereichsordner sind eine **ops**-Struktur, und ihr Register ebenso. In einem ops
 legt keinen neuen Bereich ohne Freigabe an. Diese Datei wird nicht mit dem Scaffold ausgeliefert — sie
 entsteht mit dem ersten Bereich, und bis dahin gibt es keine Bereiche zu registrieren. Ein **Code**-Repo
 hat kein Bereichsregister und braucht keins: die Wurzel ist das Code-Projekt, und Dokumentation liegt unter
-`__callbell__/docs/`. Lies die Linse, bevor du zum Register greifst.
+`__callbell__/docs/`. Prüfe die Linse, bevor du zum Register greifst.
 
 ## Erst nach einer Vorlage schauen
 
