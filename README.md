@@ -86,10 +86,21 @@ a degraded mode, not a supported one.
 
 ## Interaction language
 
-callbell follows your language from your first message within a session. To keep it across sessions, pin one
-line in your **own** machine-local agent file — `~/.claude/CLAUDE.md` on Claude, `~/.codex/AGENTS.md` on
-Codex — in your own words, e.g. `Always answer me in German (chat and visible reasoning).` That file is
-yours; callbell does not manage it, and without such a line the interaction language drifts back to English.
+This is your setup, on a level with Node and git, and callbell does not take it off your hands. callbell's
+skills and norms are written in a language of their own. Without a fixed anchor an agent drifts into that
+language over time, whatever you speak. Anchor your own and it stays with you, whatever language the shipped
+skills are in.
+
+Within a session callbell follows your language from your first message anyway. To make that hold across
+sessions, pin one line in your **own** machine-local agent file (`~/.claude/CLAUDE.md` on Claude,
+`~/.codex/AGENTS.md` on Codex), in your own words, for example:
+
+> Always answer me in German (chat and visible reasoning).
+
+That file is yours. callbell does not manage it and writes nothing into it. The one place callbell does take
+a language is the entry point itself: call it with a language argument (`/callbell:start german`) and it runs
+that single pass in that language, because unlike a typed message the call otherwise carries no language
+signal. Nothing is stored.
 
 ## The `__callbell__` folder
 

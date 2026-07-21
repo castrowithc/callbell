@@ -24,6 +24,12 @@ speichert nichts zwischen.
 nie, was bereits da ist. Ein Lauf ohne Befund ist eine Zeile und der Übergang zur eigentlichen Arbeit,
 sonst ruft ihn niemand ein viertes Mal auf — und dann ist er kein Einstieg mehr.
 
+**Ein Sprach-Argument gilt nur diesem Lauf.** Wird der Skill mit einer Sprache aufgerufen (etwa
+`/callbell:start deutsch`), führe Prüfung, Rückfragen und Bericht in dieser Sprache. Ein bloßer Aufruf trägt
+kein Sprachsignal, anders als eine getippte Nachricht, und dieses Argument ersetzt es. Es gilt allein diesem
+Lauf: schreib die Sprache nirgends fest, weder ins Ruleset noch sonstwohin. Wie der Nutzer sie dauerhaft
+hält, ist seine Sache und steht in der README, siehe Schritt 3.
+
 `<plugin-root>` unten ist der Ordner, aus dem dieser Skill geladen wurde: der Sitzungskontext nennt ihn
 als `CALLBELL PLUGIN ROOT`, sonst liegt er zwei Ebenen über dieser `SKILL.md`. Setz dort nie einen
 abgetippten Pfad ein, er trägt die Versionsnummer und ist nach dem nächsten Update falsch.

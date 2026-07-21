@@ -90,11 +90,22 @@ Ein Notbetrieb, kein unterstützter Zustand.
 
 ## Interaktionssprache
 
-callbell folgt deiner Sprache ab deiner ersten Nachricht, innerhalb der Session. Damit sie über Sessions
-hinweg hält, setzt du eine Zeile in deiner **eigenen** maschinenlokalen Agent-Datei — `~/.claude/CLAUDE.md`
-unter Claude, `~/.codex/AGENTS.md` unter Codex — in deinen eigenen Worten, z. B. `Antworte mir immer auf
-Deutsch (Chat und sichtbares Reasoning).` Diese Datei gehört dir; callbell verwaltet sie nicht, und ohne
-so eine Zeile driftet die Interaktionssprache zurück ins Englische.
+Das ist deine Vorbereitung, auf einer Ebene mit Node und git, und callbell nimmt sie dir nicht ab.
+callbells Skills und Normen sind in einer eigenen Sprache geschrieben. Ohne einen festen Anker zieht ein
+Agent mit der Zeit in diese Sprache, egal welche du sprichst. Verankerst du deine eigene, bleibt er bei
+dir, egal in welcher Sprache die mitgelieferten Skills stehen.
+
+Innerhalb einer Session folgt callbell deiner Sprache ohnehin ab der ersten Nachricht. Damit das über
+Sessions hinweg hält, setzt du eine Zeile in deiner **eigenen** maschinenlokalen Agent-Datei
+(`~/.claude/CLAUDE.md` unter Claude, `~/.codex/AGENTS.md` unter Codex), in deinen eigenen Worten, zum
+Beispiel:
+
+> Antworte mir immer auf Deutsch (Chat und sichtbares Reasoning).
+
+Diese Datei gehört dir. callbell verwaltet sie nicht und schreibt nichts hinein. Die eine Stelle, an der
+callbell eine Sprache doch entgegennimmt, ist der Einstieg selbst: rufst du ihn mit einem Sprach-Argument
+auf (`/callbell:start deutsch`), führt er diesen einen Lauf in dieser Sprache, weil der Aufruf im Gegensatz
+zu einer getippten Nachricht sonst kein Sprachsignal trägt. Gespeichert wird dabei nichts.
 
 ## Der Ordner `__callbell__`
 
