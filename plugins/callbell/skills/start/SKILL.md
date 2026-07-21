@@ -14,17 +14,31 @@ edit: locked
 Der Weg hinein. Kein Diagnosewerkzeug für den Fehlerfall, sondern die Station, an der eine Sitzung in
 einem Ordner beginnt: einmal prüfen, das Fehlende ergänzen, dann arbeiten.
 
-**Er läuft jedes Mal.** Eine Abhängigkeit kann zwischen zwei Sitzungen verschwinden — ein neuer Rechner,
-eine Deinstallation, ein geänderter PATH. Deshalb wird bei jedem Lauf geprüft und nie zwischengespeichert.
+**Der Hook meldet den Zustand jede Sitzung von selbst — dieser Skill ist die Handlung, nicht die Meldung.**
+Du rufst ihn, wenn du in einem Ordner ankommst oder wenn etwas fehlt, das nur eine Handlung schließt: ein
+Gerüst anlegen, git init, Zweck und Rollen klären. Eine Abhängigkeit kann zwischen zwei Sitzungen
+verschwinden — neuer Rechner, Deinstallation, geänderter PATH —, deshalb prüft er bei jedem Lauf neu und
+speichert nichts zwischen.
 
 **Die eine Regel, an der dieser Skill hängt: in einem eingerichteten Repo sagst du eine Zeile.** Nenne
 nie, was bereits da ist. Ein Lauf ohne Befund ist eine Zeile und der Übergang zur eigentlichen Arbeit,
 sonst ruft ihn niemand ein viertes Mal auf — und dann ist er kein Einstieg mehr.
 
+`<plugin-root>` unten ist der Ordner, aus dem dieser Skill geladen wurde: der Sitzungskontext nennt ihn
+als `CALLBELL PLUGIN ROOT`, sonst liegt er zwei Ebenen über dieser `SKILL.md`. Setz dort nie einen
+abgetippten Pfad ein, er trägt die Versionsnummer und ist nach dem nächsten Update falsch.
+
+**Bevor du prüfst, sichere die Normen.** Hat der Sitzungskontext dich schon auf die Kern-Normen gezeigt
+(`Callbell norms. Read these files NOW`), ist nichts zu tun — der Hook hat sie geliefert. Andernfalls, und
+das ist die erste Codex-Sitzung nach einem Update, in der der Trust-Gate den Hook noch schluckt, lies jetzt
+`<plugin-root>/rules/core/*.md`; ist ein `__callbell__/`-Gerüst da oder legst du es in Schritt 2 gerade an,
+dann auch `<plugin-root>/rules/scaffold/*.md`. Dieser Skill handelt in genau deren Bereich, also gelten sie
+ihm ohne Ausnahme.
+
 ## 1. Prüfen (ein Aufruf)
 
 ```
-node ${CLAUDE_PLUGIN_ROOT}/scripts/callbell-doctor.js
+node <plugin-root>/scripts/callbell-doctor.js
 ```
 
 **Schlägt der Aufruf selbst fehl, ist das die Antwort: Node fehlt.** Das ist der einzige Befund, der die
@@ -36,31 +50,17 @@ braucht, damit der PATH greift. Mach ohne Node nicht weiter.
 Das Skript meldet `MISSING`, `NOTES`, `CREATED` — und `OK: nothing missing.`, wenn nichts anliegt. Es
 berichtet **nur Fehlendes**; was da ist, taucht nicht auf.
 
-## 2. Berichten und ergänzen
+## 2. Ergänzen, dann berichten
 
-Berichte in zwei Zeilen, in der Sprache des Nutzers, ohne die Skriptzeilen zu zitieren. Erst was entstanden
-ist, dann was fehlt, jeweils mit Namen statt in Fließtext:
+**In dieser Reihenfolge.** Erst tun, dann sagen: der Bericht nennt, was entstanden ist, und kann das nur,
+wenn es vorher entstanden ist. Wer hier zuerst berichtet, berichtet über einen Ordner, den er gleich
+selbst hätte anlegen sollen, und hört dann auf.
 
-```
-✅ Angelegt: __callbell__/, .gitignore
-❗ Fehlt: Git-Repo, Ruleset (AGENTS.md / CLAUDE.md)
-
-Mehr dazu: callbell:help
-```
-
-Den Skillnamen **ohne Präfix** nennen. Der Schrägstrich ist die Schreibweise eines einzelnen Hosts, und
-andere rufen denselben Skill anders auf.
-
-Eine Zeile entfällt, wenn sie leer wäre. `NOTES` erwähnst du nur, wenn sie für den nächsten Schritt zählen.
-
-**Was bereits da war, steht nirgends.** Der Nutzer will wissen, was passiert ist und was noch aussteht,
-nicht was schon vorher stimmte. In einem eingerichteten Repo bleibt es deshalb bei der einen Zeile aus
-Schritt 1, und ein `👍` davor genügt.
-
-Was ohne Rückfrage ergänzt werden darf, ist das Gerüst und die `.gitignore`:
+Meldet das Skript ein fehlendes Gerüst oder eine fehlende `.gitignore`, **lege sie sofort an**. Ohne
+Rückfrage, ohne Ankündigung, im selben Zug:
 
 ```
-node ${CLAUDE_PLUGIN_ROOT}/scripts/callbell-doctor.js --apply
+node <plugin-root>/scripts/callbell-doctor.js --apply
 ```
 
 Das Skript kopiert nur, was **fehlt**. Es vergleicht nie Inhalte, überschreibt nie und hängt an die
@@ -79,6 +79,27 @@ Will der Nutzer eine Prüfung dauerhaft loswerden (typisch `git lfs`), trag ihre
 Nutzers**, nie Befunde, und **nie ein Pfad** — ein Wert, der einen Pfad braucht, um zu gelten, gehört ins
 Projekt, weil Pfade bei jedem Umbenennen, Klonen und Worktree brechen.
 
+### Dann der Bericht
+
+Zwei Zeilen, in der Sprache des Nutzers, ohne die Skriptzeilen zu zitieren. Erst was entstanden ist, dann
+was fehlt, jeweils mit Namen statt in Fließtext:
+
+```
+✅ Angelegt: __callbell__/, .gitignore
+❗ Fehlt: Git-Repo, Ruleset (AGENTS.md / CLAUDE.md)
+
+Mehr dazu: callbell:help
+```
+
+Den Skillnamen **ohne Präfix** nennen. Der Schrägstrich ist die Schreibweise eines einzelnen Hosts, und
+andere rufen denselben Skill anders auf.
+
+Eine Zeile entfällt, wenn sie leer wäre. `NOTES` erwähnst du nur, wenn sie für den nächsten Schritt zählen.
+
+**Was bereits da war, steht nirgends.** Der Nutzer will wissen, was passiert ist und was noch aussteht,
+nicht was schon vorher stimmte. In einem eingerichteten Repo bleibt es deshalb bei der einen Zeile aus
+Schritt 1, und ein `👍` davor genügt.
+
 ## 3. Zweck und Rollen (einmalig, im Ruleset)
 
 Der Agent braucht zwei Dinge über das Gerüst hinaus: **was dieses Repo ist** und **mit wem er arbeitet**.
@@ -93,7 +114,7 @@ davon die inhaltliche ist, entscheidest du:
   eigentlichen Ruleset vorbei.
 - **Beide da, ohne Verbindung** — frag, welche gilt. Zwei Rulesets nebeneinander sind eine Aussage über das
   Repo, die du nicht raten kannst.
-- **Keine da** — lege **beide** an: `AGENTS.md` aus `${CLAUDE_PLUGIN_ROOT}/scaffold/agents-template.md`
+- **Keine da** — lege **beide** an: `AGENTS.md` aus `<plugin-root>/scaffold/agents-template.md`
   trägt den Inhalt, und die `CLAUDE.md` daneben besteht aus der einen Zeile `@AGENTS.md`. Codex liest nur
   `AGENTS.md`, Claude bevorzugt `CLAUDE.md`; die Weiche bedient damit beide Hosts, ohne den Inhalt zu
   doppeln. Gedoppelt wäre er sofort zweierlei, sobald einer der beiden gepflegt wird.

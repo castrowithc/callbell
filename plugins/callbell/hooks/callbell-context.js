@@ -10,24 +10,17 @@
 //           and the backlog index __callbell__/backlog/BACKLOG.md.
 //           On Claude the project's own rules do NOT come from here, but natively from .claude/rules/
 //           (otherwise duplicate context).
-//   Codex:  registered by the USER, in a config-layer ~/.codex/hooks.json, WITH --rules.
-//           Not by the plugin: Codex does not execute plugin-local hooks (openai/codex#16430, open,
-//           reproduced through 0.130.0; `codex features list` reports plugin_hooks as not yet enabled).
-//           The bundled hooks.json is registered in the Codex manifest anyway — it is the correct
-//           declaration and starts working the day the runtime catches up — but until then the
-//           config-layer entry is what actually runs:
-//
-//             { "hooks": { "SessionStart": [ { "matcher": "startup|resume",
-//               "hooks": [ { "type": "command",
-//                 "command": "PLUGIN_ROOT=<install-path> node <install-path>/hooks/callbell-context.js --rules",
-//                 "timeout": 5 } ] } ] } }
-//
-//           Because that entry sits outside any plugin, Codex sets no PLUGIN_ROOT for it and it must
-//           set its own; without it the script finds no payload and injects only project state.
+//   Codex:  registered by the plugin too, through the `hooks` entry in .codex-plugin/plugin.json.
+//           Until 0.134.0 Codex ran no plugin-local hooks at all (openai/codex#16430), which is why the
+//           README used to ask the user for a config-layer entry in ~/.codex/hooks.json carrying --rules.
+//           The runtime has caught up: field-verified on 2026-07-20, plugin 0.1.18, Codex on Windows.
+//           The manual entry is therefore gone, and --rules is only honoured for anyone still running one.
+//           One gate is left, and it has no Claude equivalent: a plugin-bundled hook is non-managed, so
+//           Codex skips it until the user trusts it via `/hooks`. Trust hangs on the hook's hash, so
+//           every published version costs that freeing again and the first session after an upgrade
+//           runs without any of this. Nothing injected here may be a precondition for a skill.
 //           Root via stdin JSON {cwd}. Codex has no Markdown rules folder, so the norms from
 //           .claude/rules/ are injected here as well.
-//           Note that Codex also sets CLAUDE_PLUGIN_ROOT as a compatibility alias, so the environment
-//           cannot be used to tell the two hosts apart — only the --rules flag can.
 //   Plugin (ambient mode): installed per device and started in an arbitrary or empty folder.
 //           Two roots then. Project STATE (context, memory, backlog) still comes
 //           from the project cwd, only if present. The always-on PAYLOAD (rules + AGENTS.md ruleset)
@@ -46,10 +39,18 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const withRules = process.argv.includes('--rules');
 // Set when running as a plugin: the plugin's own root, carrying the bundled always-on payload.
 // Claude exposes CLAUDE_PLUGIN_ROOT; Codex exposes PLUGIN_ROOT (and the legacy alias). Empty otherwise.
 const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT || process.env.PLUGIN_ROOT || '';
+
+// Which host is this? Codex sets its own PLUGIN_ROOT plus CLAUDE_PLUGIN_ROOT for compatibility; Claude
+// sets only the latter. PLUGIN_ROOT on its own is therefore the marker. The test used to be
+// `PLUGIN_ROOT && !CLAUDE_PLUGIN_ROOT`, which is never true anywhere: the negation was the defect, not
+// the variable. It was then replaced by the --rules flag, which held only as long as Codex was
+// registered by hand. Registered by the manifest, the same flagless hooks.json serves both hosts, and
+// the flag silently made every Codex session look like Claude. The flag stays honoured for a user who
+// still runs the old manual entry.
+const codexHost = !!process.env.PLUGIN_ROOT || process.argv.includes('--rules');
 
 function resolveRoot() {
   if (process.env.CLAUDE_PROJECT_DIR) return process.env.CLAUDE_PROJECT_DIR;
@@ -76,14 +77,6 @@ const root = resolveRoot();
 //
 // A repo can be any combination: a software project run with agents is `code` WITH a scaffold, and that is
 // exactly the case the fused version got wrong.
-function frontmatterOf(file) {
-  try {
-    const text = fs.readFileSync(file, 'utf8').replace(/^﻿/, '');
-    const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-    return m ? m[1] : '';
-  } catch { return ''; }
-}
-
 function markdownHeavy(dir) {
   let entries;
   try { entries = fs.readdirSync(dir, { withFileTypes: true }); }
@@ -108,12 +101,10 @@ function hasScaffold(dir) {
 // language. What the agent cannot notice is a file that was never there. Once an anchor exists this emits
 // nothing, so the mechanic costs nothing after the first session. `callbell-language` says what to do.
 //
-// The host is told apart by the `--rules` flag, not by the environment: Codex sets CLAUDE_PLUGIN_ROOT
-// as a compatibility alias alongside its own PLUGIN_ROOT, so the old `PLUGIN_ROOT && !CLAUDE_PLUGIN_ROOT`
-// test was never true there and pointed Codex users at Claude's anchor file. Only the Codex
-// registration passes --rules, which makes the flag the one reliable signal we control.
+// Each host keeps the anchor in its own machine-local agent file, so this has to resolve per host
+// (see codexHost above for how the two are told apart).
 function missingLanguageAnchor() {
-  const file = withRules
+  const file = codexHost
     ? path.join(os.homedir(), '.codex', 'AGENTS.md')   // Codex
     : path.join(os.homedir(), '.claude', 'CLAUDE.md'); // Claude
   try { return fs.readFileSync(file, 'utf8').trim() ? null : file; }
@@ -193,18 +184,14 @@ function push(text) {
   return true;
 }
 
-// What a rule governs, in its own words: the wording comes from the rule's frontmatter description, so a
-// reworded rule updates its own pointer and the two cannot drift. Used to decide WHETHER to open the file,
-// which is why the cascade carries it and the kernel (always read) does not.
-function governs(file) {
-  const desc = frontmatterOf(file).match(/^description:\s*>?\s*([\s\S]*?)(?=^\S|\Z)/m);
-  let text = desc ? desc[1].replace(/\s+/g, ' ').trim() : '';
-  if (text.length > 140) text = text.slice(0, 137) + '...';
-  return text;
-}
-
 // The two facts, emitted once each. Lens-bearing skills (callbell and the review/audit/debt family) read
 // PROJECT TYPE instead of detecting the type themselves.
+//
+// Plus, when running as a plugin, the resolved plugin root. A skill that has to run a bundled script
+// cannot name one: `${CLAUDE_PLUGIN_ROOT}` is substituted in HOOK COMMANDS ONLY, and skill markdown is
+// prompt text the host passes through verbatim, so on Codex the agent receives the literal and the call
+// fails (field-checked 2026-07-20, it cost `start` its scaffold step). Here the value is real, already
+// substituted by the host, and correct for the running version, so one line hands it to every skill.
 const projectType = resolveProjectType(root);
 const scaffold = hasScaffold(root);
 push([
@@ -214,6 +201,8 @@ push([
   scaffold
     ? 'CALLBELL SCAFFOLD: yes (__callbell__/ is present; its norms are in force)'
     : 'CALLBELL SCAFFOLD: no (no __callbell__/ here, so no backlog, zones, or memory layer; the norms that govern them are not loaded and do not apply)',
+  ...(pluginRoot ? ['CALLBELL PLUGIN ROOT: ' + pluginRoot.split(path.sep).join('/')
+    + ' (bundled scripts and templates live here)'] : []),
 ].join('\n'));
 
 // Reported only when absent, so this line disappears for good once an anchor exists.
@@ -236,7 +225,7 @@ if (state.length) {
   push('Project state (loaded automatically at session start: the memory index and the backlog index):');
   push(state.join('\n\n'));
 } else if (pluginRoot) {
-  push('No callbell project set up in this folder yet (ambient mode). Skills and rules are active everywhere, but this folder has no backlog or memory. `/callbell:start` checks what is missing and lays it down — nothing is written until you ask.');
+  push('No callbell project set up in this folder yet (ambient mode). Skills and rules are active everywhere, but this folder has no backlog or memory. `/callbell:start` sets one up: it creates the scaffold and reports it, and asks about git, ruleset, and purpose.');
 }
 
 // Always-on payload: the rules (norms) and the minimal AGENTS.md ruleset.
@@ -250,9 +239,9 @@ if (state.length) {
 //
 // Who reads what, since it resolves per host: Claude reads project .claude/rules/ natively and must
 // therefore never receive them from here, or they arrive twice. Codex reads nothing natively and gets
-// them via --rules. The plugin's own rules have no native reader anywhere and are injected on both.
+// them from here. The plugin's own rules have no native reader anywhere and are injected on both.
 const projectRules = collect(path.join(root, '.claude', 'rules'));
-if (withRules && projectRules.length) {
+if (codexHost && projectRules.length) {
   // Pointed at, not injected, for the same reason as the plugin's own rules below: a project's rule set
   // has no size limit either, and the agent can open a file that sits in the repo it is working in.
   push('Project norms. Read these files NOW, before you answer, and follow them for the whole '
@@ -267,10 +256,10 @@ if (pluginRoot) {
   // Verified before adopting: a hook emitting nothing but `Lies <path>` was followed, including
   // through a three-file chain where each file pointed at the next.
   //
-  // What the two groups now differ in is the WORDING, which used to be carried by inlined-or-not:
-  //   core/     — read now, unconditionally.
-  //   scaffold/ — read on arrival in that area, the cascade it always was. Gated on the scaffold,
-  //               because a repo without one cannot act on these at all.
+  // Both groups are read NOW; they differ only in WHEN they apply at all:
+  //   core/     — always.
+  //   scaffold/ — only where a __callbell__/ exists, because a repo without one cannot act on them.
+  //               Where it does exist they are as binding as the core, so they are not deferred.
   //
   // The absolute path comes from the host's own substitution of CLAUDE_PLUGIN_ROOT / PLUGIN_ROOT, so
   // the install version, the cache directory, and the host are all irrelevant here.
@@ -278,18 +267,16 @@ if (pluginRoot) {
   const abs = f => f.split(path.sep).join('/');
   const kernel = collect(path.join(pluginRoot, 'rules', 'core'))
     .filter(f => !owned.has(path.basename(f)));
-  const cascade = scaffold
+  // Scaffold norms apply only where a scaffold exists, but where it does they are read now like the
+  // core, not deferred to on-arrival.
+  const scaffoldRules = scaffold
     ? collect(path.join(pluginRoot, 'rules', 'scaffold')).filter(f => !owned.has(path.basename(f)))
     : [];
+  const readNow = kernel.concat(scaffoldRules);
 
-  if (kernel.length) {
+  if (readNow.length) {
     push('Callbell norms. Read these files NOW, before you answer, and follow them for the whole '
-      + 'session:\n' + kernel.map(f => '- ' + abs(f)).join('\n'));
-  }
-  if (cascade.length) {
-    push('Callbell norms for specific areas. They are in force; read the file before you act in its '
-      + 'area, the way a framework.md is read on arrival:\n'
-      + cascade.map(f => '- ' + abs(f) + '\n  ' + governs(f)).join('\n'));
+      + 'session:\n' + readNow.map(f => '- ' + abs(f)).join('\n'));
   }
   // The AGENTS.md ruleset auto-merges natively only inside the project tree; the plugin's copy sits
   // outside it, so inject it here — but only when the project carries no root ruleset of its own,

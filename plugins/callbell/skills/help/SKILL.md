@@ -7,6 +7,7 @@ description: >
   "wie arbeite ich hier".
 type: skill
 edit: locked
+disable-model-invocation: true
 ---
 
 # Callbell Hilfe
@@ -21,7 +22,7 @@ entscheiden die Pakete.
 
 | Skill | Auslöser | Was er tut |
 |-------|----------|------------|
-| **start** | `/callbell:start` | Der Einstieg: prüft Abhängigkeiten und Gerüst, ergänzt was fehlt, klärt einmalig Zweck und Rollen. Läuft jedes Mal. |
+| **start** | `/callbell:start` | Der Einstieg: prüft Abhängigkeiten und Gerüst, ergänzt was fehlt, klärt einmalig Zweck und Rollen. Ruf ihn beim Ankommen oder wenn etwas fehlt. |
 | **filing** | `/callbell:filing` | Entscheidet, wohin eine Datei gehört und wie der Baum wächst. |
 | **plan** | nur `/callbell:plan` | Macht aus einer Idee Arbeitspakete: Warum, Rahmen, Vorgehen, fertig. Du startest ihn; er startet sich nie selbst. |
 | **import** | "liegt in der Ablage", `/callbell:import` | Macht aus Rohmaterial in `__callbell__/zone-import/` geschwärzten, abgelegten Inhalt. |

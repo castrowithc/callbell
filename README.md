@@ -40,21 +40,13 @@ codex plugin marketplace add castrowithc/callbell
 codex plugin add callbell@callbell
 ```
 
-On Codex, one manual step follows, because Codex does not yet run hooks that ship inside a plugin
-([openai/codex#16430](https://github.com/openai/codex/issues/16430); the `plugin_hooks` feature is absent as
-of 0.134.0). The skills install and work, but the session hook never fires, so you get no norms, no project
-context, and no lens. Register it yourself in `~/.codex/hooks.json`, replacing both paths with the install
-root that `codex plugin add` printed:
+On Codex, one step follows: **type `/hooks` and trust the callbell hook.** Codex treats hooks that ship
+inside a plugin as non-managed and skips them until you have seen and approved the definition, so until you
+do, the skills work but you get no norms, no project context, and no lens. Trust is tied to the hook's
+contents, so a new version asks you once more.
 
-```json
-{ "hooks": { "SessionStart": [ { "matcher": "startup|resume",
-  "hooks": [ { "type": "command",
-    "command": "PLUGIN_ROOT=<install-root> node <install-root>/hooks/callbell-context.js --rules",
-    "timeout": 5 } ] } ] } }
-```
-
-Codex asks you to trust a newly added hook before it runs. If a later Codex version starts running plugin
-hooks by itself, you will see the context twice — remove this entry then.
+If you registered the hook by hand in `~/.codex/hooks.json` under an earlier version, remove that entry now
+or the context arrives twice.
 
 ## What you can install
 
@@ -80,9 +72,9 @@ hooks by itself, you will see the context twice — remove this entry then.
 
 1. **Install** as above.
 2. Run **`/callbell:start`** in the folder you want to work in. It checks what is there — Node, git, the
-   scaffold, your ruleset — reports only what is missing, and offers to lay it down. Nothing is written
-   until you say so. Run it whenever you start somewhere new; on a folder that is already set up it
-   costs you one line.
+   scaffold, your ruleset — and **creates the missing scaffold right away and reports it**; for git, the
+   ruleset, and purpose it asks, because those are decisions, not just files. Run it whenever you start
+   somewhere new; on a folder that is already set up it costs you one line.
 3. Work. The skills and norms are active immediately, in any folder.
 
 **The most callbell will ever ask of you: Node on your PATH.** The session hook that supplies the norms and
@@ -91,6 +83,22 @@ shell's PATH). Without it nothing breaks loudly — no errors, no failed prompts
 hook delivers: the always-on norms, the project context, and the memory and backlog indexes. The skills
 themselves still load and run, but they run without the norms that are supposed to shape them. Treat it as
 a degraded mode, not a supported one.
+
+## The `__callbell__` folder
+
+The first `start` in a folder brings `__callbell__/` into being — and `start` creates it and tells you,
+rather than asking: the scaffold is folders and files callbell manages, reversible and nothing to negotiate
+over. It carries the work trail and the memory that travel with the project instead of living inside one
+agent:
+
+- `backlog/` — the versioned work trail: tasks and projects.
+- `memory/` — what holds across sessions, as files in the repo.
+- `templates/` — the templates tasks and projects are cut from.
+- `zone-import/` and `zone-export/` — the two volatile buffers: raw material in, requested results out.
+
+`plan`, `import`, `filing`, and the frontmatter standard all stand on it; without the folder they have no
+ground. What `start` does *ask* about — git, ruleset, purpose and roles — are decisions it cannot announce.
+The folder explains itself in its own `README.md` when you look inside.
 
 ## Namespaces
 
@@ -110,8 +118,8 @@ authored here directly, and what you read is what gets installed.
   - `skills/` — one flat folder, seven skills: entry, filing, planning, import, commit, worktree, help.
   - `rules/core/` — norms that hold in any repo. The session tells the agent to read them straight away.
   - `rules/scaffold/` — norms that only mean anything where a `__callbell__/` scaffold exists (backlog,
-    zones, frontmatter, memory, structure). Named only there, and read on arrival in their area, so a repo
-    without a scaffold pays nothing for them.
+    zones, frontmatter, memory, structure). Loaded only there — but then straight away, like the core
+    norms; a repo without a scaffold pays nothing for them.
   - `hooks/callbell-context.js` — the SessionStart hook: reports the scaffold, injects the memory and
     backlog indexes, and points the agent at the rules. Claude runs it from the plugin; on Codex it has to
     be registered by hand (see Install).

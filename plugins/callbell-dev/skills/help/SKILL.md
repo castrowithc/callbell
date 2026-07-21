@@ -7,6 +7,7 @@ description: >
   the dev pack".
 type: skill
 edit: locked
+disable-model-invocation: true
 ---
 
 # callbell-dev

@@ -41,21 +41,13 @@ codex plugin marketplace add castrowithc/callbell
 codex plugin add callbell@callbell
 ```
 
-Unter Codex folgt ein Handgriff, denn Codex führt Hooks, die in einem Plugin stecken, bisher nicht aus
-([openai/codex#16430](https://github.com/openai/codex/issues/16430); das Feature `plugin_hooks` fehlt in
-0.134.0). Die Skills installieren und funktionieren, aber der Session-Hook feuert nie — also keine Normen,
-kein Projektkontext, keine Linse. Trag ihn selbst in `~/.codex/hooks.json` ein und ersetze beide Pfade durch
-die Installationswurzel, die `codex plugin add` ausgegeben hat:
+Unter Codex folgt ein Handgriff: **tippe `/hooks` und gib den callbell-Hook frei.** Codex behandelt Hooks,
+die in einem Plugin stecken, als nicht verwaltet und überspringt sie, bis du die Definition gesehen und
+freigegeben hast. Bis dahin funktionieren zwar die Skills, aber es gibt keine Normen, keinen Projektkontext
+und keine Linse. Die Freigabe hängt am Inhalt des Hooks, eine neue Version fragt also noch einmal.
 
-```json
-{ "hooks": { "SessionStart": [ { "matcher": "startup|resume",
-  "hooks": [ { "type": "command",
-    "command": "PLUGIN_ROOT=<installationswurzel> node <installationswurzel>/hooks/callbell-context.js --rules",
-    "timeout": 5 } ] } ] } }
-```
-
-Codex fragt vor dem ersten Lauf, ob du dem neuen Hook vertraust. Sollte eine spätere Codex-Version
-Plugin-Hooks von sich aus ausführen, siehst du den Kontext doppelt — dann diesen Eintrag entfernen.
+Hast du den Hook unter einer früheren Version von Hand in `~/.codex/hooks.json` eingetragen, entferne den
+Eintrag jetzt, sonst kommt der Kontext doppelt.
 
 ## Was du installieren kannst
 
@@ -83,9 +75,9 @@ Plugin-Hooks von sich aus ausführen, siehst du den Kontext doppelt — dann die
 
 1. Wie oben **installieren**.
 2. **`/callbell:start`** in dem Ordner ausführen, in dem du arbeiten willst. Er prüft, was da ist — Node,
-   git, das Gerüst, dein Ruleset —, meldet nur das Fehlende und bietet an, es anzulegen. Geschrieben wird
-   erst, wenn du es sagst. Ruf ihn auf, wann immer du irgendwo neu anfängst; in einem eingerichteten
-   Ordner kostet er dich eine Zeile.
+   git, das Gerüst, dein Ruleset — und **legt das fehlende Gerüst gleich an und meldet es**; über git,
+   Ruleset und Zweck fragt er, das sind Entscheidungen, keine bloßen Dateien. Ruf ihn auf, wann immer du
+   irgendwo neu anfängst; in einem eingerichteten Ordner kostet er dich eine Zeile.
 3. Arbeiten. Die Skills und Normen sind sofort aktiv, in jedem Ordner.
 
 **Das Höchste, worum callbell dich je bittet: Node im PATH.** Der Session-Hook, der die Normen und den
@@ -94,6 +86,23 @@ Projektkontext liefert, läuft über Node — `node` muss also im PATH sein (Nix
 aber alles, was der Hook liefert, fällt weg: die Always-on-Normen, der Projektkontext und die Memory- und
 Backlog-Indizes. Die Skills selbst laden und laufen weiter, aber ohne die Normen, die sie prägen sollen.
 Ein Notbetrieb, kein unterstützter Zustand.
+
+## Der Ordner `__callbell__`
+
+Beim ersten `start` in einem Ordner entsteht `__callbell__/` — und `start` legt es an und sagt es dir,
+statt zu fragen: das Gerüst sind Ordner und Dateien, die callbell verwaltet, reversibel und nichts, worüber
+man verhandelt. Es trägt die Arbeitsspur und das Gedächtnis, die mit dem Projekt reisen statt in einem
+einzelnen Agenten zu liegen:
+
+- `backlog/` — die versionierte Arbeitsspur: Tasks und Projekte.
+- `memory/` — was über Sitzungen hinweg gilt, als Dateien im Repo.
+- `templates/` — die Vorlagen, aus denen Tasks und Projekte entstehen.
+- `zone-import/` und `zone-export/` — die zwei flüchtigen Puffer: Rohmaterial hinein, angeforderte
+  Ergebnisse hinaus.
+
+Darauf stehen `plan`, `import`, `filing` und der Frontmatter-Standard; ohne den Ordner haben sie keinen
+Boden. Was `start` dagegen *fragt* — git, Ruleset, Zweck und Rollen — sind Entscheidungen, die er nicht
+ankündigen kann. Der Ordner erklärt sich in seiner eigenen `README.md`, wenn du hineinsiehst.
 
 ## Namensräume
 
@@ -114,8 +123,8 @@ generiert: jedes Plugin wird hier direkt geschrieben, und was du liest, ist das,
   - `skills/` — ein flacher Ordner, sieben Skills: Einstieg, Ablage, Planung, Import, Commit, Worktree, Hilfe.
   - `rules/core/` — Normen, die in jedem Repo gelten. Die Session weist den Agenten an, sie sofort zu lesen.
   - `rules/scaffold/` — Normen, die nur dort etwas bedeuten, wo ein `__callbell__/`-Gerüst existiert
-    (Backlog, Zonen, Frontmatter, Memory, Struktur). Nur dort genannt und beim Betreten ihres Bereichs
-    gelesen; ein Repo ohne Gerüst zahlt nichts.
+    (Backlog, Zonen, Frontmatter, Memory, Struktur). Nur dort geladen — dann aber sofort, wie die
+    Kern-Normen; ein Repo ohne Gerüst zahlt nichts.
   - `hooks/callbell-context.js` — der SessionStart-Hook: meldet das Gerüst, injiziert die Memory- und
     Backlog-Indizes und verweist den Agenten auf die Regeln. Claude führt ihn aus dem Plugin aus; unter
     Codex muss er von Hand registriert werden (siehe Installation).
