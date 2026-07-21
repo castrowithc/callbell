@@ -46,8 +46,12 @@ Es gibt genau zwei Fälle, und du erkennst sie daran, ob neben `__callbell__/` s
 
 ## 3. Vorlagen ausliefern
 
-Kopiere `${CLAUDE_PLUGIN_ROOT}/templates/` nach `__callbell__/templates/plugin-callbell-sysadmin/`,
+Kopiere `<plugin-root>/templates/` nach `__callbell__/templates/plugin-callbell-sysadmin/`,
 und zwar nur, was dort fehlt. Nie vergleichen, nie überschreiben: was der Nutzer angepasst hat, gehört ihm.
+
+`<plugin-root>` ist der Ordner **dieses Packs**, zwei Ebenen über dieser `SKILL.md`. Nicht die Zeile
+`CALLBELL PLUGIN ROOT` aus dem Sitzungskontext nehmen, die gehört dem Kern und zeigt woanders hin. Nie
+einen abgetippten Pfad einsetzen, er trägt die Versionsnummer und ist nach dem nächsten Update falsch.
 
 Die Trennung dahinter ist die, die dieses Pack überhaupt einhalten kann. **Was ein Plugin ausliefert, ist
 per Definition allgemein** — es kann nichts über einen Host wissen, den es nie gesehen hat. Deshalb:
