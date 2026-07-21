@@ -9,5 +9,6 @@
   "repository": "https://github.com/castrowithc/callbell",
   "license": "MIT",
   "keywords": ["code", "yagni", "minimalism", "review", "refactoring"],
-  "skills": "./skills/"
+  "skills": "./skills/",
+  "hooks": "./hooks/callbell-dev-hooks.json"
 }

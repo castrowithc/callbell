@@ -8,6 +8,7 @@
   "license": "MIT",
   "keywords": ["code", "yagni", "minimalism", "review", "refactoring"],
   "skills": "./skills/",
+  "hooks": "./hooks/callbell-dev-hooks.json",
   "interface": {
     "displayName": "Callbell Dev",
     "shortDescription": "The laziest code that actually works",

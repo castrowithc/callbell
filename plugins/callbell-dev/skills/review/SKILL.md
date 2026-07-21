@@ -1,11 +1,12 @@
 ---
 name: review
 description: >
-  Code review focused exclusively on over-engineering, across a diff or a whole
-  repo. Finds what to delete: reinvented standard library, unneeded
-  dependencies, speculative abstractions, dead flexibility. One line per
-  finding: location, what to cut, what replaces it. Start it by typing
-  /callbell-dev:review, adding "repo" for a whole-tree pass.
+  A deliberate over-engineering pass you run on a diff or a whole repo, not an
+  automatic check and not a correctness or security review. Finds what to delete:
+  reinvented standard library, unneeded dependencies, speculative abstractions,
+  dead flexibility, one line per finding (location, what to cut, what replaces
+  it). Run it by typing /callbell-dev:review, add "repo" for a whole-tree pass.
+  The model does not start it on its own; the user owns the timing.
 type: skill
 edit: locked
 disable-model-invocation: true

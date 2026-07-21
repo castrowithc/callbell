@@ -26,12 +26,10 @@ code is the code never written.
 
 ## Level
 
-Picked when the skill is called: `/callbell-dev:dev lite|full|ultra`. Default
-**full**.
-
-It holds for the work it was called for. Nothing enforces it beyond that — if
-the session moves on to something else and you want it back, call it again.
-"stop" or "normal mode" ends it early.
+Set it with `/callbell-dev:dev lite|full|ultra`, default **full**. Once set it is
+a standing mode, active every response until you switch level or turn it off. The
+pack's hook re-asserts the active level each turn, so it does not fade when the
+session moves on to something else. "normal mode" or "stop dev" ends it.
 
 ## The ladder
 
@@ -118,7 +116,7 @@ test, YAGNI applies to tests too.
 
 ## Boundaries
 
-This governs what you build, not how you talk. "stop" or "normal mode":
-revert.
+This governs what you build, not how you talk. "normal mode" or "stop dev":
+revert. The level persists across turns until then.
 
 The shortest path to done is the right path.
