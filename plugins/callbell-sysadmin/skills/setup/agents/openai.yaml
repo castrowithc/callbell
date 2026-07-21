@@ -1,0 +1,4 @@
+# Slash-only: the user owns the timing, so Codex must not auto-select this skill.
+# Claude uses disable-model-invocation in the SKILL.md frontmatter; this is the Codex half.
+policy:
+  allow_implicit_invocation: false

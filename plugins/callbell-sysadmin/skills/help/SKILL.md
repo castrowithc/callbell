@@ -49,6 +49,7 @@ In der Reihenfolge, in der man ihnen begegnet:
 | **setup** | eine frische Maschine von Grund auf hochbringen (Taktgeber für die folgenden) | **verändert** |
 | **harden** | auf die Sicherheits-Baseline härten oder eine bestehende Härtung prüfen | **verändert** |
 | **backup** | verschlüsselte, ausgelagerte Sicherung einrichten oder nachrüsten | **verändert** |
+| **restore-proof** | beweisen, dass die Sicherung wiederherstellbar ist (in Scratch, nie live) | liest, schreibt nur Scratch |
 | **deploy** | einen neuen Docker-Stack nach festen Konventionen aufsetzen | **verändert** |
 | **docker-update** | einen Stack oder die Docker-Engine aktualisieren | **verändert** |
 | **checkup** | Routinefrage „läuft noch alles rund", als datierter Bericht | liest, schreibt den Bericht |

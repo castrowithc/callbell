@@ -41,7 +41,8 @@ ist; er definiert die Baseline nicht neu. Für eine tiefere Prüfung oder erneut
    und Sicherung dieses Servers festgehalten ist, und mit dem allgemeinen Standard
    (`callbell-sysadmin:harden`/`callbell-sysadmin:backup`). Jede Abweichung ist ein Befund. Typisch: ein
    geänderter SSH-Wert, ein inaktives Jail, ein abgeschalteter Timer, ein Archiv älter als ein Intervall,
-   eine Schwelle bei der Plattenbelegung, laufender Kernel ungleich neuestem installiertem ohne Neustartplan.
+   eine Schwelle bei der Plattenbelegung, laufender Kernel ungleich neuestem installiertem ohne Neustartplan,
+ein Restore-Beweis, der nie über Stufe 1 kam oder seit einem Vierteljahr nicht erneuert wurde.
 4. **Bewerten.** Je Befund eine Schwere und ob Handlungsbedarf besteht. Sicherheitsupdates aus der
    Freigabeliste von unattended-upgrades (`*-security`) sind **kein** Befund, solange u-u aktiv ist, sie
    werden automatisch eingespielt; erwähne sie nur.
@@ -66,7 +67,7 @@ ist; er definiert die Baseline nicht neu. Für eine tiefere Prüfung oder erneut
 | Benutzer | Konten mit UID 0 außer root; Mitglieder von sudo/wheel |
 | Anmeldungen | jüngste Anmeldungen; fehlgeschlagene SSH-Anmeldungen und häufigste Quell-IPs |
 | Systemupdates | `unattended-upgrades` aktiv; Zeit für automatischen Neustart |
-| Sicherung | `borgmatic.timer` aktiv und nächster Lauf; Ergebnis des letzten Laufs; neuestes Archiv und Lückenprüfung |
+| Sicherung | `borgmatic.timer` aktiv und nächster Lauf; Ergebnis des letzten Laufs; neuestes Archiv und Lückenprüfung; Alter des letzten Restore-Beweises und höchste je erreichte Stufe (aus dem Material des Hosts, `callbell-sysadmin:restore-proof`) |
 
 `/etc/shadow` wird bewusst **nicht** gelesen (Sicherheitsregel); eine Prüfung auf leere Passwörter nur auf
 ausdrückliche Anforderung. Tiefere Forensik (authorized_keys über alle Benutzer, Prüfung von cron und Units,
