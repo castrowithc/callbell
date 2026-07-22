@@ -1,82 +1,77 @@
 ---
 name: callbell-sysadmin-deploy
 description: >
-  Richtet einen neuen Docker-Stack nach festen Konventionen ein: Verzeichnisaufbau, Pflichtangaben in
-  compose, Capabilities, Netz, Reverse Proxy, Platzhalter für SMTP und OIDC, sicherheitsrelevante
-  Variablen, Abnahmeliste. Starte es, indem du /callbell-sysadmin-deploy tippst.
+  Sets up a new Docker stack by fixed conventions: directory layout, required compose settings,
+  capabilities, network, reverse proxy, SMTP and OIDC placeholders, security-relevant variables, acceptance
+  checklist. Start it by typing /callbell-sysadmin-deploy.
 type: skill
 edit: locked
 disable-model-invocation: true
 ---
 
-# Einen Docker-Stack einrichten: Konventionen und Vorgehen
+# Setting up a Docker stack: conventions and procedure
 
-Gilt für jeden Docker-Host. Was je Server anders ist (Aufbau des Reverse Proxy, Liste der Stacks, SMTP- und
-Auth-Anbieter, konkrete Adressen und Ports), gehört in die Domäne dieses Hosts (Ordner `<host>/`). Dieser
-Skill liefert **Struktur, Muster und Ablauf**.
+Applies to any Docker host. What differs per server (reverse proxy layout, list of stacks, SMTP and auth providers, concrete addresses and ports) belongs in this host's domain (folder `<host>/`). This skill supplies **structure, patterns, and flow**.
 
-## Verzeichnisaufbau
+## Directory layout
 
-Ein Verzeichnis je Stack, alle unter einem gemeinsamen Elternordner. Dieses Vorgehen nutzt
-`/opt/stack/<dienstname>/` und bleibt durchgehend dabei. Legt der Host seine Stacks bereits woanders ab,
-gewinnt diese Konvention: ein bestehender Aufbau, den alle kennen, schlägt einen neuen, den nur dieser Skill
-kennt. Entscheide dich für einen und halte ihn, welcher es auch ist.
+One directory per stack, all under a shared parent. This procedure uses `/opt/stack/<service-name>/` throughout. If the host already keeps its stacks elsewhere, that convention wins: an existing layout everyone knows beats a new one only this skill knows. Pick one and hold it, whichever it is.
 
 ```
-/opt/stack/<dienstname>/
-  compose.yaml          # Compose-Definition
-  .env                  # Geheimnisse und konfigurierbare Werte (NIE lesen, NIE ausgeben)
-  .env.example          # dieselben Werte als Vorlage
-  data/                 # dauerhafte Daten
-    <unterordner>/      # etwa postgres/, app/, media/
+/opt/stack/<service-name>/
+  compose.yaml          # compose definition
+  .env                  # secrets and configurable values (NEVER read, NEVER print)
+  .env.example          # the same values as a template
+  data/                 # persistent data
+    <subfolder>/        # e.g. postgres/, app/, media/
 ```
 
-## compose.yaml: Pflichtangaben
+## compose.yaml: required settings
 
-### Anwendungscontainer
+### Application container
 
 ```yaml
 services:
-  <dienst>:
-    image: <registry>/<image>:<genaue-version>     # genaue Version, nie :latest
-    container_name: <dienstname>
+  <service>:
+    image: <registry>/<image>:<exact-version>      # exact version, never :latest
+    container_name: <service-name>
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     cap_drop:
       - ALL
-    # cap_add: nur wenn nötig (Übersicht unten)
-    pids_limit: 256                                # Startwert, siehe Hinweis unter dem Datenbankblock
+    # cap_add: only if needed (overview below)
+    pids_limit: 256                                # starting value, see the note under the database block
     ports:
-      - "127.0.0.1:<host-port>:<container-port>"   # nur localhost
+      - "127.0.0.1:<host-port>:<container-port>"   # localhost only
     environment:
-      TZ: <Gebiet/Stadt>
-      # Geheimnisse über ${VARIABLE} aus der .env
+      TZ: <area/city>
+      # secrets via ${VARIABLE} from the .env
     volumes:
-      - ./data/<unterordner>:/pfad/im/container
+      - ./data/<subfolder>:/path/in/container
     depends_on:
-      <db-dienst>:
+      <db-service>:
         condition: service_healthy
     networks:
       - default
 ```
 
-### Datenbankcontainer (PostgreSQL bevorzugt)
+### Database container (PostgreSQL preferred)
 
 ```yaml
-  <dienst>-db:
-    image: postgres:<hauptversion>-alpine
-    container_name: <dienstname>-db
+  <service>-db:
+    image: postgres:<major-version>-alpine
+    container_name: <service-name>-db
     restart: unless-stopped
     pids_limit: 128
     environment:
-      POSTGRES_DB: <dienst>
-      POSTGRES_USER: <dienst>
+      POSTGRES_DB: <service>
+      POSTGRES_USER: <service>
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U <benutzer> -d <datenbank>"]
+      test: ["CMD-SHELL", "pg_isready -U <user> -d <database>"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -84,19 +79,18 @@ services:
       - default
 ```
 
-> **Zu den Zahlen bei `pids_limit`:** 256 für eine Anwendung und 128 für Datenbank oder Cache sind
-> Startwerte, die für übliche Ein-Dienst-Stacks tragen, keine Vorschriften. Worauf es ankommt, ist, dass es
-> die Grenze überhaupt gibt, damit ein entlaufener Prozess die Prozesstabelle des Hosts nicht erschöpfen
-> kann. Eine Anwendung, die berechtigterweise mehr forkt (ein Worker-Pool, eine Browser-Engine, ein
-> CI-Runner), bekommt eine höhere Zahl; finde sie, indem du den Container unter echter Last beobachtest,
-> nicht indem du sie nach dem ersten Absturz anhebst.
+> **On the `pids_limit` numbers:** 256 for an application and 128 for a database or cache are starting
+> values that hold for ordinary single-service stacks, not rules. What matters is that the limit exists at
+> all, so a runaway process can't exhaust the host's process table. An application that legitimately forks
+> more (a worker pool, a browser engine, a CI runner) gets a higher number; find it by watching the
+> container under real load, not by raising it after the first crash.
 
-### Redis/Valkey (falls nötig)
+### Redis/Valkey (if needed)
 
 ```yaml
-  <dienst>-redis:
-    image: redis:<hauptversion>-alpine             # oder valkey/valkey:<version>
-    container_name: <dienstname>-redis
+  <service>-redis:
+    image: redis:<major-version>-alpine            # or valkey/valkey:<version>
+    container_name: <service-name>-redis
     restart: unless-stopped
     pids_limit: 128
     volumes:
@@ -110,129 +104,120 @@ services:
       - default
 ```
 
-## Übersicht der Capabilities
+## Capabilities overview
 
-Die meisten Anwendungscontainer brauchen **keine** Capabilities (`cap_drop: ALL` genügt). Fang ohne
-`cap_add` an; erst wenn der Start scheitert, gib die einzelne benötigte zurück:
+Most application containers need **no** capabilities (`cap_drop: ALL` is enough). Start without `cap_add`; only when startup fails, give back the single one needed:
 
-| Capability | Wann nötig |
+| Capability | When needed |
 |---|---|
-| CHOWN | Entrypoint führt `chown` auf dem Datenverzeichnis aus |
-| SETGID, SETUID | Entrypoint wechselt den Benutzer über `setpriv`/`gosu` |
-| DAC_OVERRIDE | Dateizugriff über die normalen Rechte hinaus |
-| SYS_PTRACE | Sandbox-Mechanismen (etwa gvisor) |
-| NET_BIND_SERVICE | bindet auf Ports unter 1024 |
+| CHOWN | entrypoint runs `chown` on the data directory |
+| SETGID, SETUID | entrypoint drops the user via `setpriv`/`gosu` |
+| DAC_OVERRIDE | file access beyond the normal permissions |
+| SYS_PTRACE | sandbox mechanisms (e.g. gvisor) |
+| NET_BIND_SERVICE | binds to ports below 1024 |
 
-## Netz und Reverse Proxy
+## Network and reverse proxy
 
-- **Kein externes Docker-Netz:** jeder Stack hat sein eigenes internes Netz.
-- Portbindung immer auf `127.0.0.1`; der Reverse Proxy verbindet sich über `127.0.0.1:<port>`.
-- Den nächsten freien Port auf dem Server suchen; nach der Einrichtung in der Domäne dieses Hosts
-  (Ordner `<host>/`) festhalten.
-- Der Reverse Proxy beendet TLS; als Standard die Sicherheitsheader HSTS, X-Content-Type-Options und
-  X-XSS-Protection; Forward Auth nur für Anwendungen ohne eigene OIDC-Anbindung. Der konkrete Aufbau
-  (Caddy/Traefik/nginx) steht je Server in der Domäne dieses Hosts.
+- **No external Docker network:** each stack has its own internal network.
+- Always bind ports to `127.0.0.1`; the reverse proxy connects via `127.0.0.1:<port>`.
+- Find the next free port on the server; after setup record it in this host's domain (folder `<host>/`).
+- The reverse proxy terminates TLS; by default the security headers HSTS, X-Content-Type-Options, and
+  X-XSS-Protection; forward auth only for applications without their own OIDC. The concrete setup
+  (Caddy/Traefik/nginx) lives per server in this host's domain.
 
 ## SMTP
 
-Dein Relay-Anbieter, ein eigener SMTP-Benutzer je Dienst. Platzhalter:
+Your relay provider, a dedicated SMTP user per service. Placeholders:
 
 ```env
 SMTP_HOST=<smtp-relay-host>
 SMTP_PORT=587
-SMTP_USERNAME=<smtp-benutzer>
-SMTP_PASSWORD=<smtp-passwort>
+SMTP_USERNAME=<smtp-user>
+SMTP_PASSWORD=<smtp-password>
 SMTP_FROM=noreply@<domain>
 ```
 
-Absender- und Dienstdomäne können sich unterscheiden: nichts annehmen, Platzhalter setzen oder fragen.
+The sender and service domain can differ: assume nothing, set a placeholder or ask.
 
-## Anmeldung: OIDC über einen Identitätsanbieter
+## Login: OIDC via an identity provider
 
-Nutze einen OIDC-Identitätsanbieter (Authentik, Keycloak, Zitadel, Authelia oder einen gehosteten); die
-konkrete Adresse steht je Server in der Domäne dieses Hosts. Je Dienst im Anbieter von Hand anlegen: einen
-Client- oder Provider-Eintrag (OAuth2/OpenID) plus eine verknüpfte Anwendung.
+Use an OIDC identity provider (Authentik, Keycloak, Zitadel, Authelia, or a hosted one); the concrete address lives per server in this host's domain. Create per service by hand in the provider: a client or provider entry (OAuth2/OpenID) plus a linked application.
 
-**Übernimm Endpunktpfade nirgendwoher, auch nicht von hier.** Jeder Anbieter legt sie anders, und ein
-falscher Pfad scheitert als verwirrende Weiterleitung statt als klarer Fehler. Hol sie aus dem
-Discovery-Dokument des Anbieters, das jeder OIDC-konforme Anbieter ausliefert:
+**Take endpoint paths from nowhere, not even from here.** Every provider lays them out differently, and a wrong path fails as a confusing redirect rather than a clear error. Pull them from the provider's discovery document, which every OIDC-compliant provider serves:
 
 ```bash
 curl -s https://<oidc-host>/.well-known/openid-configuration | jq '{issuer, authorization_endpoint, token_endpoint, userinfo_endpoint, jwks_uri}'
 ```
 
-Bilde das Ergebnis auf die Variablennamen ab, die die Anwendung verwendet. Die Namen unterscheiden sich je
-Anwendung; verbreitet sind diese:
+Map the result onto the variable names the application uses. The names differ per application; these are common:
 
 ```env
-OIDC_CLIENT_ID=<vom-anbieter>
-OIDC_CLIENT_SECRET=<vom-anbieter>
-OIDC_ISSUER=<issuer, aus dem Discovery-Dokument>
+OIDC_CLIENT_ID=<from-provider>
+OIDC_CLIENT_SECRET=<from-provider>
+OIDC_ISSUER=<issuer, from the discovery document>
 OIDC_AUTH_URL=<authorization_endpoint>
 OIDC_TOKEN_URL=<token_endpoint>
 OIDC_USERINFO_URL=<userinfo_endpoint>
 OIDC_SCOPES=openid email profile
 ```
 
-Viele Anwendungen brauchen nur den Issuer und finden den Rest selbst. Setz die einzelnen Endpunkte nur dort,
-wo die Anwendung keine eigene Discovery hat.
+Many applications need only the issuer and find the rest themselves. Set the individual endpoints only where the application has no discovery of its own.
 
-## Sicherheitsrelevante Variablen der Anwendung
+## Security-relevant application variables
 
-| Aspekt | Empfehlung |
+| Aspect | Recommendation |
 |---|---|
-| Registrierung | abschalten (`SIGNUPS_ALLOWED=false` oder ähnlich) |
-| Einladungen | nur durch Administratoren |
-| Telemetrie | abschalten |
-| Debug-Modus | aus (`APP_DEBUG=false`) |
-| Rate Limiting | einschalten, wenn vorhanden |
-| Passworthinweise | abschalten, wenn möglich |
-| API-Zugriff | einschränken und absichern (JWT-Secret, API-Schlüssel aus der .env) |
-| Session und Cookie | `SESSION_SECURE_COOKIE=true` bei HTTPS |
-| Vertrauenswürdige Proxys | nur `127.0.0.1` |
+| Signup | disable (`SIGNUPS_ALLOWED=false` or similar) |
+| Invitations | administrators only |
+| Telemetry | disable |
+| Debug mode | off (`APP_DEBUG=false`) |
+| Rate limiting | enable if available |
+| Password hints | disable if possible |
+| API access | restrict and secure (JWT secret, API keys from the .env) |
+| Session and cookie | `SESSION_SECURE_COOKIE=true` on HTTPS |
+| Trusted proxies | `127.0.0.1` only |
 
-## Vorlage für die .env
+## .env template
 
-Die `.env` wird vom Agenten **nicht** angelegt und **nicht** gelesen: nur eine Vorlage mit Platzhaltern, die
-festhält, welche Werte gebraucht werden:
+The agent does **not** create and does **not** read the `.env`: only a template with placeholders recording which values are needed:
 
 ```env
-# === Datenbank ===
-POSTGRES_PASSWORD=<starkes-passwort-erzeugen>
-# === Geheimnisse der Anwendung ===
-APP_KEY=<erzeugter-schluessel>
+# === Database ===
+POSTGRES_PASSWORD=<generate-a-strong-password>
+# === Application secrets ===
+APP_KEY=<generated-key>
 # === SMTP ===
-SMTP_USERNAME=<smtp-benutzer>
-SMTP_PASSWORD=<smtp-passwort>
+SMTP_USERNAME=<smtp-user>
+SMTP_PASSWORD=<smtp-password>
 SMTP_FROM=noreply@<domain>
 # === OIDC ===
-OIDC_CLIENT_ID=<vom-anbieter>
-OIDC_CLIENT_SECRET=<vom-anbieter>
+OIDC_CLIENT_ID=<from-provider>
+OIDC_CLIENT_SECRET=<from-provider>
 ```
 
-## Typische Ausnahmen von den Verboten (mit Freigabe)
+## Typical exceptions to the prohibitions (with approval)
 
-- **docker.sock** (`:ro`): etwa ein Outpost des Identitätsanbieters oder ein Reverse Proxy, der Container
-  selbst entdeckt.
-- **network_mode: host:** etwa RustDesk (UDP Hole Punching).
+- **docker.sock** (`:ro`): e.g. an identity-provider outpost or a reverse proxy that discovers containers
+  itself.
+- **network_mode: host:** e.g. RustDesk (UDP hole punching).
 
-## Abnahmeliste für neue Stacks
+## Acceptance checklist for new stacks
 
-1. [ ] Image auf eine genaue Version festgelegt
-2. [ ] `security_opt: [no-new-privileges:true]` auf Anwendungscontainern
-3. [ ] `cap_drop: [ALL]`, nur minimales `cap_add`, falls nötig
-4. [ ] `pids_limit` überhaupt gesetzt, mit einem für diese Anwendung gewählten Wert
-5. [ ] Port nur auf `127.0.0.1` gebunden
-6. [ ] Healthchecks für Datenbank und Redis
-7. [ ] Volumes unter `./data/`
-8. [ ] Geheimnisse über `${VARIABLE}`, nicht fest eingetragen
-9. [ ] Registrierung abgeschaltet
-10. [ ] Telemetrie abgeschaltet
-11. [ ] Debug-Modus aus
-12. [ ] OIDC eingerichtet (sofern die Anwendung es unterstützt)
-13. [ ] SMTP mit Platzhaltern
-14. [ ] Eintrag im Reverse Proxy mit Sicherheitsheadern
-15. [ ] Port in der Domäne dieses Hosts festgehalten
-16. [ ] Stack in der Domäne dieses Hosts festgehalten
-17. [ ] Bei einem Datenbankcontainer: als Dump-Ziel ergänzen (Skill `callbell-sysadmin-backup`)
-18. [ ] Den Nutzer fragen, ob ein Commit angelegt werden soll
+1. [ ] Image pinned to an exact version
+2. [ ] `security_opt: [no-new-privileges:true]` on application containers
+3. [ ] `cap_drop: [ALL]`, only minimal `cap_add` if needed
+4. [ ] `pids_limit` set at all, with a value chosen for this application
+5. [ ] Port bound to `127.0.0.1` only
+6. [ ] Healthchecks for database and Redis
+7. [ ] Volumes under `./data/`
+8. [ ] Secrets via `${VARIABLE}`, not hardcoded
+9. [ ] Signup disabled
+10. [ ] Telemetry disabled
+11. [ ] Debug mode off
+12. [ ] OIDC set up (if the application supports it)
+13. [ ] SMTP with placeholders
+14. [ ] Reverse-proxy entry with security headers
+15. [ ] Port recorded in this host's domain
+16. [ ] Stack recorded in this host's domain
+17. [ ] For a database container: add it as a dump target (skill `callbell-sysadmin-backup`)
+18. [ ] Ask the user whether to create a commit

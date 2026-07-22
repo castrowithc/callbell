@@ -1,170 +1,123 @@
 ---
 name: callbell-sysadmin-incident
 description: >
-  Verdachtsdurchgang für einen Host, an dem jemand gewesen sein könnte: eine schnelle, nur lesende Sichtung
-  von Zugang, Persistenz, Prozessen, Netz und Containern, verglichen mit dem, was über den Host
-  festgehalten ist, danach gezieltes Nachfassen bei allem, was nicht zusammenpasst. Durchsucht nie das
-  Dateisystem und ändert nie etwas. Starte es, indem du /callbell-sysadmin-incident tippst.
+  Suspected-breach pass for a host someone may have reached: a fast, read-only triage of access,
+  persistence, processes, network, and containers, compared with what's recorded about the host, then
+  targeted follow-up on anything that doesn't fit. Never searches the filesystem, never changes anything.
+  Start it by typing /callbell-sysadmin-incident.
 type: skill
 edit: locked
 disable-model-invocation: true
 ---
 
-# Server-Vorfall: Sichtung, gezieltes Nachfassen, Reaktion
+# Server incident: triage, targeted follow-up, response
 
-Für einen Host unter Verdacht. Der Routinedurchgang fragt, ob der laufende Zustand noch zur Baseline passt.
-Dieser stellt eine andere Frage: hat sich hier jemand Zugang, Persistenz oder einen Brückenkopf verschafft.
-Die Abweichungsprüfung beantwortet sie nicht, denn ein Angreifer mit root lässt die Baseline intakt.
+For a host under suspicion. The routine sweep asks whether the running state still matches the baseline. This one asks a different question: has someone gained access, persistence, or a foothold here. The drift check doesn't answer it, because an attacker with root leaves the baseline intact.
 
-**Abgrenzung, damit hier nichts doppelt steht:** `callbell-sysadmin-checkup` ist der regelmäßige
-Gesundheitsdurchgang und schreibt einen datierten Bericht. Dieser läuft auf Verdacht, sammelt andere
-Belege und schreibt nichts auf die Platte.
+**Boundary, so nothing sits here twice:** `callbell-sysadmin-checkup` is the regular health sweep and writes a dated report. This one runs on suspicion, gathers different evidence, and writes nothing to disk.
 
-## Zwei Regeln, die alles Folgende prägen
+## Two rules that shape everything below
 
-**Der Host bleibt benutzbar.** Das läuft auf einem Produktivsystem. Ein Durchgang, der die Ein- und Ausgabe
-sättigt, reißt die Dienste mit, und der Seitencache, den er verdrängt, hält die Datenbank noch lange danach
-langsam. Die Sichtung liest deshalb nur bekannte Pfade und Kernelzustand. Sie durchsucht das Dateisystem
-nie. Verlangen die Belege eine Suche über das ganze Dateisystem, geschieht das auf einer Kopie, nicht hier.
+**The host stays usable.** This runs on a production system. A pass that saturates I/O drags the services down with it, and the page cache it evicts keeps the database slow long after. So the triage reads only known paths and kernel state. It never searches the filesystem. If the evidence demands a search across the whole filesystem, that happens on a copy, not here.
 
-**Dieser Skill sammelt und erklärt, er entscheidet nicht.** Er gibt dem Betreiber Belege und eine Lesart
-davon. Jede Handlung, jeder Befehl, der den Host verändert, jede Entscheidung zu isolieren oder neu
-aufzusetzen, gehört ihm. Wo er etwas will, das dieser Skill nicht tut, ist die Antwort, es in der Sitzung
-gemeinsam zu erarbeiten, und nicht, den Skill zu weiten, bis er von selbst handelt.
+**Gather and explain, don't decide.** Give the operator the evidence and a reading of it. Every action, every command that changes the host, every decision to isolate or rebuild, is theirs. Where they want something this skill doesn't do, the answer is to work it out together in the session, not to widen the skill until it acts on its own.
 
-## Schritt 1: zuerst die Aufzeichnungen lesen
+## Step 1: read the records first
 
-Bevor du irgendetwas sammelst, lies, was die Domäne des Hosts über ihn selbst sagt: Zweck, festgehaltene
-Dienste, Benutzer, Stack und Ports. Das macht aus jedem späteren Block eine Gegenüberstellung statt einer
-Liste, und genau darin liegt der Unterschied zwischen Sichtung und Starren auf Ausgaben.
+Before you gather anything, read what the host's domain says about itself: purpose, recorded services, users, stack, and ports. That turns every later block into a comparison rather than a list, and that's exactly the difference between triage and staring at output.
 
-Gibt es keine Aufzeichnungen, ist das ein Arbeitszustand und kein Fehler. Der realistische Vorfall ist der,
-bei dem dieses Pack installiert wird, *weil* der Verdacht schon besteht. Dann läuft der Vergleich gegen das,
-was für einen Host dieser Art normal ist, und jeder Befund sagt das dazu. Erhebe eine nicht überprüfbare
-Beobachtung nie zu einem Befund, damit die Lesart entschlossener wirkt.
+No records is a working state, not a fault. The realistic incident is the one where this pack gets installed *because* the suspicion already exists. Then the comparison runs against what's normal for a host of this kind, and every finding says so. Never raise an unverifiable observation to a finding to make the reading look more decisive.
 
-Sag, auf welcher der beiden Grundlagen du stehst, bevor du irgendetwas berichtest.
+Say which of the two bases you stand on before you report anything.
 
-## Schritt 2: Sichtung
+## Step 2: triage
 
-Führ die Begleitdatei `incident.sh` dieses Skill-Ordners aus. Sie drosselt sich selbst (Ein-/Ausgabeklasse
-idle, nice 19), begrenzt jeden Block mit einer Zeitschranke und ist auf einem normalen Host in Sekunden
-durch:
+Run this skill folder's companion file `incident.sh`. It throttles itself (I/O class idle, nice 19), caps each block with a timeout, and finishes in seconds on a normal host:
 
 ```bash
 sudo bash incident.sh
 ```
 
-Leite die Ausgabe nicht in eine Datei auf dem Host um. Siehe „Keine Berichtsdatei" weiter unten.
+Don't redirect the output to a file on the host. See "No report file" below.
 
-Die Blöcke sind nach Flüchtigkeit geordnet, nicht nach Wichtigkeit: Sockets und Prozesse verschwinden bei
-einem Neustart oder wenn ein Prozess endet, während `authorized_keys` und cron-Einträge bleiben. Sammle
-zuerst, was vergeht.
+The blocks are ordered by volatility, not importance: sockets and processes vanish on a reboot or when a process ends, while `authorized_keys` and cron entries stay. Gather what's fleeting first.
 
-| Block | Was er beantwortet | Warum er billig ist |
+| Block | What it answers | Why it's cheap |
 |---|---|---|
-| Lauschende und ausgehende Verbindungen | Ist etwas erreichbar, oder ruft etwas hinaus? | Socket-Tabelle des Kernels |
-| Prozesse | Läuft etwas aus einer gelöschten Datei oder einem seltsamen Pfad? | nur `/proc` |
-| Anmeldungen und sudo | Wer ist tatsächlich hereingekommen, und was hat er ausgeführt? | eine Protokolldatei, nur das Ende |
-| Privilegierte Konten, `authorized_keys` | Wer *kann* hereinkommen? | eine Handvoll bekannter Dateien |
-| cron, systemd-Units, Shell-Init, `ld.so.preload` | Wie käme jemand zurück? | bekannte Verzeichnisse, aufgelistet statt durchsucht |
-| Docker | Container und Images gegen den festgehaltenen Stack | API des Daemons |
+| Listeners and outbound connections | Is something reachable, or is something calling out? | the kernel's socket table |
+| Processes | Is something running from a deleted file or an odd path? | `/proc` only |
+| Logins and sudo | Who actually got in, and what did they run? | one log file, just the tail |
+| Privileged accounts, `authorized_keys` | Who *can* get in? | a handful of known files |
+| cron, systemd units, shell init, `ld.so.preload` | How would someone get back in? | known directories, listed not searched |
+| Docker | containers and images against the recorded stack | the daemon's API |
 
-Der größte Wert je Kosten steht oben: eine Hintertür muss erreichbar sein oder hinausrufen, also wiegt ein
-nicht festgehaltener Lauschender oder eine unerklärte ausgehende Verbindung schwerer als alles andere in
-der Liste.
+The most value per cost is at the top: a backdoor has to be reachable or call out, so an unrecorded listener or an unexplained outbound connection weighs heavier than anything else on the list.
 
-## Schritt 3: gezielt nachfassen
+## Step 3: targeted follow-up
 
-Die Sichtung liefert eine Handvoll Dinge, die nicht zusammenpassen. Jedem wird eigens nachgegangen, und was
-zu tun ist, folgt aus dem Befund und nicht aus einem vorab geschriebenen Skript.
+The triage turns up a handful of things that don't fit. Chase each one on its own, and what to do follows from the finding, not from a pre-written script.
 
-Ein nicht festgehaltener Lauschender auf einem Port heißt: welcher Prozess, welche Datei, wann zuletzt
-geändert, wem gehört sie, was startet sie. Ein unerklärter cron-Eintrag heißt: was ruft er auf, wann tauchte
-die Datei auf, welchem Konto gehört sie. Ein Schlüssel, den niemand kennt, heißt: wann wurde die Datei
-zuletzt geschrieben, von welchem Konto, und passt eine Anmeldung im Protokoll zu dieser Zeit.
+An unrecorded listener on a port means: which process, which file, last modified when, owned by whom, started by what. An unexplained cron entry means: what does it call, when did the file appear, which account owns it. A key no one knows means: when was the file last written, by which account, and does a login in the log match that time.
 
-Das sind je eine Handvoll billiger Befehle, weil das Ziel bekannt ist. Es ist zugleich der Schritt, in dem
-eine Suche über das ganze Dateisystem der bequeme Ersatz fürs Nachdenken gewesen wäre, zum Hundertfachen
-der Kosten.
+Each is a handful of cheap commands, because the target is known. It's also the step where a search across the whole filesystem would have been the easy substitute for thinking, at a hundred times the cost.
 
-## Schritt 4: sichern, bevor sich etwas ändert
+## Step 4: preserve before anything changes
 
-Deuten die Belege auf eine laufende Kompromittierung, halte das Flüchtige fest, bevor du irgendeine
-Handlung vorschlägst: Prozessliste, Socketliste, die einschlägigen Protokollauszüge, in die Sitzung. Auf
-einem Host, auf den es ankommt, schlag einen Snapshot beim Anbieter vor, bevor irgendetwas angefasst wird.
+If the evidence points to a live compromise, capture the volatile things before you propose any action: the process list, the socket list, the relevant log excerpts, into the session. On a host that matters, propose a snapshot at the provider before anything is touched.
 
-Einen Dienst neu zu starten, um aufzuräumen, kann die einzige Spur davon zerstören, wie der Brückenkopf
-funktionierte. Erst Snapshot, dann untersuchen, und nichts ändern, bevor der Betreiber entschieden hat.
+Restarting a service to clean up can destroy the only trace of how the foothold worked. Snapshot first, then investigate, and change nothing before the operator has decided.
 
-## Schritt 5: die Entscheidung übergeben
+## Step 5: hand over the decision
 
-Benenne, was die Belege tragen, wie sicher das ist und was offen bleibt. Dann leg die Möglichkeiten dar, mit
-dem, was jede kostet, falls die Lesart falsch ist. Einen Host, dessen Zustand sich nicht erklären lässt,
-**isoliert** man, statt ihn aufzuräumen: ihn vom Netz zu nehmen bewahrt Spuren, ihn zu säubern zerstört sie.
+Name what the evidence supports, how sure that is, and what stays open. Then lay out the options, with what each costs if the reading is wrong. A host whose state can't be explained you **isolate**, rather than clean up: taking it off the network preserves traces, scrubbing it destroys them.
 
-Führ nur aus, wozu der Betreiber zugestimmt hat, und sag danach klar, was sich geändert hat und was
-unangetastet blieb. Die Sicherheitsschicht des Packs verlangt vor zerstörenden Befehlen ohnehin Erklärung
-und Bestätigung, und genau für diese Lage gibt es sie.
+Run only what the operator agreed to, and afterward say clearly what changed and what stayed untouched. The pack's safety layer demands explanation and confirmation before destructive commands anyway, and this is exactly the situation it's there for.
 
-## Tiefe Untersuchung gehört auf eine Kopie
+## Deep investigation belongs on a copy
 
-Manche Fragen brauchen wirklich eine Suche über das ganze Dateisystem: wurde eine Systemdatei ersetzt, gibt
-es eine SUID-Datei, die niemand installiert hat, was wurde sonst noch an dem Tag geschrieben, an dem der
-Einbruch begann. Diese Fragen werden auf einem Snapshot beantwortet, anderswo eingehängt, nie auf dem
-laufenden Host. Zwei Gründe, und der zweite entscheidet:
+Some questions really do need a search across the whole filesystem: was a system file replaced, is there a SUID file no one installed, what else was written on the day the break-in began. Answer these on a snapshot, mounted elsewhere, never on the running host. Two reasons, and the second one decides:
 
-1. Kosten. Das ganze Dateisystem abzugehen und jede Paketdatei zu prüfen ist schwere Ein- und Ausgabe und
-   verdrängt den Seitencache, auf den die laufenden Dienste angewiesen sind.
-2. Vertrauen. Ein Rootkit kann `find`, `ls`, `ps` und den Paketprüfer belügen, denn sie alle fragen den
-   Kernel, den es bereits unterwandert hat. Auf dem laufenden Host ist ein solcher Scan teuer **und**
-   unzuverlässig, die schlechteste verfügbare Kombination.
+1. Cost. Walking the whole filesystem and checking every package file is heavy I/O and evicts the page
+   cache the running services depend on.
+2. Trust. A rootkit can lie to `find`, `ls`, `ps`, and the package verifier, because they all ask the
+   kernel it has already subverted. On the running host such a scan is expensive **and** unreliable, the
+   worst available combination.
 
-Der Weg ist also: das Volume beim Anbieter snapshotten, an eine getrennte Maschine hängen und die schweren
-Werkzeuge dort gegen ein Dateisystem laufen lassen, das niemand verteidigt. `debsums -c` oder `rpm -Va` für
-die Paketintegrität, ein Durchgang über SUID/SGID und einer über Änderungszeiten rund um das vermutete
-Fenster. Scanner wie `rkhunter`, `chkrootkit` oder `Lynis` gehören ebenfalls dorthin. Installiere nie einen
-Scanner auf dem verdächtigen Host: er schreibt auf die Platte, verändert den Paketzustand und verrät dem,
-gegen den ermittelt wird, dass gesucht wird.
+So the path is: snapshot the volume at the provider, attach it to a separate machine, and run the heavy tools there against a filesystem no one is defending. `debsums -c` or `rpm -Va` for package integrity, a pass over SUID/SGID and one over modification times around the suspected window. Scanners like `rkhunter`, `chkrootkit`, or `Lynis` belong there too. Never install a scanner on the suspect host: it writes to disk, changes the package state, and tells whoever is being investigated that a search is on.
 
-Will der Betreiber trotzdem einen tiefen Scan im laufenden Betrieb, ist das seine Entscheidung und sein
-Befehl. Es liegt außerhalb dessen, was dieser Skill tut, und der Grund steht in den zwei Punkten oben und
-nicht in einer Vorliebe.
+If the operator wants a deep scan on the running system anyway, that's their decision and their command. It lies outside what this skill does, and the reason is in the two points above, not in a preference.
 
-## Keine Berichtsdatei
+## No report file
 
-Anders als beim Routine-Checkup wird der Befund nicht auf den Host geschrieben. Unter Verdacht ist der Host
-der falsche Ort dafür: die Datei ist von dem manipulierbar, gegen den ermittelt wird, und sie verrät, dass
-gesucht wurde und wonach. Der Befund lebt in der Sitzung. Will der Betreiber ihn aufbewahren, wird er auf
-sein Wort hin außerhalb des Hosts gesichert.
+Unlike the routine checkup, the finding is not written to the host. Under suspicion the host is the wrong place for it: the file is tamperable by whoever is being investigated, and it reveals that a search happened and what for. The finding lives in the session. If the operator wants to keep it, it's saved off the host on their word.
 
-## Aufbau der Lesart
+## Reading layout
 
-Berichte in der Sitzung, in dieser Form:
+Report in the session, in this form:
 
 ```markdown
-# Vorfallsichtung: <host>, JJJJ-MM-TT
+# Incident triage: <host>, YYYY-MM-DD
 
-## Grundlage
-<Festgehaltene Aufzeichnungen vorhanden, oder beurteilt gegen das für diese Art Host Normale. Ein Satz.>
+## Basis
+<Recorded material present, or judged against what's normal for this kind of host. One sentence.>
 
-## Zusammenfassung
-<1 bis 3 Sätze: was die Belege tragen, wie sicher, was offen bleibt.>
+## Summary
+<1 to 3 sentences: what the evidence supports, how sure, what stays open.>
 
-## Passte nicht zusammen
-### [BEFUND|NOTIZ|NICHT PRÜFBAR] <Titel>
-- <Beobachtung mit Beleg> (Grundlage: Aufzeichnung | normal für diesen Host)
-- <was das gezielte Nachfassen ergab>
+## Didn't fit
+### [FINDING|NOTE|UNVERIFIABLE] <title>
+- <observation with evidence> (basis: record | normal for this host)
+- <what the targeted follow-up found>
 
-## Passte zur Aufzeichnung
-- <Blöcke, die sauber zurückkamen, je eine Zeile>
+## Matched the record
+- <blocks that came back clean, one line each>
 
-## Möglichkeiten
-1. <Möglichkeit, und was sie kostet, falls die Lesart falsch ist>
+## Options
+1. <option, and what it costs if the reading is wrong>
 
-## Von hier aus nicht beantwortet
-- <was den Snapshot-Weg braucht, und welche Frage es klären würde>
+## Not answerable from here
+- <what needs the snapshot path, and which question it would settle>
 ```
 
-Marker: `[BEFUND]` braucht eine Erklärung oder eine Reaktion · `[NOTIZ]` erwähnenswert, für sich genommen
-nicht verdächtig · `[NICHT PRÜFBAR]` beobachtet, von diesem Host aus nicht beurteilbar.
+Markers: `[FINDING]` needs an explanation or a response · `[NOTE]` worth mentioning, not suspicious on its
+own · `[UNVERIFIABLE]` observed, not judgable from this host.

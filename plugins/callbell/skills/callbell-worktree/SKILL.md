@@ -1,9 +1,8 @@
 ---
 name: callbell-worktree
 description: >
-  Richtet einen Git-Worktree für parallele Arbeit ein: ein neuer Branch in einem eigenen Ordner, dieselbe
-  Git-Datenbank, damit mehrere Themen sich nicht in die Quere kommen. Räumt nach dem Merge wieder auf.
-  Starte es, indem du /callbell-worktree tippst.
+  Set up a git worktree for parallel work: a new branch in its own folder sharing one git database, so
+  separate threads never collide. Cleans up after the merge. Start it by typing /callbell-worktree.
 type: skill
 edit: locked
 disable-model-invocation: true
@@ -12,42 +11,28 @@ argument-hint: "[branch-name]"
 
 # /callbell-worktree
 
-Richtet über `git worktree` einen zweiten Arbeitsstrang ein, ohne den offenen Stand im Hauptordner
-wegzuräumen. Für mehrere Sessions oder Themen gleichzeitig.
+Open a second working thread with `git worktree`, without stashing the open state in the main folder. For running several sessions or topics at once.
 
-## Wann
-- Auf direkte Anfrage des Nutzers.
-- Oder wenn parallele oder kollidierende Arbeit aufkommt (ein neuer Strang, während ein Branch offen ist):
-  schlage einen Worktree vor, erkläre ihn in ein bis zwei Sätzen und lege ihn erst nach Freigabe an (ein
-  neues Strukturelement).
-- Schlage für einen parallelen Strang außerdem ein eigenes Backlog-Projekt
-  `__callbell__/backlog/<projekt>/` vor: es isoliert die Backlog-Änderungen dieses Strangs, damit die
-  Worktrees nicht auf gemeinsamen Dateien kollidieren.
+## When
+- On the user's direct request.
+- When parallel or colliding work comes up (a new thread while a branch is open): propose a worktree, explain it in a sentence or two, and create it only after approval (it's a new structural element).
+- For a parallel thread, also propose its own backlog project `__callbell__/backlog/<project>/`. It isolates that thread's backlog changes so the worktrees don't collide on shared files.
 
-## Einrichten
-1. Zustand prüfen (`git status`), offene Änderungen im Hauptordner sichern (committen oder stashen).
-2. Branch-Namen festlegen (aus dem Argument oder mit einer kurzen Rückfrage), sprechend und in kebab-case.
-3. Den Worktree als Geschwisterordner neben dem Repo anlegen, benannt `<repo>-wt-<zweck>`:
-   `git worktree add ../<repo>-wt-<zweck> -b <branch>`.
-4. Dem Nutzer Ort und Branch nennen und wie er dorthin wechselt.
+## Set up
+1. Check state (`git status`); save open changes in the main folder (commit or stash).
+2. Pick a branch name (from the argument or a short question), descriptive and in kebab-case.
+3. Create the worktree as a sibling folder next to the repo, named `<repo>-wt-<purpose>`:
+   `git worktree add ../<repo>-wt-<purpose> -b <branch>`.
+4. Tell the user the location, the branch, and how to switch to it.
 
-**Der Infix `-wt-` trägt Last, er ist keine Verzierung.** Ein Worktree entsteht oft innerhalb des
-Arbeitsbaums eines anderen Repos (ein Repo verschachtelt in einem Repo, ein Steuerungs-Repo, das eine
-Codebasis führt), und dieses äußere Repo muss ihn ignorieren. `*-wt-*/` fängt jeden Worktree in jeder Tiefe
-und sonst nichts. Sie stattdessen `<repo>-<zweck>` zu nennen, würde das äußere Repo zwingen, ein ganzes
-Namenspräfix zu ignorieren, was dann jeden künftigen Ordner verschluckt, der zufällig genauso anfängt, in
-einem callbell-Repo eingeschlossen die Projektordner `backlog/<repo>-*`.
+The `-wt-` infix carries weight, not decoration. A worktree often lands inside another repo's working tree (a repo nested in a repo, a steering repo that drives a codebase), and that outer repo must ignore it. `*-wt-*/` catches every worktree at any depth and nothing else. Naming it `<repo>-<purpose>` instead would force the outer repo to ignore a whole name prefix, which then swallows every future folder that starts the same way, a callbell repo's `backlog/<repo>-*` project folders included.
 
-Halte den Zweck im Ordnernamen fest und nicht eine wiederverwendbare Platznummer: der Name ist das, was
-einen nicht gemergten Worktree auffällig macht, und das, was klarmacht, dass der Ordner weg sein sollte,
-sobald der Strang gemergt ist.
+Put the purpose in the folder name, not a reusable slot number. The name is what makes an unmerged worktree stand out, and what makes clear the folder should be gone once the thread is merged.
 
-## Aufräumen
-- Sobald der Strang gemergt oder verworfen ist: `git worktree remove <ort>` und den Branch aufräumen. Keine
-  verwaisten Worktrees hinterlassen.
-- `git worktree list` zeigt, was offen ist.
+## Clean up
+- Once the thread is merged or dropped: `git worktree remove <location>` and clean up the branch. Leave no orphaned worktrees.
+- `git worktree list` shows what's open.
 
-## Grenzen
-- Nie denselben Branch gleichzeitig in zwei Worktrees auschecken (Git verbietet das).
-- Der Worktree teilt die Git-Datenbank, aber nicht den lokalen Arbeitszustand: Umgebungsdateien (`.env`,
-  lokale Konfigurationen) bei Bedarf erneut bereitstellen.
+## Limits
+- Never check out the same branch in two worktrees at once (git forbids it).
+- A worktree shares the git database but not the local working state: re-provide environment files (`.env`, local config) as needed.

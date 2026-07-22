@@ -1,28 +1,25 @@
 ---
 description: >
-  Begleitdatei zu callbell-sysadmin-backup (nur Docker-Server): konsistente Datenbank-Dumps vor der
-  Borg-Sicherung über einen before_backup-Hook. Die Containerliste steht in der Domäne des Hosts.
+  Companion to callbell-sysadmin-backup (Docker servers only): consistent database dumps before the Borg
+  backup via a before_backup hook. The container list lives in the host's domain.
 type: playbook
 edit: locked
 ---
 
-# Datenbank-Dumps vor der Borg-Sicherung (Docker-Server)
+# Database dumps before the Borg backup (Docker servers)
 
-Borg sichert das **Dateisystem**, nicht den **inneren Zustand** laufender Datenbanken. Eine Sicherung von
-`/var/lib/postgresql/data` auf Dateiebene kann während Schreibvorgängen inkonsistent sein. Ein vorher
-erzeugter Dump (`pg_dumpall` oder ähnlich) ist konsistent, klein und leicht wieder einzuspielen.
+Borg backs up the **filesystem**, not the **internal state** of running databases. A file-level backup of `/var/lib/postgresql/data` can be inconsistent mid-write. A dump made beforehand (`pg_dumpall` or similar) is consistent, small, and easy to reload.
 
-## Verhalten im Fehlerfall
+## Behavior on failure
 
-| Lage | Reaktion | Warum |
+| Situation | Response | Why |
 |---|---|---|
-| **Container läuft nicht** (Stack pausiert oder entfernt) | **WARN, überspringen, weitermachen** | geplante Ausfallzeit soll die Dateisicherung nicht blockieren; der veraltete Dump wird gelöscht |
-| **Container läuft, Dump scheitert** | **ERROR, Sicherung abbrechen** | echter Fehler, keine "grüne" Sicherung ohne gültigen Datenbankstand |
+| **Container not running** (stack paused or removed) | **WARN, skip, continue** | planned downtime shouldn't block the file backup; the stale dump is deleted |
+| **Container running, dump fails** | **ERROR, abort backup** | a real failure, no "green" backup without a valid database state |
 
-Dauerhaft entfernte Container auch aus der Liste im Skript streichen, sonst häufen sich WARNs und schwächen
-die Aufmerksamkeit für die echten.
+Remove permanently deleted containers from the list in the script too, or WARNs pile up and dull attention to the real ones.
 
-## Einbindung in Borgmatic
+## Wiring into Borgmatic
 
 In `/etc/borgmatic/config.yaml`:
 
@@ -31,7 +28,7 @@ source_directories:
   - /etc
   - /home
   - /opt
-  - /root/backup/borg/db-dumps   # die Dumps mit aufnehmen
+  - /root/backup/borg/db-dumps   # include the dumps
 
 hooks:
   before_backup:
@@ -43,10 +40,7 @@ hooks:
     - /root/backup/borg-notify.sh success
 ```
 
-## Vorlage `/root/backup/borg/pre-backup-db-dump.sh`
-
-Das Skript bleibt englisch: es ist Code, der auf dem Host läuft, und seine Meldungen landen im Protokoll
-von borgmatic, wo eine gemischte Sprache das Auswerten erschwert.
+## Template `/root/backup/borg/pre-backup-db-dump.sh`
 
 ```bash
 #!/bin/bash
@@ -139,20 +133,20 @@ fi
 exit 0
 ```
 
-**Anpassungen je Server:**
+**Per-server adjustments:**
 
-- Aufrufe von `dump_postgres`/`dump_mariadb` mit den tatsächlich verwendeten Containernamen.
-- Sonderfälle (eine interne Datenbank ohne offenen root-Zugang) bekommen einen eigenen Block
-  (Beispiel OpenProject: `docker exec ... su - postgres -c "pg_dumpall"`).
-- Hat ein Container keinen Benutzer `postgres`: den passenden über `-U` setzen.
+- Calls to `dump_postgres`/`dump_mariadb` with the container names actually used.
+- Special cases (an internal database with no open root access) get their own block (OpenProject example:
+  `docker exec ... su - postgres -c "pg_dumpall"`).
+- If a container has no `postgres` user: set the right one via `-U`.
 
-## Pflege
+## Maintenance
 
-- **Stack entfernt?** → die `dump_*`-Zeile streichen (sonst WARNs).
-- **Neuer Stack mit Datenbank?** → eine `dump_*`-Zeile ergänzen plus einen Eintrag in der Domäne des Hosts.
-- **WARNs häufen sich?** → prüfen, ob der Container nur kurz oder dauerhaft unten war.
+- **Stack removed?** → drop the `dump_*` line (or WARNs).
+- **New stack with a database?** → add a `dump_*` line plus an entry in the host's domain.
+- **WARNs piling up?** → check whether the container was down briefly or for good.
 
-## Wiederherstellen (eine einzelne Datenbank)
+## Restore (a single database)
 
 ```bash
 sudo borgmatic extract --archive latest \
@@ -161,11 +155,11 @@ cat /tmp/restore/root/backup/borg/db-dumps/<container>.sql \
   | docker exec -i <container> psql -U postgres
 ```
 
-## Sicherheitsregeln
+## Safety rules
 
-- Dump-Verzeichnis chmod 700, Dateien chmod 600 (Anwendungsdaten im Klartext).
-- Umgebungsvariablen des Containers **nicht** direkt über `docker exec` referenzieren (Geheimnis landet in
-  Protokoll und argv). Das Passwort mit `sh -c '... "$VAR"'` **innerhalb** des Containers auflösen, nicht in
-  der Shell des Hosts.
-- Das Dump-Skript gehört root:root, chmod 700.
-- Die festgehaltene Containerliste enthält nur **Namen**, keine Passwörter und keine Verbindungszeichenfolgen.
+- Dump directory chmod 700, files chmod 600 (application data in plaintext).
+- Do **not** reference the container's environment variables directly via `docker exec` (the secret lands
+  in the log and argv). Resolve the password with `sh -c '... "$VAR"'` **inside** the container, not in the
+  host's shell.
+- The dump script is owned root:root, chmod 700.
+- The recorded container list holds only **names**, no passwords and no connection strings.

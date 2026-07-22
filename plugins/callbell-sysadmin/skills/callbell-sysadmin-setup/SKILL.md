@@ -1,87 +1,77 @@
 ---
 name: callbell-sysadmin-setup
 description: >
-  Stellt eine frische Maschine bereit: Entscheidungen vorweg, dann Admin-Benutzer, Werkzeuge, Härtung,
-  Sicherung und wahlweise Docker in der richtigen Reihenfolge. Nicht der Einstieg ins Pack — das ist
-  /callbell-sysadmin-start. Starte es, indem du /callbell-sysadmin-setup tippst.
+  Provisions a fresh machine: decisions up front, then admin user, tools, hardening, backup, and optionally
+  Docker in the right order. Not the way into the pack, that's /callbell-sysadmin-start. Start it by typing
+  /callbell-sysadmin-setup.
 type: skill
 edit: locked
 disable-model-invocation: true
 ---
 
-# Eine frische Maschine bereitstellen: der Ablauf
+# Provisioning a fresh machine: the sequence
 
-Dieser Skill führt die **vollständige Erstinbetriebnahme** eines Servers. Er ist nicht der Einstieg ins
-Pack — den macht `/callbell-sysadmin-start`, und der läuft auch auf Servern, die längst stehen. Hier geht es
-um eine Maschine, die noch nichts hat.
+Run the **full initial provisioning** of a server here. This isn't the way into the pack; `/callbell-sysadmin-start` is, and it runs on servers that have been up for ages too. This is about a machine that has nothing yet.
 
-Er ist der Taktgeber; die
-Einzelschritte liegen in den Begleitdateien dieses Ordners und in den eigenständigen Skills
-`callbell-sysadmin-harden`, `callbell-sysadmin-backup` und `callbell-sysadmin-deploy` (jeden bei Bedarf
-laden, nicht auf Vorrat).
+It's the sequencer; the individual steps live in this folder's companion files and in the standalone skills `callbell-sysadmin-harden`, `callbell-sysadmin-backup`, and `callbell-sysadmin-deploy` (load each when you need it, not ahead of time).
 
-> Läuft auf dem neuen Server als Admin-Benutzer, nicht als root. Vor zerstörenden Schritten gelten die
-> Sicherheitsregeln (Zwei-Verbindungs-Muster für SSH und Firewall).
+> Runs on the new server as the admin user, not as root. Before destructive steps the safety rules apply (two-connection pattern for SSH and firewall).
 
-## Phase 0: Entscheidungen sammeln (im Planmodus, VOR der Ausführung)
+## Phase 0: gather decisions (in plan mode, BEFORE execution)
 
-Diese Parameter tragen jeden späteren Schritt. **Frag aktiv**, nimm nichts an. Der Normalfall ist
-Ubuntu/Debian, aber der Server kann anders sein:
+These parameters carry every later step. **Ask actively**, assume nothing. The common case is Ubuntu/Debian, but the server can be otherwise:
 
-1. **Distribution, Init-System, Paketmanager.** Etwa Ubuntu/Debian (`apt`, `systemd`, `ufw`),
-   Fedora/RHEL (`dnf`, `systemd`, `firewalld`), Alpine (`apk`, OpenRC). Unklar: `cat /etc/os-release`,
-   `ps -p1 -o comm=`. Bestimmt die Befehle für Pakete, Firewall und Timer.
-2. **Servertyp und Zweck.** Beeinflusst Firewall-Werkzeug, automatischen Neustart und ob Docker
-   eingerichtet wird.
-3. **Git-Authentisierung.** PAT (Normalfall), Deploy-Key oder Konto-SSH-Schlüssel (Details: `git-auth.md`).
-4. **Werkzeuge.** Den Standardsatz bestätigen lassen (`micro`, `mc`, `fzf`, `tmux`, `git`).
-5. **Docker-Server?** Wenn ja, laufen `callbell-sysadmin-deploy` und die Datenbank-Dumps am Ende.
+1. **Distribution, init system, package manager.** E.g. Ubuntu/Debian (`apt`, `systemd`, `ufw`),
+   Fedora/RHEL (`dnf`, `systemd`, `firewalld`), Alpine (`apk`, OpenRC). Unclear: `cat /etc/os-release`,
+   `ps -p1 -o comm=`. Sets the commands for packages, firewall, and timers.
+2. **Server type and purpose.** Affects the firewall tool, automatic reboot, and whether Docker gets set up.
+3. **Git authentication.** PAT (the common case), deploy key, or account SSH key (details: `git-auth.md`).
+4. **Tools.** Confirm the default set (`micro`, `mc`, `fzf`, `tmux`, `git`).
+5. **Docker server?** If so, `callbell-sysadmin-deploy` and the database dumps run at the end.
 
-Entscheidungen zu Härtung und Sicherung fallen hier **nicht**: Firewall, SSH-Port und automatischer
-Neustart klärt `callbell-sysadmin-harden`, die Sicherungsparameter (Ziel, Zeitfenster, Benachrichtigung)
-klärt `callbell-sysadmin-backup`, jeweils im Planmodus des eigenen Skills. Halte die Entscheidungen in der
-Domäne dieses Hosts fest.
+Hardening and backup decisions do **not** fall here: `callbell-sysadmin-harden` settles firewall, SSH port,
+and automatic reboot, `callbell-sysadmin-backup` settles the backup parameters (target, time window,
+notification), each in its own skill's plan mode. Record the decisions in this host's domain.
 
-## Phase 1: Arbeitsordner und Host-Identität
+## Phase 1: working folder and host identity
 
-**Das macht dieser Skill nicht selbst.** Ruf `/callbell-sysadmin-start` auf und lass ihn laufen: er prüft
-das Gerüst, liefert die Vorlagen aus, legt die Domäne `<host>/` mit `framework.md` und `index.md` an, liest
-den Bestand der Maschine aus und setzt `__callbell__/.host-identity`.
+**This skill doesn't do this itself.** Call `/callbell-sysadmin-start` and let it run: it checks the
+scaffold, ships the templates, creates the domain `<host>/` with `framework.md` and `index.md`, reads the
+machine's inventory, and sets `__callbell__/.host-identity`.
 
-Der Grund für die Trennung ist der Fehler, der sie nötig gemacht hat: eine Maschine bereitstellen und einen
-Arbeitsordner einrichten sind zwei Aufgaben, und solange sie eine waren, entstand die Domäne nie. Sie wird
-auch dann gebraucht, wenn niemand je einen Server von Grund auf aufsetzt.
+The reason for the split is the mistake that forced it: provisioning a machine and setting up a working
+folder are two jobs, and while they were one, the domain never got created. It's needed even when no one
+ever sets up a server from scratch.
 
-Ab der nächsten Sitzung nennt der Hook diese Domäne als Arbeitsbereich und aktiviert die passive
-Sicherheitsschicht.
+From the next session on, the hook names this domain as the workspace and activates the passive safety layer.
 
-## Phase 2: Basis
+## Phase 2: base
 
-- **Admin-Benutzer** mit sudo (nie als root arbeiten); SSH-Schlüssel hinterlegen.
-- **Git global einrichten:** `user.name`, `user.email`, `init.defaultBranch main`, `pull.rebase false`.
+- **Admin user** with sudo (never work as root); install the SSH key.
+- **Set up Git globally:** `user.name`, `user.email`, `init.defaultBranch main`, `pull.rebase false`.
 
-## Phase 3: Werkzeuge installieren
+## Phase 3: install tools
 
-Siehe die Begleitdatei `tools.md` (`micro`, `mc`, `fzf`, `tmux`, `git`, Installation über mehrere
-Distributionen hinweg plus `tmux.conf`).
+See the companion file `tools.md` (`micro`, `mc`, `fzf`, `tmux`, `git`, installation across distributions
+plus `tmux.conf`).
 
-## Phase 4: Härtung
+## Phase 4: hardening
 
-Lade den Skill `callbell-sysadmin-harden` und führe ihn aus (SSH, Firewall, fail2ban, Benutzer, System;
-distributionsbewusst, mit Entscheidungspunkten). Halte jede Abweichung von der Baseline in der Domäne
-dieses Hosts fest, mit ihrem Grund.
+Load the skill `callbell-sysadmin-harden` and run it (SSH, firewall, fail2ban, users, system;
+distribution-aware, with decision points). Record every deviation from the baseline in this host's domain,
+with its reason.
 
-## Phase 5: Sicherung
+## Phase 5: backup
 
-Lade den Skill `callbell-sysadmin-backup` und führe ihn aus (Borg/Borgmatic auf ein entferntes Ziel,
-Benachrichtigung, Zugangsdaten, versetzte Startzeit, Wiederherstellungstest).
+Load the skill `callbell-sysadmin-backup` and run it (Borg/Borgmatic to a remote target, notification,
+credentials, staggered start time, restore test).
 
-## Phase 6: Docker (nur auf Docker-Servern)
+## Phase 6: Docker (Docker servers only)
 
-Lade den Skill `callbell-sysadmin-deploy` für die Stack-Konventionen; die Datenbank-Dumps werden über
-`callbell-sysadmin-backup` und dessen Begleitdatei `db-dumps.md` vor der Sicherung eingehängt.
+Load the skill `callbell-sysadmin-deploy` for the stack conventions; the database dumps hook in before the
+backup through `callbell-sysadmin-backup` and its companion file `db-dumps.md`.
 
-## Phase 7: Abnahme
+## Phase 7: sign-off
 
-Geh die Abnahmeliste von `callbell-sysadmin-harden` Punkt für Punkt durch und halte das Ergebnis in der
-Domäne dieses Hosts fest. Prüfe die erste Sicherung und einen Wiederherstellungstest.
+Walk the `callbell-sysadmin-harden` sign-off checklist point by point and record the result in this host's
+domain. Verify the first backup and a restore test.

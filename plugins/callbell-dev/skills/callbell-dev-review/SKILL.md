@@ -1,85 +1,64 @@
 ---
 name: callbell-dev-review
 description: >
-  Ein bewusster Over-Engineering-Durchgang, den du auf einem Diff oder einem
-  ganzen Repo laufen lässt — kein automatischer Check und kein Correctness- oder
-  Security-Review. Findet, was zu löschen ist: nachgebaute Standardbibliothek,
-  unnötige Abhängigkeiten, spekulative Abstraktionen, tote Flexibilität, eine
-  Zeile pro Fund (Stelle, was raus muss, was es ersetzt). Starte ihn durch
-  Tippen von /callbell-dev-review, häng "repo" an für einen Durchgang über den
-  ganzen Baum. Das Modell startet ihn nicht von selbst; der Nutzer bestimmt den
-  Zeitpunkt.
+  Code review focused exclusively on over-engineering. Finds what to delete:
+  reinvented standard library, unneeded dependencies, speculative abstractions,
+  dead flexibility. One line per finding: location, what to cut, what replaces
+  it. Use when the user says "review for over-engineering", "what can we
+  delete", "is this over-engineered", "simplify review", or invokes
+  /callbell-dev-review. Complements correctness-focused review, this one only
+  hunts complexity.
+disable-model-invocation: true
+license: MIT
 type: skill
 edit: locked
-disable-model-invocation: true
+attribution: github.com/DietrichGebert/ponytail
 ---
 
-Prüfe Code auf unnötige Komplexität. Eine Zeile pro Fund: Stelle, was raus muss,
-was es ersetzt. Das beste Ergebnis ist: es wird kürzer.
+# callbell-review
 
-## Umfang
-
-**Ein Diff standardmäßig.** Das ist der Normalfall und der billigste: was sich
-gerade geändert hat, geprüft bevor es landet.
-
-**Der ganze Baum, wenn verlangt** — "review das Repo", "audit diese Codebasis",
-"was kann ich hier löschen" oder `/callbell-dev-review repo`. Gleiche Linse,
-gleiche Tags, gleicher Output; nur das Lesen ändert sich. Scanne den Baum statt
-des Diffs und sortiere die Funde nach größtem Schnitt zuerst, denn ein
-Repo-Durchgang hat keine natürliche Reihenfolge wie ein Diff.
-
-Ist der Umfang aus dem Aufruf nicht offensichtlich und ein Diff existiert, nimm
-den Diff und sag es in einer Zeile. Frag nicht.
+Review diffs for unnecessary complexity. One line per finding: location, what
+to cut, what replaces it. The diff's best outcome is getting shorter.
 
 ## Format
 
-`L<Zeile>: <tag> <was>. <Ersatz>.`, oder `<Datei>:L<Zeile>: ...` bei
-Diffs über mehrere Dateien.
+`L<line>: <tag> <what>. <replacement>.`, or `<file>:L<line>: ...` for
+multi-file diffs.
 
 Tags:
 
-- `delete:` toter Code, ungenutzte Flexibilität, spekulatives Feature. Ersatz: nichts.
-- `stdlib:` handgebautes Ding, das die Standardbibliothek mitliefert. Nenn die Funktion.
-- `native:` Abhängigkeit oder Code, der tut, was die Plattform schon tut. Nenn das Feature.
-- `yagni:` Abstraktion mit einer Implementierung, Config, die niemand setzt, Schicht mit einem Aufrufer.
-- `shrink:` gleiche Logik, weniger Zeilen. Zeig die kürzere Form.
+- `delete:` dead code, unused flexibility, speculative feature. Replacement: nothing.
+- `stdlib:` hand-rolled thing the standard library ships. Name the function.
+- `native:` dependency or code doing what the platform already does. Name the feature.
+- `yagni:` abstraction with one implementation, config nobody sets, layer with one caller.
+- `shrink:` same logic, fewer lines. Show the shorter form.
 
-## Beispiele
+## Examples
 
-❌ "Diese EmailValidator-Klasse ist vielleicht komplexer als nötig, hast du
-überlegt, ob all diese Validierungsregeln in diesem Stadium gebraucht werden?"
+❌ "This EmailValidator class might be more complex than necessary, have you
+considered whether all these validation rules are needed at this stage?"
 
-✅ `L12-38: stdlib: 27-Zeilen-Validator-Klasse. "@" in E-Mail, 1 Zeile, echte Validierung ist die Bestätigungsmail.`
+✅ `L12-38: stdlib: 27-line validator class. "@" in email, 1 line, real validation is the confirmation mail.`
 
-✅ `L4: native: moment.js importiert für einen einzigen Format-Aufruf. Intl.DateTimeFormat, 0 deps.`
+✅ `L4: native: moment.js imported for one format call. Intl.DateTimeFormat, 0 deps.`
 
-✅ `repo.py:L88: yagni: AbstractRepository mit einer Implementierung. Inline es, bis eine zweite existiert.`
+✅ `repo.py:L88: yagni: AbstractRepository with one implementation. Inline it until a second one exists.`
 
-✅ `L52-71: delete: Retry-Wrapper um einen idempotenten lokalen Aufruf. Ersatz: nichts.`
+✅ `L52-71: delete: retry wrapper around an idempotent local call. Nothing replaces it.`
 
-✅ `L30-44: shrink: manuelle Schleife baut ein dict. dict(zip(keys, values)), 1 Zeile.`
+✅ `L30-44: shrink: manual loop builds dict. dict(zip(keys, values)), 1 line.`
 
-## Jagd (Repo-Durchgang)
+## Scoring
 
-Wo man schaut, wenn kein Diff zum Folgen da ist: deps, die die Stdlib oder
-Plattform schon mitliefert, Interfaces mit einer einzigen Implementierung,
-Factories mit einem Produkt, Wrapper, die nur delegieren, Dateien, die genau
-eine Sache exportieren, tote Flags und Config, handgebaute Stdlib.
+End with the only metric that matters: `net: -<N> lines possible.`
 
-## Bewertung
+If there is nothing to cut, say `Lean already. Ship.` and stop.
 
-Schließ mit der einzigen Kennzahl, die zählt: `net: -<N> Zeilen möglich.` Bei
-einem Repo-Durchgang häng die Abhängigkeiten an: `net: -<N> Zeilen, -<M> deps
-möglich.`
+## Boundaries
 
-Ist nichts zu schneiden, sag `Schon schlank. Ship.` und stopp.
-
-## Grenzen
-
-Umfang: ausschließlich Over-Engineering und Komplexität. Correctness-Bugs,
-Sicherheitslücken und Performance sind ausdrücklich außerhalb des Umfangs. Leite
-sie an einen normalen Review-Durchgang, nicht an diesen. Ein einzelner
-Smoke-Test oder ein `assert`-basierter Selbstcheck ist das Minimum, das dieser
-Pack verlangt, kein Bloat — markier ihn nie zum Löschen. Wendet die Fixes nicht
-an, listet sie nur.
-"stop" oder "normaler Modus": zurück zum ausführlichen Review-Stil.
+Scope: over-engineering and complexity only. Correctness bugs, security holes,
+and performance are explicitly out of scope. Route them to a normal review
+pass, not this one. A single smoke test or `assert`-based
+self-check is the callbell-dev minimum, not bloat, never flag it for deletion.
+Does not apply the fixes, only lists them.
+"stop callbell-dev-review" or "normal mode": revert to verbose review style.

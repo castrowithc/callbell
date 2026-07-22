@@ -1,105 +1,102 @@
 ---
 name: callbell-sysadmin-harden
 description: >
-  Härtet einen Server auf eine Sicherheits-Baseline oder prüft eine bestehende Härtung: SSH, Firewall,
-  fail2ban, Benutzer, System. Starte es, indem du /callbell-sysadmin-harden tippst.
+  Hardens a server to a security baseline, or checks an existing hardening: SSH, firewall, fail2ban, users,
+  system. Start it by typing /callbell-sysadmin-harden.
 type: skill
 edit: locked
 disable-model-invocation: true
 ---
 
-# Einen Server härten: Baseline und Vorgehen
+# Hardening a server: baseline and procedure
 
-Beschreibt den **Zielzustand** und nicht bloß feste Befehle, damit die Härtung über Distributionen hinweg
-trägt. Halte jede Abweichung in der Domäne dieses Hosts fest, mit ihrem Grund. Für die Abnahme geh
-`checklist.md` in diesem Skill-Ordner Punkt für Punkt durch.
+Targets the **end state**, not just fixed commands, so the hardening carries across distributions. Record every deviation in this host's domain, with its reason. For sign-off, walk `checklist.md` in this skill folder point by point.
 
-## Planmodus: zuerst entscheiden
+## Plan mode: decide first
 
-- **Distribution, Init, Paketmanager.** Bestimmt das Firewall-Werkzeug (UFW / firewalld / nftables / ein
-  Panel wie Plesk), den Mechanismus für automatische Updates und das Timer-System (systemd / cron / OpenRC).
-- **SSH-Port:** ändern oder auf dem Standard lassen (die bewusste Wahl festhalten).
-- **Firewall-Werkzeug** je Server (siehe unten).
-- **Automatischer Neustart** ja oder nein (nur unkritische Server, zeitlich nach dem Sicherungsfenster).
-- **fail2ban-Jails** hängen von den laufenden Webdiensten ab; die `ignoreip`-Adressen sind serverspezifisch.
+- **Distribution, init, package manager.** Sets the firewall tool (UFW / firewalld / nftables / a panel
+  like Plesk), the automatic-update mechanism, and the timer system (systemd / cron / OpenRC).
+- **SSH port:** change it or leave it on the default (record the deliberate choice).
+- **Firewall tool** per server (see below).
+- **Automatic reboot** yes or no (uncritical servers only, timed after the backup window).
+- **fail2ban jails** depend on the running web services; the `ignoreip` addresses are server-specific.
 
-## SSH (Zielwerte)
+## SSH (target values)
 
-| Einstellung | Ziel |
+| Setting | Target |
 |---|---|
 | PermitRootLogin | `no` |
 | PasswordAuthentication | `no` |
 | PubkeyAuthentication | `yes` |
 | MaxAuthTries | `3` |
-| LoginGraceTime | `30s` (Standard 120s; kürzeres Fenster für Brute Force) |
+| LoginGraceTime | `30s` (default 120s; shorter window for brute force) |
 | ClientAliveInterval | `300` |
 | ClientAliveCountMax | `3` |
-| X11Forwarding | `no` (Server laufen üblicherweise ohne Anzeige) |
-| AllowUsers | nur die tatsächlich benötigten Benutzer (verwaiste Einträge entfernen) |
+| X11Forwarding | `no` (servers usually run headless) |
+| AllowUsers | only the users actually needed (remove stale entries) |
 
-Syntax prüfen (`sshd -t`), dann `systemctl reload ssh`/`sshd` (reload, nicht restart).
+Check syntax (`sshd -t`), then `systemctl reload ssh`/`sshd` (reload, not restart).
 
 ## Firewall
 
-- **Server-Firewall aktiv**, nur die benötigten Ports offen. Werkzeug je Server:
-  - Standard Debian/Ubuntu: **UFW** (`ufw status`).
+- **Server firewall active**, only the needed ports open. Tool per server:
+  - Debian/Ubuntu default: **UFW** (`ufw status`).
   - Fedora/RHEL: **firewalld**; minimal: **nftables**.
-  - Panel-Server (etwa Plesk): die Firewall des Panels (UFW/iptables nicht direkt verwalten).
-- **Provider- oder Host-Firewall** als zusätzliche äußere Schranke (etwa Hetzner Cloud, IONOS).
-- Standardports: SSH (wie konfiguriert), HTTP 80, HTTPS 443.
-- **Docker-Server:** UFW kann Docker nicht steuern (Docker greift direkt in iptables ein). Ports an
-  `127.0.0.1` binden und die Provider-Firewall als äußere Schranke nutzen.
-- Halte Werkzeug und Ports konkret in der Domäne dieses Hosts fest.
+  - Panel servers (e.g. Plesk): the panel's firewall (don't manage UFW/iptables directly).
+- **Provider or host firewall** as an extra outer barrier (e.g. Hetzner Cloud, IONOS).
+- Default ports: SSH (as configured), HTTP 80, HTTPS 443.
+- **Docker servers:** UFW can't control Docker (Docker writes iptables directly). Bind ports to
+  `127.0.0.1` and use the provider firewall as the outer barrier.
+- Record the tool and ports concretely in this host's domain.
 
 ## fail2ban
 
-| Jail | Pflicht | bantime | findtime | maxretry | Anmerkung |
+| Jail | Required | bantime | findtime | maxretry | Note |
 |---|---|---|---|---|---|
-| sshd | ja | >= 1h | Standard | 3 | SSH-Brute-Force |
-| recidive | ja | **dauerhaft (`-1`)** | **1 Woche** | 3 | Wiederholungstäter, alle Ports (iptables-allports) |
-| dienstspezifisch | wenn ein Webdienst läuft | >= 1h | | 3 | etwa `caddy-auth` (Docker), Panel-Jails |
+| sshd | yes | >= 1h | default | 3 | SSH brute force |
+| recidive | yes | **permanent (`-1`)** | **1 week** | 3 | repeat offenders, all ports (iptables-allports) |
+| service-specific | if a web service runs | >= 1h | | 3 | e.g. `caddy-auth` (Docker), panel jails |
 
-**Dauerhafte Sperren überdauern lassen:** in `/etc/fail2ban/fail2ban.local` ist das Pflicht:
+**Make permanent bans survive:** in `/etc/fail2ban/fail2ban.local` this is mandatory:
 
 ```
 [DEFAULT]
 dbpurgeage = 365d
 ```
 
-Der Standard `1d` räumt Einträge nach 24 Stunden aus der Datenbank, dauerhafte Sperren (`bantime = -1`)
-überleben einen Neustart also **nicht**. Mit `365d` bleiben sie ein Jahr bestehen.
+The default `1d` clears entries from the database after 24 hours, so permanent bans (`bantime = -1`) do
+**not** survive a restart. With `365d` they hold for a year.
 
-**Eskalation:** 3 fehlgeschlagene SSH-Versuche, sshd-Jail (ausgesperrt); 3 Sperren in einer Woche,
-recidive, dauerhaft auf allen Ports; Sperren überstehen Neustarts über `fail2ban.sqlite3`.
+**Escalation:** 3 failed SSH attempts, sshd jail (locked out); 3 bans in a week, recidive, permanent on all
+ports; bans survive restarts via `fail2ban.sqlite3`.
 
-**Whitelist (`ignoreip`)** mindestens: `127.0.0.0/8`, `::1`, die **eigene öffentliche IP des Servers**
-(Schutz davor, sich selbst auszusperren), wahlweise vertrauenswürdige Quell-IPs. Halte die konkreten
-Adressen in der Domäne dieses Hosts fest.
+**Whitelist (`ignoreip`)** at least: `127.0.0.0/8`, `::1`, the server's **own public IP** (so you don't
+lock yourself out), optionally trusted source IPs. Record the concrete addresses in this host's domain.
 
-> Auf Distributionen ohne iptables (nftables/firewalld) die passende `banaction` für fail2ban wählen
-> (`nftables-allports` statt `iptables-allports`).
+> On distributions without iptables (nftables/firewalld) pick the matching `banaction` for fail2ban
+> (`nftables-allports` instead of `iptables-allports`).
 
-## Benutzer
+## Users
 
-- Keine direkte root-Anmeldung (weder per SSH noch passwortloses sudo für kritische Vorgänge).
-- Ein eigener Admin-Benutzer (nie `root` als Arbeitsbenutzer).
-- Ein Monitoring-Benutzer für externe Werkzeuge (ohne sudo).
+- No direct root login (neither by SSH nor passwordless sudo for critical operations).
+- A dedicated admin user (never `root` as the working user).
+- A monitoring user for external tools (without sudo).
 
 ## System
 
-- **Automatische Sicherheitsupdates** (nur Sicherheit, keine Funktionsupdates). Debian/Ubuntu:
-  `unattended-upgrades`; Fedora/RHEL: `dnf-automatic` (security); sonst das Gegenstück der Distribution.
-- **Automatischer Neustart:** standardmäßig nein (manuell nach Sichtung). Freiwillig für unkritische Server
-  (Entwicklung, Agenten) mit einer Neustartzeit **nach** dem Sicherungsfenster (etwa Sicherung 03:00,
-  Neustart 04:00). Produktions- und Kundenserver bleiben manuell. Die Wahl je Server festhalten.
-- **Zeitzone:** die Zeitzone des Betreibers setzen, NTP aktiv. Der VPS-Standard ist oft `Etc/UTC`; ändern
-  mit `sudo timedatectl set-timezone <Gebiet/Stadt>`.
-  Achtung: **systemd-Timer** mit `OnCalendar=HH:MM:SS` (ohne Zeitzonen-Suffix) laufen in der Zeitzone des
-  Systems, nach einer Änderung verschiebt sich also die Laufzeit. Zieh Healthcheck- und
-  Monitoring-Erwartungen nach (etwa den Heartbeat eines Uptime-Monitors).
-- **Log-Rotation** eingerichtet.
+- **Automatic security updates** (security only, no feature updates). Debian/Ubuntu:
+  `unattended-upgrades`; Fedora/RHEL: `dnf-automatic` (security); otherwise the distribution's counterpart.
+- **Automatic reboot:** off by default (manual after review). Optional for uncritical servers
+  (development, agents) with a reboot time **after** the backup window (e.g. backup 03:00, reboot 04:00).
+  Production and customer servers stay manual. Record the choice per server.
+- **Time zone:** set the operator's time zone, NTP active. The VPS default is often `Etc/UTC`; change it
+  with `sudo timedatectl set-timezone <area/city>`.
+  Careful: **systemd timers** with `OnCalendar=HH:MM:SS` (no time-zone suffix) run in the system's time
+  zone, so a change shifts their run time. Follow through on healthcheck and monitoring expectations (e.g.
+  an uptime monitor's heartbeat).
+- **Log rotation** set up.
 
-## Docker (nur auf Docker-Servern)
+## Docker (Docker servers only)
 
-- Log-Rotation für Docker eingerichtet.
-- Aufbau und Konventionen der Stacks: Skill `callbell-sysadmin-deploy`.
+- Log rotation for Docker set up.
+- Stack layout and conventions: skill `callbell-sysadmin-deploy`.

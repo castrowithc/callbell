@@ -1,3 +1,3 @@
-# Projekt
+# Project
 
-Regeln und Projektkontext werden automatisch beim Sitzungsstart geladen; dieser Root bleibt bewusst minimal.
+Rules and project context are loaded automatically at session start; this root stays deliberately minimal.

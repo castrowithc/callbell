@@ -1,133 +1,131 @@
 ---
 paths: ["**/*"]
 description: >
-  Frontmatter-Standard für inhaltliche Markdown-Dateien: welche Felder eine Datei trägt, das type-Enum und
-  was jeder Wert bedeutet, die feste Kopplung von type an edit, und der Grundsatz, dass abgelegter
-  Repo-Inhalt Vorrang vor dem Trainingswissen des Agenten hat.
+  Frontmatter standard for content Markdown files: which fields a file carries, the type enum and
+  what each value means, the strict coupling of type to edit, and the principle that filed repo content
+  takes precedence over the agent's training knowledge.
 type: rule
 edit: locked
 ---
 
-# Frontmatter-Standard
+# Frontmatter standard
 
-Jede inhaltliche Markdown-Datei beginnt mit dem Block, der am Ende dieser Datei steht. Der Agent setzt die
-Felder beim Anlegen der Datei und hält die Invarianten. Zwei Felder tragen die Bedeutung:
-- `type`: **was** die Datei enthält.
-- `edit`: **wer** sie ändern darf. Folgt strikt aus `type`, nicht frei wählbar.
+Every content Markdown file begins with the block at the end of this file. The agent sets the
+fields when creating the file and holds the invariants. Two fields carry the meaning:
+- `type`: **what** the file contains.
+- `edit`: **who** may change it. Follows strictly from `type`, not freely chosen.
 
-Nicht jede Datei trägt Frontmatter: Rohzonen sind bewusst frei von Typ und Frontmatter (Roheingaben und
--ausgaben, die Werkbank). Struktur, Zonen, Backlog und Gedächtnis legt `callbell-scaffold-rules` fest.
+Not every file carries frontmatter: raw zones are deliberately free of type and frontmatter (raw inputs and
+outputs, the workbench). Structure, zones, backlog, and memory are set by `callbell-scaffold-rules`.
 
-## Grundsatz: der Repo schlägt das Trainingswissen
+## Principle: the repo beats training knowledge
 
-Was hier abgelegt ist, beschreibt **die Wirklichkeit des Nutzers**, nicht die des Modells. Wo eine Datei
-dem widerspricht, was der Agent aus Trainingsdaten "weiß", **gewinnt die Datei**. Der Agent folgt ihr und
-*meldet* die Abweichung. Er überschreibt die Datei nie aus eigenem Vorwissen. Am stärksten gilt das für
-`fact` und `decision`: nicht verhandelbar, und der einzige Spielraum ist eine Änderung der Quelle selbst.
+What's filed here describes **the user's reality**, not the model's. Where a file
+contradicts what the agent "knows" from training data, **the file wins**. The agent follows it and
+*reports* the deviation. It never overwrites the file from its own prior knowledge. This holds most strongly for
+`fact` and `decision`: non-negotiable, and the only leeway is a change to the source itself.
 
 ## `type`
 
-`meta`, `rule` und `skill` bilden den **Rahmen**: sie weisen den Agenten an. Die übrigen Typen tragen
-**Inhalt** innerhalb dieses Rahmens, gruppiert in Wissen, Aktivität und Backlog.
+`meta`, `rule`, and `skill` form the **frame**: they instruct the agent. The remaining types carry
+**content** within this frame, grouped into knowledge, activity, and backlog.
 
-**Rahmen** (weist den Agenten an)
+**Frame** (instructs the agent)
 
-| `type` | Bedeutung |
+| `type` | Meaning |
 |---|---|
-| `meta` | Dauerhafte Governance und Struktur: Rahmen, Index, Navigation, diese Spezifikation. Erkennbar am festen Funktionsnamen (`framework.md`, `index.md`) oder daran, dass die Datei in `__callbell__/` liegt (dessen Zonen und typisiertes Meta). |
-| `rule` | Eine dauerhafte Verhaltensnorm, der der Agent standardmäßig folgt. |
-| `skill` | Eine aktiv ausgelöste Prozedur. Die `description` ist der Auslöser, der Rumpf sind die Schritte; sie lädt nur, wenn eine passende Aufgabe auftaucht. |
+| `meta` | Durable governance and structure: framework, index, navigation, this specification. Recognizable by the fixed function name (`framework.md`, `index.md`) or by the file sitting in `__callbell__/` (its zones and typed meta). |
+| `rule` | A durable behavioral norm the agent follows by default. |
+| `skill` | An actively triggered procedure. The `description` is the trigger, the body is the steps; it loads only when a matching task comes up. |
 
-**Wissen** (Fachliches)
+**Knowledge** (domain material)
 
-| `type` | Bedeutung |
+| `type` | Meaning |
 |---|---|
-| `fact` | Eine extern gebundene Grundwahrheit, **nicht verhandelbar**: ein Gesetz, eine Steuerregel, eine Anforderung eines Anbieters oder einer Software, welche Felder und Optionen eine Anwendung tatsächlich hat. Geprüft an der Primärquelle oder an der gelebten Wirklichkeit des Nutzers. Sie ändert sich nur, wenn sich die Quelle ändert (eine Gesetzesänderung, ein Software-Update, eine neue Lizenz); dann ist `updated` das Datum der letzten Prüfung. |
-| `knowledge` | Lebendes, änderbares Fachwissen und Synthese: eine Erklärung, ein Konzept, eine Werkzeugübersicht, ein eigener Standard. Anders als `fact` ist es offen für Änderung und erweiterbar. Der Agent darf es eigenständig pflegen und verbessern. Auch die bleibenden Erkenntnisse aus einer abgeschlossenen Aktivität leben hier. |
-| `playbook` | Eine wiederholbare Prozedur oder ein Runbook, neutral und wiederkehrend (eine Checkliste, eine Update-Strategie, Onboarding-Schritte). Es beschreibt den Ablauf selbst, frei von Werten, die an einen Einzelfall oder ein Jahr gebunden sind. |
+| `fact` | An externally bound ground truth, **non-negotiable**: a law, a tax rule, a requirement of a provider or a piece of software, which fields and options an application actually has. Checked against the primary source or the user's lived reality. It changes only when the source changes (a change in law, a software update, a new license); then `updated` is the date of the last check. |
+| `knowledge` | Living, changeable domain knowledge and synthesis: an explanation, a concept, a tool overview, a standard of your own. Unlike `fact` it's open to change and extendable. The agent may maintain and improve it on its own. The lasting insights from a completed activity live here too. |
+| `playbook` | A repeatable procedure or runbook, neutral and recurring (a checklist, an update strategy, onboarding steps). It describes the process itself, free of values bound to a single case or a year. |
 
-**Aktivität** (konkret und datiert)
+**Activity** (concrete and dated)
 
-| `type` | Bedeutung |
+| `type` | Meaning |
 |---|---|
-| `decision` | Eine bindende Entscheidung **des Nutzers**, datiert und begründet. Maßgeblich wie `fact`, aber an den Nutzer gebunden statt an eine externe Quelle. Der Agent hält hier **nie** eine eigene Entscheidung fest; er schlägt vor, der Nutzer entscheidet, danach wird es festgehalten. |
-| `history` | Ein kompaktes, laufendes Protokoll (nur anhängend, zum Beispiel ein Changelog): was wann geändert, ergänzt oder entfernt wurde. Nur geführt, wenn eine spätere Auswertung diese Chronologie wirklich braucht. |
+| `decision` | A binding decision **of the user's**, dated and justified. Authoritative like `fact`, but bound to the user rather than an external source. The agent **never** records a decision of its own here; it proposes, the user decides, then it's recorded. |
+| `history` | A compact, running log (append-only, e.g. a changelog): what was changed, added, or removed and when. Kept only when a later evaluation really needs this chronology. |
 
 **Backlog**
 
-| `type` | Bedeutung |
+| `type` | Meaning |
 |---|---|
-| `task` | Ein Arbeitspaket: die Arbeitseinheit, immer eine **eigene Datei** `task-*.md`. Sie trägt Warum, Rahmen, Vorgehen und Definition of Done, damit ohne Rückfragen daran gearbeitet werden kann, und sie **nennt nie einen anderen Task** (die Reihenfolge lebt in der Aufstellung). Zugeschnitten auf eine Session; lässt sich die Größe nicht schätzen, ist sie nicht verstanden und muss zerlegt werden. |
+| `task` | A work package: the unit of work, always its **own file** `task-*.md`. It carries why, scope, approach, and definition of done, so it can be worked on without follow-up questions, and it **never names another task** (order lives in the roster). Sized to one session; if the size can't be estimated, it isn't understood and must be broken down. |
 
-Das **Gedächtnissystem** ist ein eigenständiges Teilsystem mit festem Ort (`__callbell__/memory/`), geregelt
-vom Grundgerüst und erschlossen über den Index `MEMORY.md`. Es ist keine Ablageentscheidung und
-erscheint deshalb nicht in dieser Tabelle. Gedächtnisdateien dürfen `type: memory` (`edit: shared`) tragen,
-damit man sie findet.
+The **memory system** is a standalone subsystem with a fixed location (`__callbell__/memory/`), governed
+by the scaffold and opened through the index `MEMORY.md`. It isn't a filing decision and
+therefore doesn't appear in this table. Memory files may carry `type: memory` (`edit: shared`),
+so they can be found.
 
-Genauso erschließt der feste Funktionsindex `BACKLOG.md` das **Backlog-Teilsystem**
-(`__callbell__/backlog/`). Wie `MEMORY.md` lädt er beim Session-Start über den Hook und ist ein
-lebender Index, trägt also `edit: shared`, obwohl er strukturell `meta` ist. Das ist dieselbe bewusste
-Ausnahme von der Kopplung type zu edit wie beim Gedächtnisindex. Die **`index.md` eines Projekts**
-(`__callbell__/backlog/<projekt>/index.md`) ist derselbe Fall eine Ebene tiefer: eine lebende Aufstellung,
-die neu geschrieben wird, wenn sich ihre Tasks bewegen, also ebenfalls `meta` mit `edit: shared`, dazu ein
-`status`. Die **Einträge** des Backlogs selbst (`task`) folgen weiterhin der Tabelle oben.
+Likewise, the fixed function index `BACKLOG.md` opens the **backlog subsystem**
+(`__callbell__/backlog/`). Like `MEMORY.md` it loads at session start via the hook and is a
+living index, so it carries `edit: shared`, though structurally it's `meta`. That's the same deliberate
+exception to the type-to-edit coupling as the memory index. A **project's `index.md`**
+(`__callbell__/backlog/<project>/index.md`) is the same case one level down: a living roster,
+rewritten when its tasks move, so also `meta` with `edit: shared`, plus a
+`status`. The backlog's own **entries** (`task`) still follow the table above.
 
-## `edit`: folgt strikt aus `type`
+## `edit`: follows strictly from `type`
 
 | `type` | `edit` | |
 |---|---|---|
-| `meta` · `rule` · `skill` | `locked` | Rahmen: weist den Agenten an, Änderung nur nach Freigabe. |
-| `fact` | `locked` | Maßgeblich, nicht verhandelbar. |
-| `knowledge` | `shared` | Lebend, der Agent pflegt mit. |
-| `playbook` | `locked` | Eine dauerhafte Prozedur, Änderung nur nach Freigabe. |
-| `decision` | `locked` | Eine maßgebliche Nutzerentscheidung. |
-| `history` | `shared` | Wird laufend fortgeschrieben. |
-| `task` | `shared` | Aktives Backlog. |
+| `meta` · `rule` · `skill` | `locked` | Frame: instructs the agent, changes only after approval. |
+| `fact` | `locked` | Authoritative, non-negotiable. |
+| `knowledge` | `shared` | Living, the agent maintains it. |
+| `playbook` | `locked` | A durable procedure, changes only after approval. |
+| `decision` | `locked` | An authoritative user decision. |
+| `history` | `shared` | Continuously appended. |
+| `task` | `shared` | Active backlog. |
 
-- **`locked`** heißt: Vorrang vor dem Trainingswissen, und geschützt. Der Agent ändert es **nur nach
-  Freigabe**, dann sorgfältig **an Ort und Stelle**. `fact` und `decision` sind der Kern, der nicht
-  verhandelbar ist.
-- **`shared`** heißt: dynamisch. Agent und Nutzer ändern die Datei im normalen Arbeitsfluss.
+- **`locked`** means: precedence over training knowledge, and protected. The agent changes it **only after
+  approval**, then carefully **in place**. `fact` and `decision` are the core that's non-negotiable.
+- **`shared`** means: dynamic. Agent and user change the file in the normal flow of work.
 
-`locked` heißt **nicht** "nie anfassen". Wenn eine gesperrte Datei geändert werden muss, schlägt der Agent
-die Änderung **in der Datei selbst** vor und wartet auf Freigabe. Eine gesperrte Datei zu **duplizieren**
-(eine Beinahe-Kopie als neue `shared`-Datei anzulegen) ist **verboten**. Das ist kein Weg an der Sperre
-vorbei.
+`locked` does **not** mean "never touch". When a locked file must change, the agent proposes
+the change **in the file itself** and waits for approval. **Duplicating** a locked file
+(creating a near-copy as a new `shared` file) is **forbidden**. That's not a way around the lock.
 
-## Invarianten
+## Invariants
 
-1. `type` wird nachträglich nur nach Rückfrage geändert; `edit` folgt **immer** strikt aus `type`.
-2. Rahmen (`meta`/`rule`/`skill`) und Inhaltstypen nie in derselben Datei mischen.
-3. **Ein `edit` pro Datei, gesetzt vom striktesten Inhalt, den sie trägt.** Trägt eine Datei maßgebliches
-   *und* änderbares Material, ist sie als Ganzes `locked`. Keine Markierungen pro Abschnitt.
-4. **Nicht überteilen.** Eine Datei dient einem Zweck, aber sie wird nicht künstlich zerlegt, nur um das
-   Frontmatter zu bedienen; keine unnötigen, brüchigen Querverweise.
-5. `fact` und `decision` schlagen das Trainingswissen: bei einem Widerspruch folgt der Agent der Datei und
-   meldet es.
-6. Setze `source` nur, wenn die Datei die Momentaufnahme von etwas Externem ist (ein Link auf die lebende
-   Quelle).
+1. `type` is changed after the fact only after asking; `edit` **always** follows strictly from `type`.
+2. Never mix frame (`meta`/`rule`/`skill`) and content types in the same file.
+3. **One `edit` per file, set by the strictest content it carries.** If a file carries authoritative
+   *and* changeable material, it's `locked` as a whole. No per-section markings.
+4. **Don't over-split.** A file serves one purpose, but it isn't split artificially just to serve the
+   frontmatter; no unnecessary, brittle cross-references.
+5. `fact` and `decision` beat training knowledge: on a contradiction the agent follows the file and
+   reports it.
+6. Set `source` only when the file is a snapshot of something external (a link to the living
+   source).
 
-## Datumsfelder
+## Date fields
 
-`created`/`updated` nur bei datiertem, lebendem Inhalt (`knowledge`, `history`, Backlog; bei `fact` ist
-`updated` das Datum der letzten Prüfung). **Nie** bei `meta`, `rule` oder `skill`.
+`created`/`updated` only on dated, living content (`knowledge`, `history`, backlog; on `fact`,
+`updated` is the date of the last check). **Never** on `meta`, `rule`, or `skill`.
 
-## Kanonisch pro Typ
+## Canonical per type
 
-Immer `description`, `type`, `edit` (`edit` folgt strikt aus `type`, siehe oben). Datumsfelder nur bei
-datiertem Inhalt. Alles Weitere ist der Unterschied pro Typ, keine Obermenge.
+Always `description`, `type`, `edit` (`edit` follows strictly from `type`, see above). Date fields only on
+dated content. Everything else is the difference per type, not a superset.
 
-**`description` ist immer ein gefalteter Block-Skalar:** `description: >` in einer eigenen Zeile, der
-einzeilige Text darunter eingerückt, nie inline in derselben Zeile wie der Schlüssel. Ein Doppelpunkt, ein
-Anführungszeichen oder eine spitze Klammer im Text (zum Beispiel `<Projektname>: was es liefert`) zerlegt
-das YAML-Parsing eines Inline-Werts; der Block-Skalar ist dagegen immun und hält jeden Kopf einheitlich.
+**`description` is always a folded block scalar:** `description: >` on its own line, the
+single-line text indented below it, never inline on the same line as the key. A colon, a
+quotation mark, or an angle bracket in the text (e.g. `<project name>: what it delivers`) breaks
+the YAML parsing of an inline value; the block scalar is immune to that and keeps every header uniform.
 
-Minimalform, am Beispiel `knowledge`:
+Minimal form, using `knowledge` as the example:
 
 ```
 ---
 description: >
-  Worum es geht, ein Satz zur Einordnung.
+  What it's about, one sentence for context.
 type: knowledge
 edit: shared
 created: YYYY-MM-DD
@@ -135,22 +133,22 @@ updated: YYYY-MM-DD
 ---
 ```
 
-Unterschied pro Typ (zusätzlich zu `description`/`type`/`edit`):
+Difference per type (in addition to `description`/`type`/`edit`):
 
-| Typ | Zusätzlich | Bewusst nicht |
+| Type | Additional | Deliberately not |
 |---|---|---|
-| `meta` | - | Datumsfelder |
-| `rule` | `paths` | Datumsfelder |
-| `skill` | `name` (`argument-hint`, `disable-model-invocation` optional) | Datumsfelder |
-| Command (agent-nativ) | `argument-hint` (optional) | `type`/`edit` |
-| `fact` | `source` (optional); `updated` = Prüfdatum | - |
+| `meta` | - | date fields |
+| `rule` | `paths` | date fields |
+| `skill` | `name` (`argument-hint`, `disable-model-invocation` optional) | date fields |
+| Command (agent-native) | `argument-hint` (optional) | `type`/`edit` |
+| `fact` | `source` (optional); `updated` = check date | - |
 | `knowledge` · `history` | `created`, `updated` | - |
-| `playbook` | - | Datumsfelder, außer es ist wirklich datiert |
-| `decision` | `created` = Datum der Festlegung | - |
-| `task` | `status`, `created`, `updated` | jeder Schlüssel, der auf einen anderen Task verweist |
+| `playbook` | - | date fields, unless it's genuinely dated |
+| `decision` | `created` = date of the decision | - |
+| `task` | `status`, `created`, `updated` | any key that references another task |
 | `memory` | - | - |
 
-`status` und `tags` sind bei jedem Inhaltstyp optional, wenn sie sich ihren Platz verdienen.
+`status` and `tags` are optional on any content type, when they earn their place.
 
-**Ausnahme:** offizielle Agent-Standards (Claudes und Codex' eigene Skills, Regeln, Commands und so weiter)
-folgen ihrem eigenen Schema; deshalb trägt ein Command kein `type`/`edit`.
+**Exception:** official agent standards (Claude's and Codex's own skills, rules, commands, and so on)
+follow their own schema; that's why a command carries no `type`/`edit`.

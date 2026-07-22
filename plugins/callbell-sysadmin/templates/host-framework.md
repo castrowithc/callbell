@@ -1,33 +1,32 @@
 ---
 description: >
-  Der Rahmen eines Hosts: wofür diese Maschine da ist, wie auf ihr gearbeitet wird und was auf ihr
-  tabu ist. Gilt für alles, was in dieser Domäne geschieht.
+  A host's framework: what this machine is for, how work is done on it, and what's off-limits on it.
+  Applies to everything that happens in this domain.
 type: meta
 edit: shared
 ---
 
-# Rahmen: <host>
+# Framework: <host>
 
-<!-- Vorlage. Kopiere sie nach <host>/framework.md und passe sie an. Sie beschreibt, wie auf diesem
-Host gearbeitet wird — nicht, was auf ihm steht. Das steht in der index.md daneben. -->
+<!-- Template. Copy it to <host>/framework.md and adapt it. It describes how work is done on this
+host, not what's on it. That's in the index.md beside it. -->
 
-## Wofür dieser Host da ist
-<!-- Ein bis drei Sätze. Der Zweck ist das Einzige, was der Agent nicht selbst auslesen kann, deshalb
-steht er hier zuerst. Beispiel: "Produktiver Docker-Host für die Kundenanwendungen. Kein Staging, kein
-Bauen auf der Maschine." -->
+## What this host is for
+<!-- One to three sentences. The purpose is the one thing the agent can't read off the machine, so it
+comes first. Example: "Production Docker host for the customer applications. No staging, no building on
+the machine." -->
 
-## Wie hier gearbeitet wird
-<!-- Nur die Abweichungen von dem, was das Pack ohnehin vorgibt. Was der Baseline entspricht, gehört
-nicht hierher: es doppelt zu schreiben heißt, es zweimal pflegen zu müssen. -->
+## How work is done here
+<!-- Only the deviations from what the pack already prescribes. What matches the baseline doesn't belong
+here: writing it twice means maintaining it twice. -->
 
-- **Wartungsfenster:** <!-- wann Neustarts und Updates erlaubt sind, oder "jederzeit" -->
-- **Wer entscheidet:** <!-- wer freigibt, bevor etwas Zerstörendes läuft -->
-- **Besonderheiten:** <!-- was auf dieser Maschine anders ist als üblich und einen Agenten sonst stolpern
-lässt -->
+- **Maintenance window:** <!-- when reboots and updates are allowed, or "anytime" -->
+- **Who decides:** <!-- who approves before anything destructive runs -->
+- **Quirks:** <!-- what's different on this machine than usual and would otherwise trip an agent up -->
 
-## Was hier tabu ist
-<!-- Konkret und benannt. Eine Liste von Pfaden, Diensten oder Vorgängen, die nicht angefasst werden,
-auch wenn sie technisch erreichbar sind. Leer lassen ist erlaubt, raten nicht. -->
+## What's off-limits here
+<!-- Concrete and named. A list of paths, services, or operations not to touch, even when technically
+reachable. Leaving it empty is allowed, guessing is not. -->
 
-## Verweise
-- `index.md` — der Bestand dieses Hosts: was auf ihm läuft und wie er aufgebaut ist.
+## References
+- `index.md`: this host's inventory, what runs on it and how it's built.

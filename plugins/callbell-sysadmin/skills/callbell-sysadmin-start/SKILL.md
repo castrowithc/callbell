@@ -1,9 +1,8 @@
 ---
 name: callbell-sysadmin-start
 description: >
-  Der Einstieg in callbell-sysadmin: legt den Arbeitsordner für Server an oder ergänzt eine weitere
-  Host-Domäne daneben, liest den Bestand des Hosts selbst aus und setzt die Host-Identität. Starte es,
-  indem du /callbell-sysadmin-start tippst.
+  The way into callbell-sysadmin: creates the server working folder or adds another host domain beside it,
+  reads the host's own inventory, and sets the host identity. Start it by typing /callbell-sysadmin-start.
 type: skill
 edit: locked
 disable-model-invocation: true
@@ -11,73 +10,52 @@ disable-model-invocation: true
 
 # /callbell-sysadmin-start
 
-Die erste Station in einem Server-Arbeitsordner. Der Hook sagt jeder Sitzung, welche Domäne ihr
-Arbeitsbereich ist — dieser Skill ist das, was die Domäne anlegt.
+The first stop in a server working folder. The hook tells each session which domain is its workspace; here you create that domain.
 
-**Eine Domäne ist ein Ordner, benannt wie der Host, und liest sich wie ein kleines eigenes Repo ohne
-eigenes Git:** alles über diese Maschine liegt darin, und `__callbell__/` ist die einzige gemeinsame
-Mitte. Sie trägt `framework.md` (wie auf dem Host gearbeitet wird) und `index.md` (was auf ihm steht) und
-wächst faul weiter: Neues kommt in eine bestehende Datei, wo eine passt, und wird sonst eine neue darunter.
+**A domain is a folder named after the host, and it reads like a small repo of its own without its own git:** everything about that machine lives in it, and `__callbell__/` is the one shared center. It carries `framework.md` (how the host is run) and `index.md` (what's on it), and grows lazily: new material joins an existing file where one fits, otherwise it becomes a new one below.
 
-**Er läuft normalerweise auf dem Host selbst**, weil dort der Agent läuft. Die Ausnahme ist der Nutzer,
-der von der eigenen Maschine aus per Fernwartung arbeitet — dazu Schritt 5.
+**It normally runs on the host itself**, because that's where the agent runs. The exception is the user working from their own machine by remote administration; see step 5.
 
-**Die Regel, an der dieser Skill hängt: melde nur, was fehlt.** Eine Prüfung, die Erfolg meldet, ist
-Lärm. In einem eingerichteten Ordner ist ein Lauf eine Zeile.
+**The one rule to hang on: report only what's missing.** A check that reports success is noise. In a set-up folder, a run is one line.
 
-## 1. Abhängigkeiten (still, wenn erfüllt)
+## 1. Dependencies (silent when met)
 
-Dieses Pack setzt den Kern voraus, und der Kern legt `__callbell__/`. Prüfe deshalb zuerst, ob das Gerüst
-steht. Fehlt es, ist das kein Fehler dieses Skills: ruf `/callbell-start` auf, lass ihn seine Arbeit tun,
-und mach danach hier weiter. Steht es, sag dazu nichts.
+This pack requires the core, and the core creates `__callbell__/`. So check the scaffold stands first. If it's missing, that's not this skill's failure: call `/callbell-start`, let it do its work, then continue here. If it stands, say nothing about it.
 
-Das gilt auch, wenn jemand später einmal direkt zu einem Sweep greift, ohne je hier gewesen zu sein: die
-Prüfung findet statt, sie spricht nur nicht, solange nichts zu tun ist.
+This holds even when someone later reaches straight for a sweep without ever having been here: the check runs, it just stays quiet as long as there's nothing to do.
 
-## 2. Verzweigen auf das, was du vorfindest
+## 2. Branch on what you find
 
-Es gibt genau zwei Fälle, und du erkennst sie daran, ob neben `__callbell__/` schon eine Host-Domäne liegt:
+There are exactly two cases, told apart by whether a host domain already sits beside `__callbell__/`:
 
-- **Noch keine Domäne** — der Ordner ist neu für diesen Zweck. Lege das Ganze an: Vorlagen ausliefern
-  (Schritt 3), erste Domäne, Ruleset im Root (Schritt 6).
-- **Mindestens eine Domäne da** — es kommt eine dazu. **Fass die bestehenden nicht an.** Weder ihre
-  Dateien noch ihre Struktur; die zweite Domäne entsteht daneben, und wenn dabei an der ersten etwas
-  auffällt, ist das eine Bemerkung an den Nutzer und keine Änderung.
+- **No domain yet:** the folder is new for this purpose. Create the whole thing: ship templates (step 3), the first domain, the ruleset in the root (step 6).
+- **At least one domain present:** another one joins. **Don't touch the existing ones.** Not their files, not their structure; the second domain forms beside them, and if something about the first stands out along the way, that's a remark to the user, not a change.
 
-## 3. Vorlagen ausliefern
+## 3. Ship the templates
 
-Kopiere `<plugin-root>/templates/` nach `__callbell__/templates/plugin-callbell-sysadmin/`,
-und zwar nur, was dort fehlt. Nie vergleichen, nie überschreiben: was der Nutzer angepasst hat, gehört ihm.
+Copy `<plugin-root>/templates/` into `__callbell__/templates/plugin-callbell-sysadmin/`, only what's missing there. Never compare, never overwrite: what the user adapted is theirs.
 
-`<plugin-root>` ist der Ordner **dieses Packs**, zwei Ebenen über dieser `SKILL.md`. Nicht die Zeile
-`CALLBELL PLUGIN ROOT` aus dem Sitzungskontext nehmen, die gehört dem Kern und zeigt woanders hin. Nie
-einen abgetippten Pfad einsetzen, er trägt die Versionsnummer und ist nach dem nächsten Update falsch.
+`<plugin-root>` is **this pack's** folder, two levels above this `SKILL.md`. Don't take the `CALLBELL PLUGIN ROOT` line from the session context; that belongs to the core and points elsewhere. Never type a fixed path; it carries the version number and is wrong after the next update.
 
-Die Trennung dahinter ist die, die dieses Pack überhaupt einhalten kann. **Was ein Plugin ausliefert, ist
-per Definition allgemein** — es kann nichts über einen Host wissen, den es nie gesehen hat. Deshalb:
+The split behind this is the one this pack can actually hold to. **What a plugin ships is general by definition:** it can know nothing about a host it never saw. So:
 
-- allgemein und mitgeliefert → `__callbell__/templates/plugin-callbell-sysadmin/`
-- von einem konkreten Host geformt → `<domäne>/templates/`
+- general and shipped → `__callbell__/templates/plugin-callbell-sysadmin/`
+- shaped by a specific host → `<domain>/templates/`
 
-Das ist zugleich der Weg für Skripte, die man kopiert und anpasst: die allgemeine Fassung wird von links
-gelesen, die angepasste nach rechts geschrieben. **Kein Plugin schreibt je in den Vorlagenordner einer
-Domäne.**
+This is also the path for scripts you copy and adapt: read the general version from the left, write the adapted one to the right. **No plugin ever writes into a domain's template folder.**
 
-## 4. Die Domäne anlegen
+## 4. Create the domain
 
-Frag nach dem Namen nur, wenn du ihn nicht lesen kannst — auf dem Host ist er der Hostname (`hostname`).
-Bestätigen lassen genügt.
+Ask for the name only if you can't read it: on the host it's the hostname (`hostname`). A confirmation is enough.
 
 ```
-<host>/framework.md   aus host-framework.md
-<host>/index.md       aus host-index.md
+<host>/framework.md   from host-framework.md
+<host>/index.md       from host-index.md
 ```
 
-Beim Kopieren umbenennen: die Vorlagen tragen ihr Ziel als Suffix, damit sie nicht selbst als Knoten
-gelesen werden, und dürfen den reservierten Namen deshalb nie schon im Vorlagenordner tragen.
+Rename on copy: the templates carry their target as a suffix so they aren't read as nodes themselves, and must never carry the reserved name while still in the template folder.
 
-**Den Bestand liest du aus, du erfragst ihn nicht.** Alles in `index.md` außer dem Zweck steht auf der
-Maschine, und den Nutzer danach zu fragen kostet ihn Zeit für etwas, das ein Befehl weiß:
+**Read the inventory, don't ask for it.** Everything in `index.md` except the purpose sits on the machine, and asking the user for it costs them time on something a command already knows:
 
 ```bash
 hostname; cat /etc/os-release; ps -p1 -o comm=; uname -r
@@ -86,71 +64,52 @@ ip -brief addr; ss -tlnp 2>/dev/null | head -30
 command -v docker >/dev/null && docker ps --format '{{.Names}}\t{{.Image}}'
 ```
 
-Alles billig und lesend. Nichts davon durchsucht das Dateisystem, und nichts davon ändert etwas.
+All cheap and read-only. None of it searches the filesystem, none of it changes anything.
 
-Was du **nicht** hineinschreibst: Schlüssel, Passwörter, Tokens, Inhalte von `.env`-Dateien. Die
-Datenschutznorm des Kerns gilt hier unverändert, und der Ordner kann eines Tages öffentlich sein.
+What you **don't** write into it: keys, passwords, tokens, the contents of `.env` files. The core's data-protection norm holds here unchanged, and the folder may be public one day.
 
-## 5. Die Host-Identität setzen
+## 5. Set the host identity
 
-Eine Zeile, und sie entscheidet, was der Hook in jeder folgenden Sitzung tut:
+One line, and it decides what the hook does in every session after:
 
 ```bash
-echo "<domänenordner>" > __callbell__/.host-identity
+echo "<domain-folder>" > __callbell__/.host-identity
 ```
 
-**Der Inhalt ist der Ordnername, nicht der Hostname.** Das ist der ganze Grund für diese Schreibweise:
-ändert sich der Hostname, benennt man den Ordner um und diese eine Zeile mit, und sonst nichts im Repo.
+**The content is the folder name, not the hostname.** That's the whole reason for this form: if the hostname changes, you rename the folder and this one line with it, and nothing else in the repo.
 
-Drei Zustände, und der mittlere ist der, den man leicht übersieht:
+Three states, and the middle one is easy to miss:
 
-| `.host-identity` | Bedeutung |
+| `.host-identity` | Meaning |
 |---|---|
-| fehlt | kein Serverkontext, nichts Serverspezifisches lädt |
-| da, leer | der Nutzer arbeitet von der eigenen Maschine aus per Fernwartung; Sicherheitsschicht lädt, keine Domäne |
-| da, mit Inhalt | der Agent läuft auf dem Host; der Inhalt ist die Domäne |
+| missing | no server context, nothing server-specific loads |
+| present, empty | the user works from their own machine by remote administration; safety layer loads, no domain |
+| present, with content | the agent runs on the host; the content is the domain |
 
-**Arbeitet der Nutzer von seiner eigenen Maschine aus**, legst du die Datei leer an. Die Domänen der
-verwalteten Hosts liegen trotzdem im Ordner — nur ist keine davon *die* aktuelle, denn welcher Host
-gemeint ist, sagt der Nutzer im Gespräch. Die Sicherheitsschicht lädt in diesem Fall genauso, weil per SSH
-dieselben zerstörenden Befehle laufen wie vor Ort.
+**If the user works from their own machine**, create the file empty. The managed hosts' domains still sit in the folder, only none of them is *the* current one, because the user says which host they mean in conversation. The safety layer loads all the same here, because SSH runs the same destructive commands as being on the box.
 
-## 6. Zweck und Ruleset (einmalig)
+## 6. Purpose and ruleset (once)
 
-Zwei Dinge sind nicht auslesbar, und nur nach denen fragst du:
+Two things can't be read off the machine, and those are the only ones you ask about:
 
-1. **Wofür dieser Host da ist** — ein bis drei Sätze, in `framework.md`. Ohne ihn ist die Domäne ein
-   Bestandsverzeichnis ohne Sinn.
-2. **Was das Ruleset noch nicht sagt.** Erst lesen, dann fragen. Stehen Zweck und Rollen des Ordners schon
-   in `AGENTS.md` oder `CLAUDE.md`, fragst du nichts; danach zu fragen sagt dem Nutzer, dass du seine Datei
-   nicht gelesen hast.
+1. **What this host is for** — one to three sentences, in `framework.md`. Without it the domain is an inventory with no meaning.
+2. **What the ruleset doesn't say yet.** Read first, then ask. If the folder's purpose and roles already stand in `AGENTS.md` or `CLAUDE.md`, ask nothing; asking anyway tells the user you didn't read their file.
 
-Fehlt das Ruleset ganz, leg es aus `server-agents.md` an, mit der `CLAUDE.md` daneben als einzeiliger
-Weiche `@AGENTS.md` — dieselbe Mechanik wie im Kern, damit beide Hosts denselben Inhalt lesen, ohne ihn
-zu doppeln. Ergänzt wird immer durch **Anhängen, nie durch Ersetzen**, und geschrieben erst nach
-Bestätigung: die Datei gehört dem Nutzer.
+If the ruleset is missing entirely, create it from `server-agents.md`, with `CLAUDE.md` beside it as the one-line switch `@AGENTS.md`: the same mechanic as the core, so both hosts read the same content without doubling it. Add by **appending, never replacing**, and write only after confirmation: the file belongs to the user.
 
-## 7. Abschluss
+## 7. Close
 
-Zwei Zeilen, in der Sprache des Nutzers, mit Namen statt Fließtext:
+Two lines, in the user's language, with names rather than prose:
 
 ```
-✅ Angelegt: web01/ (framework.md, index.md), __callbell__/.host-identity
-❗ Fehlt: Zweck des Hosts in web01/framework.md
+✅ Created: web01/ (framework.md, index.md), __callbell__/.host-identity
+❗ Missing: purpose of the host in web01/framework.md
 ```
 
-Was schon da war, steht nirgends. Sag zum Schluss, dass die Domäne ab der **nächsten** Sitzung als
-Arbeitsbereich gilt, weil der Hook beim Start liest — in dieser hier kennst du sie, aber der Hook hat sie
-noch nicht angesagt.
+What was already there appears nowhere. Close by saying the domain counts as the workspace from the **next** session on, because the hook reads at startup: this session you know it, but the hook hasn't announced it yet.
 
-War nichts zu tun, ist der Abschluss eine Zeile.
+If there was nothing to do, the close is one line.
 
-**Eine Zeile mehr, aber nur auf einer frischen Maschine.** Du hast in Schritt 4 den Bestand gelesen und
-weißt damit, was du vor dir hast. Zeigt er kein Admin-Konto neben root, keine Firewall, keinen der
-Standard-Werkzeuge und keinen Sicherungs-Timer, dann steht hier eine unfertige Maschine, und du nennst
-`/callbell-sysadmin-setup` als den Weg, sie vollständig hochzubringen.
+**One line more, but only on a fresh machine.** You read the inventory in step 4, so you know what's in front of you. If it shows no admin account beside root, no firewall, none of the standard tools, and no backup timer, then this is an unfinished machine, and you name `/callbell-sysadmin-setup` as the way to bring it fully up.
 
-**Nur dann.** Auf einem eingerichteten Server erscheint dieser Hinweis nicht — ein Zeiger, der immer feuert,
-ist Werbung, und er widerspricht der Regel dieses Skills, dass ein Lauf ohne Befund eine Zeile ist. Im
-Zweifel lässt du ihn weg: wer eine frische Maschine hat, merkt es auch ohne dich, wer eine laufende hat,
-wird von einem Angebot zur Erstinbetriebnahme nur beunruhigt.
+**Only then.** On a set-up server this pointer doesn't appear: a pointer that always fires is advertising, and it breaks this skill's rule that a run with no findings is one line. When in doubt, leave it out: whoever has a fresh machine notices without you, and whoever has a running one is only unsettled by an offer to provision it from scratch.

@@ -1,93 +1,91 @@
 ---
 name: callbell-sysadmin-docker-update
 description: >
-  Aktualisiert einen Docker-Stack oder die Docker-Engine: Update-Klassen, Ablauf je Stack, Migration bei
-  Datenbank-Hauptversionen, Verbote. Starte es, indem du /callbell-sysadmin-docker-update tippst.
+  Updates a Docker stack or the Docker engine: update classes, per-stack flow, migration on database major
+  versions, prohibitions. Start it by typing /callbell-sysadmin-docker-update.
 type: skill
 edit: locked
 disable-model-invocation: true
 ---
 
-# Update-Strategie für Docker
+# Docker update strategy
 
-Deckt Updates von Stacks und der Docker-Engine auf deinen Docker-Servern ab. Welche Images und Versionen
-gerade laufen, wird je Server live gelesen (`docker ps`). Eigenheiten einer Anwendung und ihre offiziellen
-Quellen liegen in der Domäne dieses Hosts (Ordner `<host>/`), eine Datei je Anwendung.
+Covers updates to stacks and the Docker engine on your Docker servers. Which images and versions are running is read live per server (`docker ps`). An application's quirks and its official sources live in this host's domain (folder `<host>/`), one file per application.
 
-## Update-Klassen
+## Update classes
 
-| Art des Updates | Risiko | Vorgehen |
+| Kind of update | Risk | Approach |
 |---|---|---|
-| Sicherheitsupdates (System) | gering | sofort einspielen (kein Docker beteiligt, kein Neustart) |
-| Systemupdates (System) | gering | sofort einspielen (geringes Risiko) |
-| **Updates der Docker-Engine** (`docker-ce`, `containerd.io`, `docker-compose-plugin`) | **mittel** | **getrennt planen**: braucht `systemctl restart docker`, **alle Container fallen kurz aus**. Vorher den Containerstatus prüfen, danach alle Stacks nachsehen |
-| Image-Updates eines Stacks (Anwendungscontainer) | hängt von der Anwendung ab | Ablauf je Stack (siehe unten) |
-| Hauptversionswechsel einer Datenbank | **hoch** | braucht eine eigene Migration (pg_dump/restore, mysqldump). **Die Hauptversion nie automatisch wechseln** |
-| Kernel-Updates | hoch | Wartungsfenster einplanen (Neustart nötig) |
+| Security updates (system) | low | apply immediately (no Docker involved, no restart) |
+| System updates (system) | low | apply immediately (low risk) |
+| **Docker engine updates** (`docker-ce`, `containerd.io`, `docker-compose-plugin`) | **medium** | **plan separately**: needs `systemctl restart docker`, **all containers drop briefly**. Check container status first, review all stacks after |
+| Image updates of a stack (application container) | depends on the application | per-stack flow (see below) |
+| Database major-version change | **high** | needs its own migration (pg_dump/restore, mysqldump). **Never change the major version automatically** |
+| Kernel updates | high | schedule a maintenance window (reboot needed) |
 
-## Ablauf je Stack
+## Per-stack flow
 
-1. **Release Notes lesen**: die offiziellen Adressen aus den Anwendungsnotizen dieses Hosts
-2. **Auf brechende Änderungen prüfen**: Migrationen, geänderte Umgebungsvariablen, Aufbau der Volumes
-3. **Sicherung vorhanden?**: steht die letzte Borg-Sicherung auf `OK` (`sudo borgmatic info`)? Bei
-   Änderungen am Datenbankschema abwägen, ob ein Dump von Hand nötig ist
-4. **Version anpassen**: `image:` in `/opt/stack/<dienst>/compose.yaml` auf das neue Tag setzen
-5. **Ziehen und neu starten**: `cd /opt/stack/<dienst> && docker compose pull && docker compose up -d`
-6. **Logs prüfen**: `docker compose logs --tail=200 <dienst>` auf Fehler und Warnungen
-7. **Funktionsprüfung**: Anmeldung und eine Kernfunktion der Anwendung nachvollziehen
-8. **Bei Erfolg**: die Version läuft (`docker ps`), es gibt keine Versionsspalte zu pflegen; neue
-   Eigenheiten und Stolperstellen bei Bedarf in den Anwendungsnotizen dieses Hosts ergänzen
-9. **Bei Fehlschlag**: auf das alte Tag zurück (`compose.yaml` zurücksetzen, `up -d`), die Logs sichern,
-   das Problem analysieren, bevor das Update erneut versucht wird
+1. **Read the release notes**: the official addresses from this host's application notes
+2. **Check for breaking changes**: migrations, changed environment variables, volume layout
+3. **Backup in place?**: is the last Borg backup `OK` (`sudo borgmatic info`)? On database-schema changes,
+   weigh whether a manual dump is needed
+4. **Adjust the version**: set `image:` in `/opt/stack/<service>/compose.yaml` to the new tag
+5. **Pull and restart**: `cd /opt/stack/<service> && docker compose pull && docker compose up -d`
+6. **Check logs**: `docker compose logs --tail=200 <service>` for errors and warnings
+7. **Function check**: exercise login and a core function of the application
+8. **On success**: the version is running (`docker ps`), there's no version column to maintain; add new
+   quirks and pitfalls to this host's application notes if needed
+9. **On failure**: back to the old tag (revert `compose.yaml`, `up -d`), save the logs, analyze the problem
+   before retrying the update
 
-## Image-Updates von Datenbanken
+## Database image updates
 
-- **Neben- oder Patchversion** (`postgres:17.1` auf `17.2`): unkritisch, wie ein Stack-Update behandeln
-- **Hauptversion** (`postgres:16` auf `17`): **STOPP**.
-  1. Dump der Datenbank (`pg_dumpall`) auf der alten Version
-  2. Datenverzeichnis sichern (`./data/postgres` in ein Tar-Archiv)
-  3. compose mit der neuen Hauptversion und leerem Datenverzeichnis starten
-  4. Dump einspielen
-  5. Funktionsprüfung
-  6. Erst danach das alte Datenverzeichnis verwerfen
+- **Minor or patch version** (`postgres:17.1` to `17.2`): uncritical, treat like a stack update
+- **Major version** (`postgres:16` to `17`): **STOP**.
+  1. Dump the database (`pg_dumpall`) on the old version
+  2. Back up the data directory (`./data/postgres` into a tar archive)
+  3. Start compose with the new major version and an empty data directory
+  4. Load the dump
+  5. Function check
+  6. Only then discard the old data directory
 
-Bei Alles-in-einem-Containern (etwa OpenProject) folgt die Datenbankversion dem Haupt-Tag der Anwendung:
-den Migrationsschritten des Herstellers folgen.
+For all-in-one containers (e.g. OpenProject) the database version follows the application's main tag:
+follow the vendor's migration steps.
 
-## Sonderfälle (typisch)
+## Special cases (typical)
 
-- **Anwendungen mit mehreren gemeinsam gepinnten Images** (etwa Penpot: Frontend, Backend, Exporter): alle
-  Images im selben Schritt aktualisieren, nie einzeln
-- **Anwendungen mit eigenem Migrationsskript** (etwa SeaTable, Nextcloud): die Migrationsanweisungen aus
-  den Release Notes vor `docker compose up -d` ausführen
-- **Anwendungen mit stufenweisem Hauptversionspfad** (etwa Nextcloud: 28 auf 29 auf 30): nie Versionen
-  überspringen, jede Hauptversion einzeln durchlaufen, mit einer Prüfung dazwischen
+- **Applications with several images pinned together** (e.g. Penpot: frontend, backend, exporter): update
+  all images in the same step, never singly
+- **Applications with their own migration script** (e.g. SeaTable, Nextcloud): run the migration
+  instructions from the release notes before `docker compose up -d`
+- **Applications with a stepwise major-version path** (e.g. Nextcloud: 28 to 29 to 30): never skip
+  versions, walk each major version one at a time, with a check in between
 
-## Update der Docker-Engine
+## Docker engine update
 
 ```bash
-# Status vorher
+# status before
 docker ps --format 'table {{.Names}}\t{{.Status}}'
 
-# Update
+# update
 sudo apt-get update
 sudo apt-get install -y --only-upgrade docker-ce docker-ce-cli containerd.io \
     docker-buildx-plugin docker-compose-plugin
 
-# Neustart (alle Container werden kurz unterbrochen)
+# restart (all containers are briefly interrupted)
 sudo systemctl restart docker
 
-# Container kommen über `restart: unless-stopped` von selbst zurück: nachsehen
+# containers return on their own via `restart: unless-stopped`: check
 sleep 10
 docker ps --format 'table {{.Names}}\t{{.Status}}'
 
-# Logs der eben gestoppten Container auf Fehler prüfen
+# check the just-stopped containers' logs for errors
 ```
 
-## Verbote
+## Prohibitions
 
-- **Kein automatisches Aktualisieren** (etwa über Watchtower) ohne ausdrückliche Konfiguration je Stack
-- **Keine `:latest`-Tags** in der compose.yaml: sie machen eine reproduzierbare Zustandserkennung unmöglich
-- **Keine Hauptversionswechsel, ohne die Release Notes gelesen zu haben**
-- **Kein `docker system prune -a`**, ohne die Stack-Verzeichnisse gesichert zu haben: es löscht Images, die
-  für ein Zurückrollen noch gebraucht werden könnten
+- **No automatic updating** (e.g. via Watchtower) without explicit per-stack configuration
+- **No `:latest` tags** in the compose.yaml: they make reproducible state detection impossible
+- **No major-version changes without having read the release notes**
+- **No `docker system prune -a`** without having backed up the stack directories: it deletes images that a
+  rollback might still need

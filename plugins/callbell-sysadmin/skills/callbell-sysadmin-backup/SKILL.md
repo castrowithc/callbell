@@ -1,127 +1,115 @@
 ---
 name: callbell-sysadmin-backup
 description: >
-  Richtet eine verschlüsselte, ausgelagerte Sicherung mit BorgBackup und Borgmatic auf ein
-  SSH/SFTP-Ziel ein oder rüstet sie nach: Repo anlegen, Konfiguration, Benachrichtigung, Zugangsdaten,
-  Wiederherstellungstest. Starte es, indem du /callbell-sysadmin-backup tippst.
+  Sets up or retrofits an encrypted, off-site backup with BorgBackup and Borgmatic to an SSH/SFTP target:
+  create the repo, configuration, notification, credentials, restore test. Start it by typing
+  /callbell-sysadmin-backup.
 type: skill
 edit: locked
 disable-model-invocation: true
 ---
 
-# Eine Sicherung einrichten: Borg + Borgmatic + ausgelagertes SSH/SFTP-Ziel
+# Setting up a backup: Borg + Borgmatic + off-site SSH/SFTP target
 
-Richtet die Sicherung auf einem Server so ein, dass die Form gleich bleibt, wenn es mehr werden. Werte, die
-je Server anders sind (Unterkonto, Webhooks, Schlüssel, Containerliste), gehören in die Domäne dieses Hosts
-(Ordner `<host>/`), **nie** ins Repo oder ins Plugin.
+Set up the backup on a server so the shape stays the same as they multiply. Values that differ per server (sub-account, webhooks, keys, container list) belong in this host's domain (folder `<host>/`), **never** in the repo or the plugin.
 
-> **3-2-1-Prinzip:** 3 Kopien, 2 Speichertechniken, 1 ausgelagert (ein ausgelagertes SSH/SFTP-Ziel, etwa
-> eine Hetzner Storage Box).
+> **3-2-1 principle:** 3 copies, 2 storage media, 1 off-site (an off-site SSH/SFTP target, e.g. a Hetzner
+> Storage Box).
 
-## Planmodus: zuerst entscheiden
+## Plan mode: decide first
 
-- **Speicher-Unterkonto** für diesen Server auf dem ausgelagerten Ziel.
-- **Zeitfenster:** eine feste Startzeit, ohne Streuung, in den ruhigen Stunden des Hosts. Bei einem Server
-  wählst du die Zeit und bist fertig. Sobald mehrere auf dasselbe Ziel sichern, versetzt du sie (03:00 /
-  03:15 / 03:30 und so weiter), damit sie nicht alle gleichzeitig darauf zugreifen. Ein automatischer
-  Neustart liegt, falls aktiv, **nach** dem Fenster.
-- **Benachrichtigungsweg:** ein Webhook plus ein Healthcheck-Heartbeat (etwa eine Push-Adresse des
-  Monitorings), dein bevorzugter Kanal, oder E-Mail (msmtp, etwa bei Plesk). Mindestens **ein** Weg ist
-  Pflicht (Erfolg **und** Fehlschlag).
-- **Docker-Server?** → zusätzlich Datenbank-Dumps vor der Sicherung (Begleitdatei `db-dumps.md`).
-- **Init-System:** systemd (Normalfall, `borgmatic.timer`) oder ein cron-Ersatz auf Distributionen ohne
-  systemd.
+- **Storage sub-account** for this server on the off-site target.
+- **Time window:** a fixed start time, no jitter, in the host's quiet hours. With one server you pick the
+  time and you're done. Once several back up to the same target, stagger them (03:00 / 03:15 / 03:30 and so
+  on) so they don't all hit it at once. An automatic reboot, if active, sits **after** the window.
+- **Notification path:** a webhook plus a healthcheck heartbeat (e.g. a monitoring push URL), your
+  preferred channel, or email (msmtp, e.g. on Plesk). At least **one** path is mandatory (success **and**
+  failure).
+- **Docker server?** → additionally database dumps before the backup (companion file `db-dumps.md`).
+- **Init system:** systemd (the common case, `borgmatic.timer`) or a cron substitute on distributions
+  without systemd.
 
-## Standardwerte
+## Defaults
 
-| Wert | Vorgabe |
+| Value | Default |
 |---|---|
-| Ziel | ein ausgelagertes SSH/SFTP-Ziel (etwa eine Hetzner Storage Box); eigenes Unterkonto je Server |
-| Rhythmus | täglich, zu einer festen ruhigen Zeit (versetzt je Server, sobald es mehrere sind) |
-| Aufbewahrung | 7 täglich, 4 wöchentlich, 6 monatlich |
-| Verschlüsselung | repokey-blake2 |
-| Kompression | zstd,3 |
-| Standardverzeichnisse | `/etc/`, `/home/`, `/opt/` (Abweichungen je Server) |
+| Target | an off-site SSH/SFTP target (e.g. a Hetzner Storage Box); own sub-account per server |
+| Cadence | daily, at a fixed quiet time (staggered per server once there are several) |
+| Retention | 7 daily, 4 weekly, 6 monthly |
+| Encryption | repokey-blake2 |
+| Compression | zstd,3 |
+| Default directories | `/etc/`, `/home/`, `/opt/` (deviations per server) |
 
-## Vorgehen
+## Procedure
 
-1. **Werkzeuge installieren:** BorgBackup 1.2.x und Borgmatic 2.x (Debian/Ubuntu:
-   `apt install borgbackup borgmatic`; sonst das Paket der Distribution oder pipx). Versionen prüfen.
-2. **SSH-Schlüssel für das Ziel** erzeugen und dort hinterlegen:
-   `ssh-keygen -t ed25519 -f /root/.ssh/storage_box` (chmod 600); den öffentlichen Schlüssel auf dem Ziel
-   freischalten (Robot oder Konsole des Anbieters). Bei einer Hetzner Storage Box etwa Port 23.
-3. **Passphrase erzeugen** und sichern: in einem Passwortspeicher (Pflicht, Verlust bedeutet
-   Totalverlust) **und** nach `/root/.borg-passphrase` (chmod 600).
-4. **Repo anlegen:**
+1. **Install tools:** BorgBackup 1.2.x and Borgmatic 2.x (Debian/Ubuntu:
+   `apt install borgbackup borgmatic`; otherwise the distribution's package or pipx). Check versions.
+2. **Generate an SSH key for the target** and install it there:
+   `ssh-keygen -t ed25519 -f /root/.ssh/storage_box` (chmod 600); authorize the public key on the target
+   (the provider's robot or console). On a Hetzner Storage Box, port 23 for instance.
+3. **Generate a passphrase** and secure it: in a password store (mandatory, losing it means total loss)
+   **and** to `/root/.borg-passphrase` (chmod 600).
+4. **Create the repo:**
    ```bash
    BORG_PASSPHRASE=$(cat /root/.borg-passphrase) \
    borg init --encryption=repokey-blake2 \
      --rsh "ssh -i /root/.ssh/storage_box -p <port>" \
-     ssh://<benutzer>@<ziel-host>:<port>/./borg
+     ssh://<user>@<target-host>:<port>/./borg
    ```
-   Danach den Schlüsselexport sichern: Passwortspeicher plus `/root/.borg-key-backup` (chmod 600).
-5. **Borgmatic-Konfiguration** `/etc/borgmatic/config.yaml` anlegen: Quellverzeichnisse, Ziel-Repo, die
-   Aufbewahrung von oben, Verschlüsselung `repokey-blake2` und die Benachrichtigungs-Hooks (die genauen
-   Schlüssel stehen in der Dokumentation von borgmatic). Auf einem Docker-Server gehört der Hook für die
-   Datenbank-Dumps in `before_backup` (der vollständige Hooks-Block steht in `db-dumps.md`).
-6. **Benachrichtigung einrichten** nach dem Abschnitt unten. Leg das Skript an einen stabilen Ort, der root
-   gehört (in diesem Vorgehen `/root/backup/borg-notify.sh`), und ruf es aus den Hooks
-   `on_error`/`after_backup` auf. Echte Adressen und Schlüssel nur in einer chmod-600-Env-Datei daneben.
-7. **Docker-Server:** Datenbank-Dumps vor der Sicherung einhängen → `db-dumps.md`.
-8. **Automatisieren:** den systemd-Timer `borgmatic.timer` zur oben festgelegten Zeit aktivieren. Ohne
-   systemd ein cron-Eintrag zur selben Zeit.
-9. **Erster Lauf und Wiederherstellungstest:** `sudo borgmatic create --verbosity 1`, danach eine einzelne
-   Datei zurückholen (siehe unten) und das Datum in der Domäne dieses Hosts festhalten.
+   Then secure the key export: the password store plus `/root/.borg-key-backup` (chmod 600).
+5. **Create the Borgmatic config** `/etc/borgmatic/config.yaml`: source directories, target repo, the
+   retention from above, encryption `repokey-blake2`, and the notification hooks (the exact keys are in
+   borgmatic's documentation). On a Docker server the database-dump hook belongs in `before_backup` (the
+   full hooks block is in `db-dumps.md`).
+6. **Set up notification** per the section below. Put the script in a stable root-owned location (this
+   procedure uses `/root/backup/borg-notify.sh`) and call it from the `on_error`/`after_backup` hooks. Real
+   addresses and keys only in a chmod-600 env file beside it.
+7. **Docker server:** hook database dumps in before the backup → `db-dumps.md`.
+8. **Automate:** enable the systemd timer `borgmatic.timer` at the time set above. Without systemd, a cron
+   entry at the same time.
+9. **First run and restore test:** `sudo borgmatic create --verbosity 1`, then pull back a single file
+   (see below) and record the date in this host's domain.
 
-## Benachrichtigung
+## Notification
 
-Worauf es ankommt: Erfolg **und** Fehlschlag erreichen dich, und die Nachricht sagt, welcher Host, welcher
-Lauf und was schiefging. Die folgende Form ist eine funktionierende Konvention, kein Schema, das irgendwer
-erwartet:
+What matters: success **and** failure reach you, and the message says which host, which run, and what went wrong. The form below is a working convention, not a schema anyone expects:
 
 ```json
 { "host": "<hostname>", "type": "backup", "status": "success | error",
-  "timestamp": "<UTC ISO 8601>", "duration": <sek>, "error": "" }
+  "timestamp": "<UTC ISO 8601>", "duration": <sec>, "error": "" }
 ```
 
-Übernimm sie, oder richte dich nach dem, was dein Empfänger ohnehin liest. Dasselbe gilt für die Ablage:
-dieses Vorgehen legt Skript und Geheimnisse unter `/root/backup/` ab, mit Variablennamen wie
-`WEBHOOK_BACKUP_SUCCESS` und `HEALTHCHECK_PUSH_URL` — ein ordentlicher Standard und nicht mehr. Ein Host,
-der bereits einen Platz für Betriebsskripte hat, nutzt diesen Platz.
+Adopt it, or follow whatever your receiver already reads. Same for placement: this procedure puts the script and secrets under `/root/backup/`, with variable names like `WEBHOOK_BACKUP_SUCCESS` and `HEALTHCHECK_PUSH_URL`, a decent default and no more. A host that already has a place for operations scripts uses that place.
 
-Unabhängig von der Ablage gilt fest: echte Adressen und Schlüssel leben nur in einer Env-Datei, die allein
-root lesen kann (chmod 600), nie in der borgmatic-Konfiguration. **Regel für Geheimnisse:** Webhook-Adressen
-und Schlüssel nie ausgeben, nie protokollieren, nie committen; in Beispielen ein Server-Alias statt der
-echten Adresse.
+Whatever the placement, one thing is fixed: real addresses and keys live only in an env file only root can read (chmod 600), never in the borgmatic config. **Secrets rule:** never print, never log, never commit webhook addresses and keys; in examples use a server alias instead of the real address.
 
-> **Syntax `commands:` in Borgmatic 2.x:** den Block `after: error` **ohne `when:`-Filter** konfigurieren,
-> sonst feuert der Fehler-Hook nicht bei Fehlschlägen in früheren Hooks (etwa einem Datenbank-Dump in
-> `before: everything`). Die reale Folge eines Filters `when: [create]`: 23 Tage ohne Benachrichtigung,
-> unbemerkt, weil der Fehler-Hook bei den früheren Fehlschlägen nicht ausgelöst hat.
+> **`commands:` syntax in Borgmatic 2.x:** configure the `after: error` block **without a `when:` filter**,
+> or the error hook won't fire on failures in earlier hooks (e.g. a database dump in `before: everything`).
+> The real cost of a `when: [create]` filter: 23 days without notification, unnoticed, because the error
+> hook didn't fire on the earlier failures.
 
-> **Healthcheck-Heartbeat** als zweite Schicht: ein Heartbeat (etwa eine Push-Adresse des Monitorings) mit
-> einer Zeitgrenze (etwa 26 Stunden bei täglicher Sicherung), der selbst dann greift, wenn die
-> Benachrichtigungskette ausfällt.
+> **Healthcheck heartbeat** as a second layer: a heartbeat (e.g. a monitoring push URL) with a deadline
+> (e.g. 26 hours for a daily backup) that catches even when the notification chain fails.
 
-**Alternative per E-Mail (msmtp):** statt des Webhooks oder zusätzlich ein Mail-Skript im Hook
-`on_error`/`after_backup`; Zugangsdaten nur in `backup.env` oder der msmtp-Konfiguration (chmod 600).
+**Email alternative (msmtp):** instead of the webhook or in addition, a mail script in the
+`on_error`/`after_backup` hook; credentials only in `backup.env` or the msmtp config (chmod 600).
 
-## Sicherung der Zugangsdaten
+## Securing the credentials
 
-| Was | Wohin |
+| What | Where |
 |---|---|
-| Borg-Passphrase | Passwortspeicher (Pflicht) plus `/root/.borg-passphrase` (chmod 600) |
-| Borg-Schlüsselexport | Passwortspeicher plus `/root/.borg-key-backup` (chmod 600) |
-| SSH-Schlüssel für das Ziel | `/root/.ssh/storage_box` (chmod 600) |
+| Borg passphrase | password store (mandatory) plus `/root/.borg-passphrase` (chmod 600) |
+| Borg key export | password store plus `/root/.borg-key-backup` (chmod 600) |
+| SSH key for the target | `/root/.ssh/storage_box` (chmod 600) |
 
-## Wichtige Befehle
+## Key commands
 
 ```bash
-sudo borgmatic create --verbosity 1     # Sicherung von Hand
-sudo borgmatic list                     # Liste der Archive
-sudo borgmatic info                     # Status
-# Wiederherstellen (einzelne Datei)
+sudo borgmatic create --verbosity 1     # manual backup
+sudo borgmatic list                     # list archives
+sudo borgmatic info                     # status
+# restore (single file)
 cd /tmp && sudo BORG_PASSPHRASE=$(sudo cat /root/.borg-passphrase) \
   BORG_RSH="ssh -i /root/.ssh/storage_box -p <port>" \
-  borg extract ssh://<benutzer>@<ziel-host>/./borg::<ARCHIV> pfad/zur/datei
+  borg extract ssh://<user>@<target-host>/./borg::<ARCHIVE> path/to/file
 ```

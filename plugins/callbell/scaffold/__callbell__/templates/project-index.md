@@ -1,6 +1,6 @@
 ---
 description: >
-  <project name>: was es liefert, in einem Satz.
+  <project name>: what it delivers, in one sentence.
 type: meta
 edit: shared
 status: active        # active | final | archived
@@ -8,18 +8,18 @@ status: active        # active | final | archived
 
 # Project: <name>
 
-<!-- Vorlage. Kopiere sie nach __callbell__/backlog/<project>/index.md.
-Der Projektkopf: das große Ganze, plus das Verzeichnis seiner Aufgaben. Jede Aufgabe ist ihre eigene Datei. Dieser Index ist auch der EINZIGE Ort, an dem Reihenfolge und Abhängigkeit zwischen
-Aufgaben festgehalten werden, denn eine Aufgabe nennt nie eine andere Aufgabe. -->
+<!-- Template. Copy it to __callbell__/backlog/<project>/index.md.
+The project head: the big picture, plus the roster of its tasks. Each task is its own file. This index is also the ONLY place where order and dependency between
+tasks are recorded, because a task never names another task. -->
 
-## Ziel
-<!-- Was soll dieses Projekt liefern? Woran erkennst du, dass es fertig ist? -->
+## Goal
+<!-- What should this project deliver? How do you know it's done? -->
 
-## Umfang
-<!-- Was zu diesem Projekt gehört und was ausdrücklich nicht. -->
+## Scope
+<!-- What belongs to this project and what explicitly doesn't. -->
 
-## Verzeichnis
-<!-- Eine Zeile pro Aufgabe, in der Reihenfolge, in der sie bearbeitet werden sollen:
-- [<title>](task-<slug>.md) - Status, kurzer Stand.
-Bei großen Projekten mit Überschriften gruppieren (zum Beispiel Backend, Frontend). Eine Überschrift ist
-Gruppierung genug; sie wird nie zu einer Dateiebene. Notiere hier eine Abhängigkeit ("nach <title>"), falls es eine gibt. -->
+## Roster
+<!-- One line per task, in the order they should be worked:
+- [<title>](task-<slug>.md) - status, short state.
+For large projects, group with headings (e.g. backend, frontend). A heading is
+grouping enough; it never becomes a file level. Note a dependency here ("after <title>") if there is one. -->

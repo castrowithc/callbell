@@ -1,6 +1,6 @@
 ---
 description: >
-  <Worum geht es bei dieser Aufgabe? Ein Satz.>
+  <What is this task about? One sentence.>
 type: task
 edit: shared
 status: draft         # draft | active | final | archived
@@ -10,23 +10,22 @@ updated: YYYY-MM-DD
 
 # Task: <Title>
 
-<!-- Vorlage. Eine Aufgabe ist ein Arbeitspaket: alles, was zum Bearbeiten nötig ist, und nichts, was zur Seite verweist.
-Sie nennt NIE eine andere Aufgabe; Reihenfolge und Abhängigkeit leben im Verzeichnis (BACKLOG.md oder die
-index.md des Projekts). Bemiss sie so, dass sie in eine Sitzung passt; lässt sie sich nicht schätzen, ist sie
-nicht verstanden und muss zerlegt werden. Kopiere sie nach __callbell__/backlog/task-<slug>.md (oder
-__callbell__/backlog/<project>/) und fülle sie aus.
-Das Planungsverfahren ist die Skill callbell-plan. -->
+<!-- Template. A task is a work package: everything needed to work on it, and nothing that points off to the side.
+It NEVER names another task; order and dependency live in the roster (BACKLOG.md or the project's
+index.md). Size it to fit one session; if it can't be estimated, it isn't understood and must be broken
+down. Copy it to __callbell__/backlog/task-<slug>.md (or __callbell__/backlog/<project>/) and fill it in.
+The planning procedure is the skill callbell-plan. -->
 
-## Warum
-<!-- Wofür ist das? Genug Kontext, um beim Arbeiten gut zu entscheiden, keine Wiederholung des Titels. -->
+## Why
+<!-- What's it for? Enough context to decide well while working, no repeat of the title. -->
 
-## Umfang
-<!-- Was zu diesem Paket gehört und was ausdrücklich nicht. Die Grenze ist die nützliche Hälfte. -->
+## Scope
+<!-- What belongs to this package and what explicitly doesn't. The boundary is the useful half. -->
 
-## Vorgehen
-<!-- Wie man es angeht. Bekannte Einschränkungen, die bereits ausgeschlossenen Dinge und warum. -->
+## Approach
+<!-- How to go about it. Known constraints, the things already ruled out, and why. -->
 
 - [ ] <Step>
 
 ## Definition of done
-<!-- Wie wird es überprüft? Etwas Beobachtbares, nicht "sieht richtig aus". -->
+<!-- How is it verified? Something observable, not "looks right". -->

@@ -1,6 +1,6 @@
 ---
 description: >
-  Der Bestand eines Hosts: die Grundlagen, die man sonst bei jeder Sitzung neu erheben müsste.
+  A host's inventory: the basics you'd otherwise re-gather every session.
 type: knowledge
 edit: shared
 status: active
@@ -10,8 +10,8 @@ updated: YYYY-MM-DD
 
 # <host>
 
-<!-- Vorlage. Kopiere sie nach <host>/index.md. Was hier steht, hat der Agent von der Maschine
-gelesen — nicht vom Nutzer erfragt. Fragen kostet den Nutzer Zeit für etwas, das ein Befehl weiß. -->
+<!-- Template. Copy it to <host>/index.md. What's here the agent read from the machine, not
+asked the user for. Asking costs the user time on something a command knows. -->
 
 ## System
 | | |
@@ -19,22 +19,21 @@ gelesen — nicht vom Nutzer erfragt. Fragen kostet den Nutzer Zeit für etwas, 
 | Hostname | |
 | Distribution | <!-- cat /etc/os-release --> |
 | Init | <!-- ps -p1 -o comm= --> |
-| Paketmanager | |
+| Package manager | |
 | Provider | |
 | CPU / RAM / Disk | |
 
-## Zugang
-<!-- Admin-Benutzer, SSH-Port, Authentisierungsweg. Niemals Schlüssel, Passwörter oder Tokens: die
-Datenschutznorm des Kerns gilt hier unverändert, und dieses Repo kann öffentlich werden. -->
+## Access
+<!-- Admin user, SSH port, authentication path. Never keys, passwords, or tokens: the core's
+data-protection norm holds here unchanged, and this repo may become public. -->
 
-## Was hier läuft
-<!-- Dienste, Stacks, Anwendungen. Eine Zeile pro Sache, mit dem, was man wissen muss, um sie nicht
-versehentlich zu treffen. Wächst mit; ein neuer Dienst kommt hier dazu, solange er keine eigene Datei
-braucht. -->
+## What runs here
+<!-- Services, stacks, applications. One line per thing, with what you need to know not to hit it by
+accident. Grows over time; a new service joins here as long as it needs no file of its own. -->
 
-## Sicherung
-<!-- Ob gesichert wird, wohin, wie oft — und wann zuletzt eine Wiederherstellung bewiesen wurde. Eine
-laufende Sicherung ohne bewiesene Wiederherstellung ist keine Sicherung. -->
+## Backup
+<!-- Whether it's backed up, where to, how often, and when a restore was last proven. A running backup
+without a proven restore is no backup. -->
 
-## Härtung
-<!-- Der Stand gegenüber der Baseline und jede bewusste Abweichung mit ihrem Grund. -->
+## Hardening
+<!-- The state against the baseline and every deliberate deviation with its reason. -->

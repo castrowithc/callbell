@@ -1,21 +1,21 @@
 ---
 description: >
-  Überblick über den operativen Arbeitspfad (__callbell__/backlog/): die flachen Wurzeleinträge und jedes Projekt, jeweils mit
-  Status und kurzer Beschreibung. Wird beim Sitzungsstart über den Hook geladen (wie der Memory-Index
-  MEMORY.md), damit der Agent den offenen Stand kennt, ohne jede Datei zu öffnen. Betriebslogik: die
-  Scaffold-Norm.
+  Overview of the operational work trail (__callbell__/backlog/): the flat root entries and each project, each with
+  status and a short description. Loaded at session start via the hook (like the memory index
+  MEMORY.md), so the agent knows the open state without opening every file. Operational logic: the
+  scaffold norm.
 type: meta
 edit: shared
 ---
 
 # Backlog
 
-<!-- Oberster Überblick über den Arbeitspfad. Aufgaben ohne Projekt liegen flach als task-<slug>.md in
-     __callbell__/backlog/; ein Projekt ist ein Ordner __callbell__/backlog/<project>/ mit eigener index.md.
-     Ort, Projekte und Lebenszyklus legt die Scaffold-Norm fest; die Planungsarbeit ist die Skill
+<!-- Top overview of the work trail. Tasks with no project live flat as task-<slug>.md in
+     __callbell__/backlog/; a project is a folder __callbell__/backlog/<project>/ with its own index.md.
+     Location, projects, and lifecycle are set by the scaffold norm; the planning work is the skill
      callbell-plan.
 
-     Eine Zeile pro aktiver Wurzelaufgabe und eine Zeile pro Projekt (mit Verweis auf dessen index.md):
-     - [Title](file-or-project/index.md) - Status, kurzer Stand.
-     Die eigenen Aufgaben eines Projekts sind in dessen index.md verzeichnet, nicht hier. Dieses Verzeichnis ist auch der Ort, an dem
-     Reihenfolge und Abhängigkeit leben, denn eine Aufgabe nennt nie eine andere Aufgabe. -->
+     One line per active root task and one line per project (pointing to its index.md):
+     - [Title](file-or-project/index.md) - status, short state.
+     A project's own tasks are rostered in its index.md, not here. This roster is also where
+     order and dependency live, because a task never names another task. -->

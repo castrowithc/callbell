@@ -1,6 +1,6 @@
 ---
 description: >
-  <customer short name>, Stammdatensatz.
+  <customer short name>, master record.
 type: knowledge
 edit: shared
 status: active
@@ -10,14 +10,14 @@ updated: YYYY-MM-DD
 
 # <short name> (<id>)
 
-<!-- Vorlage. Kopiere sie nach <area>-customers/<id>/index.md.
-Der Stammdatensatz des Kunden. KEINE Kontaktdaten. -->
+<!-- Template. Copy it to <area>-customers/<id>/index.md.
+The customer's master record. NO contact data. -->
 
-## Worum es geht
-<!-- Was macht diesen Kunden/Fall aus? Ein oder zwei Sätze. -->
+## What it's about
+<!-- What defines this customer/case? One or two sentences. -->
 
 ## Status
-<!-- Aktueller Stand der Zusammenarbeit. -->
+<!-- Current state of the engagement. -->
 
-## Verweise
-<!-- [[…]] auf zugehörige Inhaltsdateien unter <id>/. -->
+## References
+<!-- [[…]] to related content files under <id>/. -->

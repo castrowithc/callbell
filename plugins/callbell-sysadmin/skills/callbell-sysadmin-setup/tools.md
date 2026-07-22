@@ -1,28 +1,27 @@
 ---
 description: >
-  Begleitdatei zu callbell-sysadmin-setup: die Standard-Kommandozeilenwerkzeuge (micro, mc, fzf, tmux,
-  git) über mehrere Distributionen hinweg installieren und die tmux-Konfiguration einspielen.
+  Companion to callbell-sysadmin-setup: install the standard command-line tools (micro, mc, fzf, tmux, git)
+  across distributions and load the tmux configuration.
 type: playbook
 edit: locked
 ---
 
-# Werkzeuge installieren
+# Installing tools
 
-Ein Standardsatz für einen Server. Den Paketmanager je Distribution wählen (im Planmodus geklärt); die
-Paketnamen sind weitgehend gleich.
+A standard set for a server. Pick the package manager per distribution (settled in plan mode); the package names are largely the same.
 
-| Werkzeug | Wozu |
+| Tool | For |
 |---|---|
-| `micro` | Editor im Terminal (eingängiger als nano oder vim) |
-| `mc` (Midnight Commander) | Dateimanager mit zwei Fenstern |
-| `fzf` | unscharfe Suche (Verlauf, Dateien, `Strg+R`) |
-| `tmux` | Terminal-Multiplexer (Sitzungen, die bestehen bleiben) |
-| `git` | Versionsverwaltung (meist vorinstalliert) |
+| `micro` | terminal editor (friendlier than nano or vim) |
+| `mc` (Midnight Commander) | two-pane file manager |
+| `fzf` | fuzzy search (history, files, `Ctrl+R`) |
+| `tmux` | terminal multiplexer (sessions that persist) |
+| `git` | version control (usually preinstalled) |
 
-## Installation je Distribution
+## Installation per distribution
 
 ```bash
-# Debian/Ubuntu (Normalfall)
+# Debian/Ubuntu (the common case)
 sudo apt update && sudo apt install -y micro mc fzf tmux git
 
 # Fedora/RHEL
@@ -35,27 +34,24 @@ sudo apk add micro mc fzf tmux git
 sudo pacman -S --needed micro mc fzf tmux git
 ```
 
-> `micro` liegt nicht in jedem Repo (etwa in älteren Debian-Ständen). Weich auf das offizielle
-> Installationsskript aus, **aber erst nachdem du es angesehen hast** (kein blindes `curl | bash`, siehe
-> Sicherheitsregel): die Quelle `https://getmic.ro` prüfen, oder das Binary von der offiziellen
-> GitHub-Releases-Seite holen.
+> `micro` isn't in every repo (e.g. older Debian releases). Fall back to the official install script, **but
+> only after you've looked at it** (no blind `curl | bash`, see the safety rule): inspect the source
+> `https://getmic.ro`, or grab the binary from the official GitHub releases page.
 
-Versionen prüfen:
+Check versions:
 
 ```bash
-for t in micro mc fzf tmux git; do printf '%-6s ' "$t"; command -v "$t" >/dev/null && "$t" --version 2>/dev/null | head -1 || echo "FEHLT"; done
+for t in micro mc fzf tmux git; do printf '%-6s ' "$t"; command -v "$t" >/dev/null && "$t" --version 2>/dev/null | head -1 || echo "MISSING"; done
 ```
 
-## tmux-Konfiguration einspielen
+## Load the tmux configuration
 
-Eine Grundkonfiguration liegt in `templates/tmux.conf` in diesem Skill-Ordner. Kopier sie nach
-`~/.tmux.conf` und lad sie in tmux mit `Strg+B`, dann `r` neu. Plugins (TPM) sind in der Vorlage
-auskommentiert und optional.
+A base configuration is in `templates/tmux.conf` in this skill folder. Copy it to `~/.tmux.conf` and reload it in tmux with `Ctrl+B`, then `r`. Plugins (TPM) are commented out in the template and optional.
 
-## fzf in der Shell einbinden (optional)
+## Wire fzf into the shell (optional)
 
 ```bash
-# Debian/Ubuntu (das Paket bringt Beispiel-Tastenbelegungen mit):
+# Debian/Ubuntu (the package ships example key bindings):
 echo 'source /usr/share/doc/fzf/examples/key-bindings.bash' >> ~/.bashrc
-# sonst: $(fzf --bash), oder die Tastenbelegung der eigenen Distribution einbinden
+# otherwise: $(fzf --bash), or wire in your distribution's key bindings
 ```

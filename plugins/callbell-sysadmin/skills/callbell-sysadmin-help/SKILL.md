@@ -1,76 +1,66 @@
 ---
 name: callbell-sysadmin-help
 description: >
-  Kurzreferenz zu callbell-sysadmin: ob das Pack hier gerade aktiv ist, wie man es einschaltet, welches
-  Skill man wann will und welches davon nur liest. Einmalige Anzeige, kein dauerhafter Modus. Starte es,
-  indem du /callbell-sysadmin-help tippst.
+  Quick reference to callbell-sysadmin: whether the pack is active here, how to switch it on, which skill you
+  want when, and which of them only read. Shown once, not a persistent mode. Start it by typing
+  /callbell-sysadmin-help.
 type: skill
 edit: locked
 disable-model-invocation: true
 ---
 
-# Callbell Sysadmin Hilfe
+# Callbell Sysadmin Help
 
-Zeige diese Karte, wenn du aufgerufen wirst. Einmalig, kein Moduswechsel, nichts wird gespeichert.
+Show this card when called. Once, no mode change, nothing saved.
 
-**Sieh zuerst nach, was gilt**, und zeig den passenden der drei Zustände — die Karte soll sagen, was *hier*
-los ist, und nicht alle Möglichkeiten aufzählen. Der Zustand steht in `__callbell__/.host-identity`.
+**Check what applies first** and show the matching one of the three states: the card says what's going on *here*, it doesn't list every possibility. The state lives in `__callbell__/.host-identity`.
 
-## 1. Ist das Pack hier aktiv?
+## 1. Is the pack active here?
 
-| `.host-identity` | Was das heißt | Was lädt |
+| `.host-identity` | What it means | What loads |
 |---|---|---|
-| fehlt | kein Serverkontext — ein normales Repo, kein Host | nichts Serverspezifisches, und das ist Absicht |
-| da, leer | du arbeitest von deiner eigenen Maschine aus per Fernwartung | die Sicherheitsschicht, ohne gesetzte Domäne |
-| da, mit Inhalt | der Agent läuft auf dem Host; der Inhalt ist der Domänenordner | die Sicherheitsschicht, Domäne gesetzt |
+| missing | no server context: a normal repo, no host | nothing server-specific, and that's deliberate |
+| present, empty | you work from your own machine by remote administration | the safety layer, no domain set |
+| present, with content | the agent runs on the host; the content is the domain folder | the safety layer, domain set |
 
-Die Stille im ersten Fall ist die Funktion, nicht ein Fehler: das Pack ist geräteweit installiert, und ein
-Code-Repo soll keinen Servertext bekommen.
+The silence in the first case is the function, not a fault: the pack installs machine-wide, and a code repo should get no server text.
 
-## 2. Wie schalte ich es ein?
+## 2. How do I switch it on?
 
 ```
 /callbell-sysadmin-start
 ```
 
-Das legt den Arbeitsordner an: einen Ordner je Host mit `framework.md` und `index.md`, liest den Bestand der
-Maschine selbst aus und schreibt die Identität. Es läuft auch auf einem Server, der längst steht — dafür
-braucht es keine Neuinstallation.
+It creates the working folder: one folder per host with `framework.md` and `index.md`, reads the machine's own inventory, and writes the identity. It runs on a server that's been up for ages too; no reinstall needed.
 
-Ab der **nächsten** Sitzung nennt der Hook die Domäne und die Sicherheitsschicht ist da.
+From the **next** session on, the hook names the domain and the safety layer is there.
 
-## 3. Welches Skill will ich?
+## 3. Which skill do I want?
 
-In der Reihenfolge, in der man ihnen begegnet:
+In the order you meet them:
 
-| Skill | Wofür | Am System |
-|-------|-------|-----------|
-| **start** | Arbeitsordner und Host-Domäne anlegen oder eine weitere ergänzen | legt nur Dateien an |
-| **setup** | eine frische Maschine von Grund auf hochbringen (Taktgeber für die folgenden) | **verändert** |
-| **harden** | auf die Sicherheits-Baseline härten oder eine bestehende Härtung prüfen | **verändert** |
-| **backup** | verschlüsselte, ausgelagerte Sicherung einrichten oder nachrüsten | **verändert** |
-| **restore-proof** | beweisen, dass die Sicherung wiederherstellbar ist (in Scratch, nie live) | liest, schreibt nur Scratch |
-| **deploy** | einen neuen Docker-Stack nach festen Konventionen aufsetzen | **verändert** |
-| **docker-update** | einen Stack oder die Docker-Engine aktualisieren | **verändert** |
-| **checkup** | Routinefrage „läuft noch alles rund", als datierter Bericht | liest, schreibt den Bericht |
-| **incident** | Verdacht, dass jemand am Host war: schnelle Sichtung | **liest nur**, ändert nichts |
-| **help** | diese Karte | zeigt nur |
+| Skill | For | On the system |
+|-------|-----|---------------|
+| **start** | create the working folder and host domain, or add another | creates files only |
+| **setup** | bring a fresh machine up from scratch (sequences the rest) | **changes** |
+| **harden** | harden to the security baseline, or check an existing hardening | **changes** |
+| **backup** | set up or retrofit an encrypted, off-site backup | **changes** |
+| **restore-proof** | prove the backup restores (in scratch, never live) | reads, writes scratch only |
+| **deploy** | set up a new Docker stack by fixed conventions | **changes** |
+| **docker-update** | update a stack or the Docker engine | **changes** |
+| **checkup** | the routine "is everything still running well", as a dated report | reads, writes the report |
+| **incident** | suspect someone was on the host: a fast triage | **reads only**, changes nothing |
+| **help** | this card | shows only |
 
-`setup` ist der Taktgeber für eine neue Maschine und ruft `harden`, `backup` und `deploy` der Reihe nach
-auf. Auf einem Server, der schon läuft, greifst du die einzeln.
+`setup` sequences a new machine and calls `harden`, `backup`, and `deploy` in turn. On a server that's already running, reach for them one by one.
 
-## 4. Was liest und was verändert?
+## 4. What reads and what changes?
 
-Die Spalte oben ist die kurze Antwort, und vor einem Lauf auf einem Produktivsystem ist sie die wichtigste.
-Zwei Dinge dazu:
+The column above is the short answer, and before a run on a production system it's the one that matters most. Two notes:
 
-- **`incident` schreibt bewusst nichts**, auch keinen Bericht auf den Host. Unter Verdacht ist der Host der
-  falsche Ort für den Befund.
-- **Verändernde Skills entscheiden nicht allein.** Die Sicherheitsschicht verlangt vor zerstörenden
-  Befehlen Erklärung und Bestätigung, und kein Skill dieses Packs startet von selbst — jedes wird getippt.
+- **`incident` writes nothing on purpose**, not even a report to the host. Under suspicion, the host is the wrong place for the finding.
+- **Changing skills don't decide alone.** The safety layer demands explanation and confirmation before destructive commands, and no skill in this pack starts itself: you type each one.
 
-## Namensraum
+## Namespace
 
-Die Skills tragen das Pack-Präfix `callbell-sysadmin-` im Namen — so findest du sie alle auf einmal, wenn du
-`/callbell-sysadmin` tippst. Codex nutzt dieselben Skills mit dem Präfix `@`. Der Kern liegt darunter und
-ist Voraussetzung: `/callbell-help` zeigt dessen Karte.
+The skills carry the pack prefix `callbell-sysadmin-` in their name, so you find them all at once by typing `/callbell-sysadmin`. Codex calls the same skills with the `@` prefix. The core sits underneath and is required: `/callbell-help` shows its card.

@@ -1,145 +1,94 @@
 ---
 name: callbell-filing
 description: >
-  Entscheide, wohin eine Datei gehört und wie der Ordnerbaum wächst. Nutze dies,
-  wann immer du eine Inhaltsdatei anlegst, platzierst, verschiebst, promotest
-  oder umstrukturierst: welcher Bereichsordner, flach-mit-Präfix vs. ein
-  Typ-Ordner, welche Zone (work / zone-import / zone-export), und wie ein
-  Entwurf über seinen Status aktiv wird. Nutze es auch bei "wo gehört das hin",
-  "strukturier das um", "promote das", "callbell-filing" oder "/callbell-filing".
+  Decide where a file belongs and how the folder tree grows.
+  Use whenever you create, place, move, promote, or restructure a content file.
+  Also on "where does this go", "restructure this", "promote this",
+  "callbell-filing", or "/callbell-filing".
+license: MIT
 type: skill
 edit: locked
 ---
 
-# Ablage: wohin eine Datei gehört und wie der Baum wächst
+# Filing: where a file belongs and how the tree grows
 
-Dieser Skill platziert Inhalt im Projekt **außerhalb** von `__callbell__/`. Diese Schicht wird von ihrer
-eigenen Regel abgelegt (`callbell-scaffold-rules`), nie von Hand, und nichts hier gilt für sie.
+Place content in the project outside `__callbell__/`. That layer is filed by its own rule (`callbell-scaffold-rules`), never by hand; nothing here applies to it.
 
-## Der Pfad ist die strukturelle Wahrheit
+## The path is the structural truth
 
-- **Keine `domain/area/topic`-Hierarchie.** Der Bereichsordner ist die oberste Ebene; Tiefe wächst nur in
-  ihm, und nur dort, wo sie gebraucht wird.
-- Bereich und Thema leben im **Ordnernamen**, nie im Frontmatter.
-- Der Typ ist auch im Pfad sichtbar: als Präfix `<type>-<name>.md`, solange die Ablage flach bleibt, oder
-  als Ordner `<type>/`, sobald gruppiert. **Wo Pfad und Frontmatter sich widersprechen, gewinnt das
-  Frontmatter.** Rohzonen tragen gar keinen Typ.
+- No `domain/area/topic` hierarchy. The area folder is the top level; depth grows only inside it, and only where needed.
+- Area and topic live in the folder name, never in frontmatter.
+- The type shows in the path too: as a prefix `<type>-<name>.md` while filing stays flat, or as a folder `<type>/` once grouped. Where path and frontmatter disagree, frontmatter wins. Raw zones carry no type at all.
 
-Bereichsordner sind eine **ops**-Struktur, und ihr Register ebenso. In einem ops-Repo steht in
-`__callbell__/framework.md`, welche Bereiche und Themen existieren; der Agent nutzt nur, was dort steht, und
-legt keinen neuen Bereich ohne Freigabe an. Diese Datei wird nicht mit dem Scaffold ausgeliefert — sie
-entsteht mit dem ersten Bereich, und bis dahin gibt es keine Bereiche zu registrieren. Ein **Code**-Repo
-hat kein Bereichsregister und braucht keins: die Wurzel ist das Code-Projekt, und Dokumentation liegt unter
-`__callbell__/docs/`. Prüfe die Linse, bevor du zum Register greifst.
+Area folders are an **ops** structure, and so is their register. In an ops repo, `__callbell__/index.md` lists which areas and topics exist; use only what's there, and don't create a new area without approval. That file doesn't ship with the scaffold: it appears with the first area, and until then there are no areas to register. A **code** repo has no area register and needs none: the root is the code project, and docs live under `__callbell__/docs/`. Check the lens before reaching for the register.
 
-## Erst nach einer Vorlage schauen
+## Look for a template first
 
-Bevor du eine wiederkehrende Bereichsstruktur neu erfindest (zum Beispiel Kunden, Projekte, Objekte), prüfe
-`__callbell__/templates/` auf eine passende Vorlage und instanziiere sie. Welche Vorlagen da sind, hängt von
-der Linse ab — das Kundenmuster wird nur mit dem **ops**-Scaffold ausgeliefert, in einem Code-Repo suchst du
-also nicht danach. Wo es existiert, funktioniert es so: Der Bereich `business-customers/` bekommt eine
-`framework.md` (wie identifizieren, wie suchen, welche Daten nie hineinfließen) und einen Unterordner
-`<id>/index.md` pro Kunde. Nur wenn keine Vorlage passt, baust du deine eigene und schlägst dem Nutzer vor,
-das Muster als Vorlage festzuhalten.
+Before reinventing a recurring area structure (customers, projects, objects), check `__callbell__/templates/` for a fitting template and instantiate it. Which templates exist depends on the lens: the customer pattern ships only with the **ops** scaffold, so in a code repo you don't look for it. Where it exists, it works like this: the area `business-customers/` gets a `framework.md` (how to identify, how to search, which data never flows in) and a subfolder `<id>/index.md` per customer. Only if no template fits do you build your own and propose recording the pattern as a template.
 
-## Zuerst der Bereichsordner
+## Area folder first
 
-Operativer Inhalt lebt in einem flachen Wurzelordner `<area>-<topic>` (zum Beispiel `business-finance/`).
-Wähle erst den richtigen Bereichsordner (aus dem Register), dann platziere die Datei darin. Passt nichts
-sauber oder läuft ein Bereich über: rate nicht, schlag eine Anpassung vor und warte auf Freigabe.
+Operational content lives in a flat root folder `<area>-<topic>` (e.g. `business-finance/`). Pick the right area folder first (from the register), then place the file in it. If nothing fits cleanly or an area overflows: don't guess, propose an adjustment and wait for approval.
 
-## Standard-Platzierung und die >5-Schwelle
+## Default placement and the >5 threshold
 
-- **Standard: flach mit einem Typ-Präfix**, also `<area>-<topic>/<type>-<name>.md` (zum Beispiel
-  `business-finance/fact-<name>.md`).
-- **Ein Typ-Ordner, sobald mehr als 5 Dateien desselben Typs** in einem Ordner liegen → verschiebe sie in
-  `<type>/` (jetzt ist der Ordner der Typ; das Präfix entfällt).
-- **Unterthemen** entscheidet der Owner, nicht die Dateizahl. Die >5-Schwelle erzeugt nur einen Typ-Ordner,
-  nie ein neues Thema. `fact` und `knowledge` dürfen groß werden, ohne geteilt zu werden.
+- **Default: flat with a type prefix**, so `<area>-<topic>/<type>-<name>.md` (e.g. `business-finance/fact-<name>.md`).
+- **A type folder once more than 5 files of the same type sit in one folder:** move them into `<type>/` (now the folder is the type; the prefix drops).
+- **Subtopics** are the owner's call, not the file count. The >5 threshold only makes a type folder, never a new topic. `fact` and `knowledge` may grow large without being split.
 
-## Typ → Platzierung
+## Type → placement
 
-| `type` | Platzierung |
+| `type` | Placement |
 |---|---|
-| `fact` · `knowledge` · `history` | Flach mit Präfix `<area>-<topic>/<type>-<name>.md`; sobald mehr als 5 desselben Typs → ein `<type>/`-Ordner. |
-| `playbook` | Neben dem wiederkehrenden Prozess, dem es dient (`<area>-<topic>/[<subtopic>/]playbooks/`); sonst flach `playbook-<name>.md`. |
-| `decision` | Zentral und datiert im Bereich: `<area>-<topic>/decisions/YYYY-MM-DD-….md`. Strukturelle und Meta-Entscheidungen betreffen das Framework, nicht einen Bereich. |
-| `meta` | Flach, kein Präfix: `<area>-<topic>/framework.md` (Wurzel der Kaskade: ops `__callbell__/framework.md`, code `__callbell__/docs/framework.md` — jeweils angelegt, wenn zuerst gebraucht). |
-| `task` | In `__callbell__/backlog/`, dem versionierten Arbeitspfad. Ort und Lebenszyklus sind keine Ablageentscheidung. |
-| `memory` | In `__callbell__/memory/`, erschlossen über seinen Index. Ebenfalls keine Ablageentscheidung. |
+| `fact` · `knowledge` · `history` | Flat with prefix `<area>-<topic>/<type>-<name>.md`; once more than 5 of the same type, a `<type>/` folder. |
+| `playbook` | Next to the recurring process it serves (`<area>-<topic>/[<subtopic>/]playbooks/`); otherwise flat `playbook-<name>.md`. |
+| `decision` | Central and dated in the area: `<area>-<topic>/decisions/YYYY-MM-DD-….md`. Structural and meta decisions concern the framework, not an area. |
+| `meta` | Flat, no prefix: `<area>-<topic>/framework.md` (root of the cascade: ops `__callbell__/framework.md`, code `__callbell__/docs/framework.md`, each created when first needed). |
+| `task` | In `__callbell__/backlog/`, the versioned work trail. Location and lifecycle are not a filing decision. |
+| `memory` | In `__callbell__/memory/`, reached through its index. Also not a filing decision. |
 
-Regeln und Skills werden nie von Hand platziert. Sie werden mit dem Plugin ausgeliefert und in die Session
-injiziert; eine Kopie davon im Repo ist ein Defekt, keine Platzierung.
+Never place rules and skills by hand. They ship with the plugin and load into the session; a copy in the repo is a defect, not a placement.
 
-**Vorrang** (entscheide in dieser Reihenfolge): eine zentrale `decision` → `meta`/Framework (flach) →
-`playbook` (Prozess) → der Rest, flach mit Präfix.
+**Precedence** (decide in this order): a central `decision`, then `meta`/framework (flat), then `playbook` (process), then the rest, flat with prefix.
 
-## Verweise (Inhaltsmodell)
+## References (content model)
 
-- **Inhalt verweist nie auf Meta.** Inhaltstypen (`fact`/`knowledge`/`playbook`/`history`) zitieren keine
-  Meta- oder Rahmendatei (`AGENTS.md`, `framework.md`, Regeln, Skills). Abhängigkeiten laufen nur von Meta
-  zu Inhalt (abwärts), nie zurück. So bricht ein Governance-Umbau keine Inhaltsdatei, und Inhalt bleibt
-  selbstständig.
-- `[[…]]` auf andere Inhaltsdateien ist erlaubt.
-- Die einzige Ausnahme: eine `decision`, deren Gegenstand die Struktur selbst ist.
+- **Content never points to meta.** Content types (`fact`/`knowledge`/`playbook`/`history`) don't cite a meta or framing file (`AGENTS.md`, `framework.md`, rules, skills). Dependencies run only from meta to content (downward), never back. So a governance rebuild breaks no content file, and content stays self-contained.
+- `[[…]]` to other content files is fine.
+- The one exception: a `decision` whose subject is the structure itself.
 
-## Zonen
+## Zones
 
-Die zwei `__callbell__/`-Zonen werden zentral verwaltet. Für die Ablage relevant:
+The two `__callbell__/` zones are managed centrally. Relevant to filing:
 
-- **`<area>-<topic>/work/`**: die Werkbank des Bereichs: rohe, kopflose Arbeit in Arbeit, interne
-  Unterstruktur erlaubt (zum Beispiel `work/2025/`). Sie hält die Bereichsebene **lesbar**:
-  `<area>-<topic>/` sollte nur Typ-Ordner (und flache Typ-Dateien) zeigen. Alles, was sonst fremde Ordner
-  erzeugen würde (Jahre, Ad-hoc-Gruppen), wandert in `work/` statt die Typ-Ordner zu verstecken.
-- **`__callbell__/zone-import/`** (Wurzel): rohe externe Eingaben, flüchtig, gitignored.
-- **`__callbell__/zone-export/`** (Wurzel): angeforderte menschliche Lieferobjekte, **nur auf ausdrückliche
-  Anfrage**, ohne Typen, ohne Frontmatter. Nicht Teil der Wissensbasis; der Agent legt hier von sich aus
-  nichts ab.
+- **`<area>-<topic>/work/`**: the area's workbench: raw, headless work in progress, internal substructure allowed (e.g. `work/2025/`). It keeps the area level readable: `<area>-<topic>/` should show only type folders (and flat type files). Send anything that would otherwise spawn foreign folders (years, ad-hoc groups) into `work/` rather than hiding the type folders.
+- **`__callbell__/zone-import/`** (root): raw external inputs, transient, gitignored.
+- **`__callbell__/zone-export/`** (root): requested human deliverables, only on explicit request, no types, no frontmatter. Not part of the knowledge base; the agent files nothing here on its own.
 
-## Entwurf und Reife über den Status
+## Draft and maturity through status
 
-Es gibt **keine separate Entwurfszone**. Ein Entwurf ist eine Datei mit `status: draft` an ihrem richtigen
-Platz, und sie reift dort an Ort und Stelle. "Promotion" ist ein **Statuswechsel** (`draft → active`), kein
-Verschieben; er braucht Freigabe.
+There is no separate draft zone. A draft is a file with `status: draft` at its proper place, maturing there in place. "Promotion" is a status change (`draft → active`), not a move; it needs approval.
 
-- **`fact`/`knowledge`** werden direkt im richtigen `<area>-<topic>/` angelegt, erst `status: draft`, dann
-  `status: active`.
-- **`decision`**: `status: draft`, solange sie abgewogen wird; bei Freigabe `status: active`, Datum =
-  Freigabedatum (nicht Entwurfsdatum), datiert in `decisions/…`.
-- **Stehende Regeln** eines Bereichs wandern in seine `framework.md`.
-- **Backlog**: Reife und Abschluss folgen dem eigenen Lebenszyklus des Backlogs, nicht diesem Skill.
+- **`fact`/`knowledge`** are created directly in the right `<area>-<topic>/`, first `status: draft`, then `status: active`.
+- **`decision`**: `status: draft` while it's weighed; on approval `status: active`, date = approval date (not draft date), dated in `decisions/…`.
+- **Standing rules** of an area move into its `framework.md`.
+- **Backlog**: maturity and closure follow the backlog's own lifecycle, not this skill.
 
-## Faule Tiefe: zwei getrennte Schwellen
+## Lazy depth: two separate thresholds
 
-Ordner erscheinen mit ihrer ersten Datei, nie leer auf Vorrat. **Zwei verschiedene Dinge, zwei Schwellen:**
+Folders appear with their first file, never empty on spec. Two different things, two thresholds:
 
-- **Eine Unterebene (Unterthema): ab der 2. Datei derselben Art.** Eine einzelne Datei bleibt flach; die
-  zweite erzeugt die benannte Unterebene. Ein Bereich darf direkt zu Typen gehen
-  (`<area>-<topic>/knowledge/`), solange es nur ein Feld gibt.
-- **Ein Typ-Ordner: ab mehr als 5 Dateien desselben Typs** (siehe oben).
+- **A sublevel (subtopic): at the 2nd file of the same kind.** A single file stays flat; the second creates the named sublevel. An area may go straight to types (`<area>-<topic>/knowledge/`) as long as there's only one field.
+- **A type folder: at more than 5 files of the same type** (see above).
 
-**Migrations-Invariante:** vor dem zweiten Unterthema hebe erst das flache Material in die erste benannte
-Unterebene, dann füge das neue daneben hinzu. Beispiel: `business-finance/knowledge/` plus ein neues
-Unterthema → erst `business-finance/<subtopic-1>/knowledge/`, dann `business-finance/<subtopic-2>/`.
+**Migration invariant:** before the second subtopic, first lift the flat material into the first named sublevel, then add the new one beside it. Example: `business-finance/knowledge/` plus a new subtopic becomes first `business-finance/<subtopic-1>/knowledge/`, then `business-finance/<subtopic-2>/`.
 
-## Kaskade
+## Cascade
 
-Eine `framework.md` pro Bereich oder Unterthema, **faul und als Overlay**: sie entsteht nur, wenn der Ordner
-eigene, wachsende Arbeitsregeln braucht (was das Rückgrat aus `AGENTS.md`, Regeln und Skills nicht schon
-abdeckt), und sie beschreibt, wie dort gearbeitet wird (Suche, Identifikation, lokale Leitplanken). Sie wird
-nur gelesen, wenn dort gearbeitet wird. Kein verschachteltes `AGENTS.md`/`CLAUDE.md` unten in der Tiefe: die
-Kaskade läuft allein über die `framework.md`-Dateien per Pfad (von der Wurzel gelesen), nicht über
-Harness-Auto-Loading.
+One `framework.md` per area or subtopic, lazy and as an overlay: it appears only when the folder needs its own growing work rules (beyond what the backbone of `AGENTS.md`, rules, and skills already covers), and it describes how work is done there (search, identification, local guardrails). Read it only when work happens there. No nested `AGENTS.md`/`CLAUDE.md` down in the depth: the cascade runs solely through the `framework.md` files by path (read from the root), not through harness auto-loading.
 
-## Platzierungsgrenzen
+## Placement limits
 
-- **Kein Asset-Speicher.** Dies ist eine Planungsschicht, kein Speicher für Massen-, Medien- oder
-  *wechselnde* Binärdateien. Erlaubt: ein kleines, stabiles Bild, wenn es *das* Artefakt ist (zum Beispiel
-  ein Diagramm). Große Dateien → ein Dateispeicher oder Git LFS; flüchtige Eingaben →
-  `__callbell__/zone-import/`.
-- **Selten aber wichtig → ein Playbook.** Eine Prozedur, die nur ein paar Mal im Jahr gebraucht wird, lebt
-  als eigenes Playbook und wird anderswo mit einem Einzeiler-Verweis referenziert, damit die Pflichtlektüre
-  schlank bleibt.
-- **Ein Playbook ist neutral und wiederkehrend.** Es beschreibt die wiederholbare Prozedur (bei Werkzeugen:
-  Felder, Optionen, Formulare, was wohin gehört), frei von fall- oder jahresspezifischen Zahlen; konkrete
-  Werte → der richtige `fact` oder die `work/`-Zone.
+- **No asset store.** This is a planning layer, not storage for bulk, media, or *changing* binaries. Allowed: one small, stable image when it *is* the artifact (e.g. a diagram). Large files go to a file store or Git LFS; transient inputs go to `__callbell__/zone-import/`.
+- **Rare but important becomes a playbook.** A procedure needed only a few times a year lives as its own playbook and is referenced elsewhere with a one-line pointer, keeping required reading lean.
+- **A playbook is neutral and recurring.** It describes the repeatable procedure (for tools: fields, options, forms, what goes where), free of case- or year-specific numbers; concrete values go to the right `fact` or the `work/` zone.

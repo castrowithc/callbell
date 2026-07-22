@@ -1,162 +1,102 @@
 ---
 name: callbell-start
 description: >
-  Der Einstieg in callbell und die erste Station in einem Ordner: prüft Abhängigkeiten und Gerüst,
-  ergänzt was fehlt, und klärt einmalig Zweck und Rollen. Läuft jedes Mal, meldet nur Fehlendes und
-  hält sich in einem eingerichteten Repo auf eine Zeile. Auslöser: /callbell-start, "einrichten",
-  "loslegen", "was fehlt hier", oder ein Ordner, in dem callbell noch nie lief.
+  The way into callbell and the first stop in a folder: checks dependencies and scaffold, adds what's
+  missing, settles purpose and roles once. Runs every time, reports only what's missing, and in a set-up repo
+  stays down to one line. Triggers: /callbell-start, "set up", "get started", "what's missing here", or a
+  folder callbell has never run in.
 type: skill
 edit: locked
 ---
 
-# /callbell-start
+# callbell-start
 
-Der Weg hinein. Kein Diagnosewerkzeug für den Fehlerfall, sondern die Station, an der eine Sitzung in
-einem Ordner beginnt: einmal prüfen, das Fehlende ergänzen, dann arbeiten.
+The way in, not a repair tool: the stop where a session in a folder begins. Check once, add what's missing, then work.
 
-**Der Hook meldet den Zustand jede Sitzung von selbst — dieser Skill ist die Handlung, nicht die Meldung.**
-Du rufst ihn, wenn du in einem Ordner ankommst oder wenn etwas fehlt, das nur eine Handlung schließt: ein
-Gerüst anlegen, git init, Zweck und Rollen klären. Eine Abhängigkeit kann zwischen zwei Sitzungen
-verschwinden — neuer Rechner, Deinstallation, geänderter PATH —, deshalb prüft er bei jedem Lauf neu und
-speichert nichts zwischen.
+The hook already reports state every session; here you act, not re-report. Call it when you arrive in a folder or when something's missing that only an action closes: create a scaffold, git init, settle purpose and roles. A dependency can vanish between two sessions (new machine, uninstall, changed PATH), so re-check on every run and cache nothing.
 
-**Die eine Regel, an der dieser Skill hängt: in einem eingerichteten Repo sagst du eine Zeile.** Nenne
-nie, was bereits da ist. Ein Lauf ohne Befund ist eine Zeile und der Übergang zur eigentlichen Arbeit,
-sonst ruft ihn niemand ein viertes Mal auf — und dann ist er kein Einstieg mehr.
+The one rule to hang on: in a set-up repo, say one line. Never name what's already there. A run with no findings is one line and the handoff to real work; otherwise no one calls it a fourth time, and then it's no longer a way in.
 
-**Ein Sprach-Argument gilt nur diesem Lauf.** Wird der Skill mit einer Sprache aufgerufen (etwa
-`/callbell-start deutsch`), führe Prüfung, Rückfragen und Bericht in dieser Sprache. Ein bloßer Aufruf trägt
-kein Sprachsignal, anders als eine getippte Nachricht, und dieses Argument ersetzt es. Es gilt allein diesem
-Lauf: schreib die Sprache nirgends fest, weder ins Ruleset noch sonstwohin. Wie der Nutzer sie dauerhaft
-hält, ist seine Sache und steht in der README, siehe Schritt 3.
+A language argument applies to this run only. Called with a language (e.g. `/callbell-start english`), run the check, questions, and report in that language. A bare invocation carries no language signal, unlike a typed message, and this argument stands in for it. It holds for this run alone: don't write the language down anywhere, not in the ruleset, not elsewhere. How the user keeps it permanently is their business and is in the README, see step 3.
 
-`<plugin-root>` unten ist der Ordner, aus dem dieser Skill geladen wurde: der Sitzungskontext nennt ihn
-als `CALLBELL PLUGIN ROOT`, sonst liegt er zwei Ebenen über dieser `SKILL.md`. Setz dort nie einen
-abgetippten Pfad ein, er trägt die Versionsnummer und ist nach dem nächsten Update falsch.
+`<plugin-root>` below is the folder this skill loaded from: the session context names it as `CALLBELL PLUGIN ROOT`, otherwise it's two levels above this `SKILL.md`. Never type a fixed path there; it carries the version number and is wrong after the next update.
 
-**Bevor du prüfst, sichere die Normen.** Hat der Sitzungskontext dich schon auf die Kern-Normen gezeigt
-(`Callbell-Normen. Lies diese Dateien JETZT`), ist nichts zu tun — der Hook hat sie geliefert. Andernfalls, und
-das ist die erste Codex-Sitzung nach einem Update, in der der Trust-Gate den Hook noch schluckt, lies jetzt
-`<plugin-root>/rules/core/*.md`; ist ein `__callbell__/`-Gerüst da oder legst du es in Schritt 2 gerade an,
-dann auch `<plugin-root>/rules/scaffold/*.md`. Dieser Skill handelt in genau deren Bereich, also gelten sie
-ihm ohne Ausnahme.
+Before you check, secure the norms. If the session context already pointed you at the core norms (`Callbell norms. Read these files NOW`), there's nothing to do: the hook delivered them. Otherwise, and this is the first Codex session after an update where the trust gate still swallows the hook, read `<plugin-root>/rules/core/*.md` now; if a `__callbell__/` scaffold is present or you're creating it in step 2, also `<plugin-root>/rules/scaffold/*.md`. You act squarely in their area, so they apply without exception.
 
-## 1. Prüfen (ein Aufruf)
+## 1. Check (one call)
 
 ```
 node <plugin-root>/scripts/callbell-doctor.js
 ```
 
-**Schlägt der Aufruf selbst fehl, ist das die Antwort: Node fehlt.** Das ist der einzige Befund, der die
-Arbeit anhält statt sie zu begleiten — der Kontext-Hook ist selbst Node, also laden ohne ihn weder
-Regeln noch Kontext noch Backlog, und es bleiben nur die von Hand aufgerufenen Skills. Sag das klar,
-nenne [nodejs.org](https://nodejs.org), und dass Windows nach der Installation ein neues Terminal
-braucht, damit der PATH greift. Mach ohne Node nicht weiter.
+If the call itself fails, that's the answer: Node is missing. This is the one finding that halts work rather than accompanying it. The context hook is itself Node, so without it neither rules nor context nor backlog load, leaving only the hand-called skills. Say so plainly, name [nodejs.org](https://nodejs.org), and that Windows needs a fresh terminal after install for PATH to take. Don't continue without Node.
 
-Das Skript meldet `MISSING`, `NOTES`, `CREATED` — und `OK: nothing missing.`, wenn nichts anliegt. Es
-berichtet **nur Fehlendes**; was da ist, taucht nicht auf.
+The script reports `MISSING`, `NOTES`, `CREATED`, and `OK: nothing missing.` when nothing is pending. It reports only what's missing; what's there doesn't appear.
 
-## 2. Ergänzen, dann berichten
+## 2. Add, then report
 
-**In dieser Reihenfolge.** Erst tun, dann sagen: der Bericht nennt, was entstanden ist, und kann das nur,
-wenn es vorher entstanden ist. Wer hier zuerst berichtet, berichtet über einen Ordner, den er gleich
-selbst hätte anlegen sollen, und hört dann auf.
+In this order. Do first, then say: the report names what came into being, and can only do that once it exists. Report first and you're reporting on a folder you should have just created yourself, then stopping.
 
-Meldet das Skript ein fehlendes Gerüst, eine fehlende `.gitignore` oder ein fehlendes Ruleset, **lege alles
-sofort an**. Ohne Rückfrage, ohne Ankündigung, im selben Zug:
+If the script reports a missing scaffold, `.gitignore`, or ruleset, create it all at once. No question, no announcement, in the same move:
 
 ```
 node <plugin-root>/scripts/callbell-doctor.js --apply
 ```
 
-Das Skript kopiert nur, was **fehlt**. Es vergleicht nie Inhalte, überschreibt nie und hängt an die
-`.gitignore` an, statt sie zu ersetzen — die Zeilen darin gehören dem Nutzer, und sie zu überschreiben
-wäre Datenverlust. Fehlen **beide** Ruleset-Dateien, legt `--apply` sie mit an: `AGENTS.md` aus der Vorlage
-trägt den Inhalt, `CLAUDE.md` ist die eine Zeile `@AGENTS.md`. Liegt schon eines von beiden, rührt es keins
-an — das gehört dem Nutzer.
+The script copies only what's missing. It never compares contents, never overwrites, and appends to `.gitignore` rather than replacing it. The lines in it belong to the user; overwriting them would be data loss. If both ruleset files are missing, `--apply` creates them: `AGENTS.md` from the template carries the content, `CLAUDE.md` is the one line `@AGENTS.md`. If either already exists, it touches neither; that belongs to the user.
 
-Zwei Befunde brauchen dagegen eine Entscheidung und werden **gefragt, nie getan**:
-- **kein Git-Repo** — biete `git init` an.
-- **Git-Identität fehlt** — frage, welchen Namen und welche E-Mail die Commits tragen sollen, üblich der
-  GitHub-Name und die No-Reply-Adresse. Nimm nie eine Identität aus der Session und erfinde nie eine.
-  Biete global (`--global`) oder nur für dieses Repo an.
+Two findings need a decision and are asked, never done:
+- **no git repo:** offer `git init`.
+- **git identity missing:** ask what name and email the commits should carry, usually the GitHub name and the no-reply address. Never take an identity from the session and never invent one. Offer global (`--global`) or this repo only.
 
-Das Ruleset ist damit als leeres Gerüst da; **gefragt** wird nur sein *Inhalt* — Zweck und Rollen —, und der
-wird nachgetragen, siehe Schritt 3. Bleibt er zunächst aus, ist das kein Grund, etwas nicht anzulegen.
+The ruleset now stands as an empty scaffold; you ask only for its *content* (purpose and roles), added in step 3. If it stays absent for now, that's no reason not to create anything.
 
-Will der Nutzer eine Prüfung dauerhaft loswerden (typisch `git lfs`), trag ihren Schlüssel in
-`~/.callbell/settings.json` unter `mute` ein: `{"mute": ["git lfs"]}`. Dort stehen **Entscheidungen des
-Nutzers**, nie Befunde, und **nie ein Pfad** — ein Wert, der einen Pfad braucht, um zu gelten, gehört ins
-Projekt, weil Pfade bei jedem Umbenennen, Klonen und Worktree brechen.
+If the user wants a check gone for good (typically `git lfs`), enter its key in `~/.callbell/settings.json` under `mute`: `{"mute": ["git lfs"]}`. That holds user decisions, never findings, and never a path: a value that needs a path to hold belongs in the project, because paths break on every rename, clone, and worktree.
 
-### Dann der Bericht
+### Then the report
 
-Zwei Zeilen, in der Sprache des Nutzers, ohne die Skriptzeilen zu zitieren. Erst was entstanden ist, dann
-was fehlt, jeweils mit Namen statt in Fließtext:
+Two lines, in the user's language, without quoting the script lines. First what came into being, then what's missing, each with names rather than prose:
 
 ```
-✅ Angelegt: __callbell__/, .gitignore, AGENTS.md, CLAUDE.md
-❗ Fehlt: Git-Repo
+✅ Created: __callbell__/, .gitignore, AGENTS.md, CLAUDE.md
+❗ Missing: git repo
 
-Mehr dazu: callbell-help
+More: callbell-help
 ```
 
-Den Skillnamen **ohne Präfix** nennen. Der Schrägstrich ist die Schreibweise eines einzelnen Hosts, und
-andere rufen denselben Skill anders auf.
+Name the skill without prefix. The slash is one host's spelling, and others call the same skill differently.
 
-Eine Zeile entfällt, wenn sie leer wäre. `NOTES` erwähnst du nur, wenn sie für den nächsten Schritt zählen.
+A line drops if it would be empty. Mention `NOTES` only when they matter for the next step.
 
-**Was bereits da war, steht nirgends.** Der Nutzer will wissen, was passiert ist und was noch aussteht,
-nicht was schon vorher stimmte. In einem eingerichteten Repo bleibt es deshalb bei der einen Zeile aus
-Schritt 1, und ein `👍` davor genügt.
+What was already there appears nowhere. The user wants to know what happened and what's still open, not what was already fine. So in a set-up repo it stays at the one line from step 1, and a `👍` in front is enough.
 
-## 3. Zweck und Rollen (einmalig, im Ruleset)
+## 3. Purpose and roles (once, in the ruleset)
 
-Der Agent braucht zwei Dinge über das Gerüst hinaus: **was dieses Repo ist** und **mit wem er arbeitet**.
-Beides lebt im Ruleset des Nutzers (`AGENTS.md` / `CLAUDE.md`), nicht in einer callbell-eigenen Datei.
+The agent needs two things beyond the scaffold: what this repo is and who it works with. Both live in the user's ruleset (`AGENTS.md` / `CLAUDE.md`), not in a callbell-owned file.
 
-**Hier wird nur Inhalt nachgetragen, keine Datei mehr angelegt** — die liegen seit Schritt 2. Bestimme die
-inhaltliche Datei, lies sie, frag nur nach dem, was fehlt. Das Skript sagt, welche Rulesets es gibt:
+Add only content here, create no more files: those have existed since step 2. Determine the content file, read it, ask only about what's missing. The script says which rulesets exist:
 
-- **Genau eine da** (`AGENTS.md` oder `CLAUDE.md`) — die ist es.
-- **Beide da und eine importiert die andere** (eine Zeile, die nur aus `@datei.md` besteht) — dann gilt die
-  importierte. Die importierende ist eine Weiche, kein Inhalt, und etwas dort anzuhängen schreibt am
-  eigentlichen Ruleset vorbei. Das ist auch der Fall eines frisch angelegten Repos: Schritt 2 hat
-  `CLAUDE.md` als `@AGENTS.md`-Weiche geschrieben, also ist `AGENTS.md` die inhaltliche.
-- **Beide da, ohne Verbindung** — frag, welche gilt. Zwei Rulesets nebeneinander sind eine Aussage über das
-  Repo, die du nicht raten kannst.
+- **Exactly one present** (`AGENTS.md` or `CLAUDE.md`): that's it.
+- **Both present and one imports the other** (a line that's just `@file.md`): the imported one holds. The importing one is a switch, not content, and appending there writes past the actual ruleset. This is also the freshly created repo's case: step 2 wrote `CLAUDE.md` as an `@AGENTS.md` switch, so `AGENTS.md` is the content one.
+- **Both present, unconnected:** ask which holds. Two rulesets side by side are a statement about the repo you can't guess.
 
-**Lies die Zieldatei, bevor du fragst, und frag nur nach dem, was fehlt.** Zweck und Rollen sind zwei
-getrennte Befunde, nicht einer:
+Read the target file before you ask, and ask only about what's missing. Purpose and roles are two separate findings, not one:
 
-- **Beides steht schon da** — du bist fertig, frag nichts. Das ist der Normalfall ab dem zweiten Lauf.
-- **Eins von beidem steht da** — frag nur nach dem anderen. Was beschrieben ist, wird nicht noch einmal
-  aufgemacht; danach zu fragen sagt dem Nutzer, dass du seine Datei nicht gelesen hast.
-- **Nichts davon steht da** — beide Fragen, siehe unten.
+- **Both already there:** you're done, ask nothing. This is the norm from the second run on.
+- **One of them there:** ask only about the other. What's described isn't reopened; asking about it tells the user you didn't read their file.
+- **Neither there:** both questions, see below.
 
-Ergänzt wird immer durch **Anhängen, nie durch Ersetzen**. Die Datei gehört dem Nutzer, dieselbe Regel wie
-bei der `.gitignore`. Geschrieben wird erst nach Bestätigung. **Gibt der Nutzer den Inhalt noch nicht** („nur
-ein Testprojekt, Infos folgen"), ist das kein Grund zu drängen: die Dateien liegen als Vorlage, du trägst
-nach, wenn es kommt.
+Add by appending, never replacing. The file belongs to the user, same rule as `.gitignore`. Write only after confirmation. If the user doesn't give the content yet ("just a test project, info later"), that's no reason to push: the files stand as a template, you add the content when it comes.
 
-Das Gespräch ist kurz, höchstens zwei Fragen, und die auf einmal. **Stelle sie als Text, nie über ein
-Auswahlwerkzeug.** Beide Antworten sind frei, und vorgegebene Optionen legten dem Nutzer sein eigenes
-Projekt in den Mund.
+Keep the conversation short, at most two questions, and ask those at once. Ask them as text, never through a selection tool. Both answers are free, and preset options would put the user's own project in their mouth.
 
-1. **Zweck und Rahmen** — wofür der Repo da ist, was bewusst nicht dazugehört, und ob er privat ist
-   (der Agent nimmt sonst öffentlich an).
-2. **Rollen und Stil** — wer der Nutzer ist, wie eigenständig der Agent handeln soll, und die zwei
-   getrennten Achsen Ausführlichkeit (knapp oder ausführlich) und Ton (direkt oder warm).
+1. **Purpose and scope:** what the repo is for, what deliberately doesn't belong, and whether it's private (the agent assumes public otherwise).
+2. **Roles and style:** who the user is, how independently the agent should act, and the two separate axes of verbosity (brief or detailed) and tone (direct or warm).
 
-Die **Interaktionssprache** wird hier nicht gefragt und von callbell nicht verwaltet: sie gilt pro Nutzer
-über alle Projekte und lebt in seiner maschinenlokalen Agent-Datei (`~/.claude/CLAUDE.md`,
-`~/.codex/AGENTS.md`). Wie man sie dort setzt, steht in der README.
+The interaction language is not asked here and not managed by callbell: it's per user across all projects and lives in their machine-local agent file (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`). How to set it there is in the README.
 
-## 4. Abschluss
+## 4. Close
 
-Ein bis zwei Sätze, nicht mehr. Nenne, dass `__callbell__/` jetzt da ist und die von callbell verwaltete
-Schicht trägt (Backlog, Gedächtnis, Zonen, Vorlagen); der Ordner erklärt sich in seiner `README.md`
-selbst, wenn der Nutzer nachfragt. Auf `callbell-help` hast du in Schritt 2 schon gezeigt, also nicht
-noch einmal. Erkläre den Rest nicht ungefragt, wer mehr wissen will, fragt.
+One or two sentences, no more. Note that `__callbell__/` now exists and carries the callbell-managed layer (backlog, memory, zones, templates); the folder explains itself in its `README.md` if the user asks. You already pointed at `callbell-help` in step 2, so don't again. Don't explain the rest unasked; whoever wants more asks.
 
-War nichts zu tun, ist der Abschluss die eine Zeile aus Schritt 1 und du gehst zur Arbeit über.
+If nothing needed doing, the close is the one line from step 1 and you move on to work.

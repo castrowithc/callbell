@@ -3,7 +3,7 @@
   "name": "callbell-dev",
   "displayName": "Callbell Dev",
   "version": "0.1.4",
-  "description": "Code-Pack für callbell: ein fauler Senior-Developer, der die einfachste funktionierende Lösung baut, plus ein Review-Skill, der sie prüft.",
+  "description": "Code pack for callbell: a lazy senior developer who builds the simplest working solution, plus a review skill that checks it.",
   "author": { "name": "Callbell", "url": "https://github.com/castrowithc" },
   "homepage": "https://github.com/castrowithc/callbell",
   "repository": "https://github.com/castrowithc/callbell",

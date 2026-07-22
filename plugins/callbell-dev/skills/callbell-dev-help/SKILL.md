@@ -1,46 +1,42 @@
 ---
 name: callbell-dev-help
 description: >
-  Kurzreferenz-Karte für den callbell-dev-Pack: seine Stufen, seine Skills und
-  wie man sie aufruft. Einmalige Anzeige, kein dauerhafter Modus. Auslöser:
-  /callbell-dev-help, "callbell-dev help", "welche dev-Befehle", "wie nutze ich
-  den dev-Pack".
+  Quick reference to the callbell-dev pack: its levels, its skills, and how to call them. Shown once, not a
+  persistent mode. Triggers: /callbell-dev-help, "callbell-dev help", "which dev commands", "how do I use the
+  dev pack".
+disable-model-invocation: true
 type: skill
 edit: locked
-disable-model-invocation: true
 ---
+
+<!-- Show the user the following card to quide them -->
 
 # callbell-dev
 
-Der Code-Pack: ein fauler Senior-Developer und die Skills, die seine Arbeit
-prüfen. Zeig diese Karte, wenn aufgerufen. Einmalig — ändere KEINE Stufe,
-schreib keine Flag-Dateien, persistiere nichts.
+The code pack: a lazy senior developer and the skills that review their work. Show this card when called. Once only, change no level, write no flag files, persist nothing.
 
-## Stufen
+## Levels
 
-| Stufe | Aufruf | Was ändert sich |
-|-------|--------|-----------------|
-| **lite** | `/callbell-dev lite` | Bau, was verlangt ist, nenn die faulere Alternative in einer Zeile. |
-| **full** | `/callbell-dev` | Die Leiter durchgesetzt: YAGNI → Stdlib → nativ → eine Zeile → Minimum. Standard. |
-| **ultra** | `/callbell-dev ultra` | YAGNI-Extremist. Löschen vor Hinzufügen. Stellt Anforderungen infrage, bevor gebaut wird. |
+| Level | Call | What changes |
+|-------|------|--------------|
+| **lite** | `/callbell-dev lite` | Build what's asked, name the lazier alternative in one line. |
+| **full** | `/callbell-dev` | The ladder enforced: YAGNI → stdlib → native → one line → minimum. Default. |
+| **ultra** | `/callbell-dev ultra` | YAGNI extremist. Delete before adding. Question the requirement before building it. |
 
-Einmal gesetzt bleibt die Stufe über die ganze Session aktiv, in jedem Turn bekräftigt,
-bis du sie wechselst oder abschaltest.
+Once set, the level stays active for the whole session, reaffirmed each turn, until you switch or stop it.
 
 ## Skills
 
-| Skill | Aufruf | Was er tut |
-|-------|--------|------------|
-| **dev** | `/callbell-dev` | Der Faul-Modus selbst. Die einfachste Lösung, die funktioniert. |
-| **review** | `/callbell-dev-review` | Over-Engineering-Review eines Diffs: `L42: yagni: Factory, ein Produkt. Inline.` Häng `repo` an für einen Durchgang über den ganzen Baum, sortiert nach größtem Schnitt zuerst. |
-| **help** | `/callbell-dev-help` | Diese Karte. |
+| Skill | Call | What it does |
+|-------|------|-------------|
+| **dev** | `/callbell-dev` | Lazy mode itself: the simplest solution that works. |
+| **review** | `/callbell-dev-review` | Over-engineering review of a diff: `L42: yagni: Factory, one product. Inline.` Append `repo` for a pass over the whole tree, sorted by largest cut first. |
+| **help** | `/callbell-dev-help` | This card. |
 
-## Stopp
+## Stop
 
-Sag "normaler Modus" oder "stop dev". Jederzeit fortsetzen, indem du den Skill
-erneut aufrufst.
+Say "normal mode" or "stop dev". Resume anytime by calling the skill again.
 
-## Setzt voraus
+## Requires
 
-Den callbell-Core. Dieser Pack entscheidet, *wie* Code gebaut wird; der Core
-trägt die Normen, die Ablage und das Gerüst, in dem er gebaut wird.
+The callbell core. This pack decides *how* code gets built; the core carries the norms, the filing, and the scaffold it's built in.

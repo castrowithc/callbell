@@ -1,184 +1,184 @@
 ---
 paths: ["**/*"]
 description: >
-  Die Normen, die in jedem callbell-Repo gelten, unabhängig von Gerüst und Typ: Namens- und
-  Formatkonventionen, Datenschutz, Git-Routine, Rollen und Freigaben, Interaktionssprache, Verweise und
-  Schreibstil.
+  The norms that apply in every callbell repo, regardless of scaffold and type: naming and format
+  conventions, data protection, git routine, roles and approvals, interaction language, references, and
+  writing style.
 type: rule
 edit: locked
 ---
 
-# Allgemein globale callbell Regeln
+# General global callbell rules
 
-Diese Regeln ergänzen die des Nutzers und ersetzen diese NIEMALS (CLAUDE.md | AGENTS.md). Die Nutzer-Regeln gehen vor.
-Manche können durch Skills die einen bestimmten Zweck verfolgen aufgeweicht oder abgelöst werden.
-
----
-
-## Namen und Format: Konventionen
-
-- Alle Namen: kebab-case, reines ASCII, keine Umlaute, keine Leerzeichen (aus Müller wird `mueller`).
-  Gilt für NUR FÜR ALLE Ordner- und Dateinamen.
-- Datumsformat: ISO `YYYY-MM-DD`. Chronologische Dateien dürfen mit dem Datum beginnen
-  (`YYYY-MM-DD-thema.md`) und sortieren sich so von selbst richtig.
-
-Fachliche IDs (etwa Fall- oder Kundennummern) gehören lokal zu ihrem Thema, nicht global in den Repo.
+These rules supplement the user's and NEVER replace them (CLAUDE.md | AGENTS.md). The user's rules take precedence.
+Some may be relaxed or superseded by skills pursuing a specific purpose.
 
 ---
 
-## Datenschutz
+## Names and format: conventions
 
-Behandle das Repo so, als wäre er öffentlich:
-- Der versionierte Repo trägt Planung, Wissen und Struktur,
-  niemals personenbezogene Rohdaten.
-- Keine Personen- oder Kontaktdaten in versionierten Dateien (Namen, die an eine Person gebunden sind,
-  Adressen, Telefon, E-Mail, Ausweis- oder Zahlungsdaten). Auch nicht im Gedächtnis.
-- Fachliche Bezeichner bleiben lokal bei dem Thema, das sie braucht (etwa eine Fall- oder Kundennummer
-  in dem Teil des Repos, dem sie gehört), nie global verstreut. Wo der Repo eine lokale Struktur für so
-  eine Entität hat, legt diese Struktur fest, wie die Entität identifiziert wird.
+- All names: kebab-case, pure ASCII, no umlauts, no spaces (Müller becomes `mueller`).
+  Applies to ALL folder and file names, and only those.
+- Date format: ISO `YYYY-MM-DD`. Chronological files may begin with the date
+  (`YYYY-MM-DD-topic.md`) and sort themselves correctly that way.
 
-### Eine Entität identifizieren
-
-Wenn abgelegtes Material zu einem Kunden, Projekt oder Thema gehört, identifiziere es in dieser Reihenfolge
-und teile die Wahl in jedem Fall mit:
-
-1. Nutze den vorhandenen Bezeichner (eine Kundennummer, Fallnummer oder den eigenen Schlüssel der
-   lokalen Struktur).
-2. Sonst lies den laufenden Kontext: wenn das Gespräch bereits einen bestimmten Kunden, ein bestimmtes
-   Projekt oder Thema im Repo betrifft, erkennt der Agent das und setzt den passenden Bezeichner.
-3. Sonst frage nach, damit das Dokument richtig abgelegt und nicht geraten wird.
+Domain IDs (e.g. case or customer numbers) belong locally to their topic, not globally in the repo.
 
 ---
 
-## Git-Routine
+## Data protection
 
-Ziel: der Repo bleibt jederzeit in einem sicheren und aufgeräumten Zustand. Der Agent geht sorgfältig mit
-Git um, prüft den Zustand selbständig und meldet Ungewöhnliches, bevor er handelt.
+Treat the repo as if it were public:
+- The versioned repo carries planning, knowledge, and structure,
+  never personal raw data.
+- No personal or contact data in versioned files (names bound to a person,
+  addresses, phone, email, ID or payment data). Not in memory either.
+- Domain identifiers stay local to the topic that needs them (e.g. a case or customer number
+  in the part of the repo it belongs to), never scattered globally. Where the repo has a local structure for
+  such an entity, that structure sets how the entity is identified.
 
-### Session-Start (immer)
+### Identifying an entity
 
-- `git fetch`, um zu sehen, was hereingekommen ist.
-- `git status` und die Abweichung von `origin/main` prüfen: gibt es lokale Änderungen, ist der Branch
-  voraus oder zurück, sind Konflikte wahrscheinlich?
-- Wenn alles sauber und fast-forward ist: `git pull` (bevorzugt `--ff-only`). Bei Konflikten oder
-  unerwarteter Abweichung nicht blind mergen, sondern erst melden.
-- Uncommittete Änderungen vor dem Pull sichern (committen oder stashen), damit nichts verloren geht.
+When filed material belongs to a customer, project, or topic, identify it in this order
+and share your choice in every case:
 
-### Sicherheit
-
-- Kein `push --force`
-- Umschreiben von Historie, die bereits geteilt ist nur wenn vom Nutzer explizit gewünscht und auch nur in dem vorgegebenen Rahmen.
-- NIEMALS Secrets, Zugangsdaten oder personenbezogenen Daten committen (siehe Datenschutz).
-- Nie einen echten Namen oder eine echte E-Mail aus dem Harness in Commits oder Inhalten verwenden.
-- Im Zweifel oder bei Konflikten anhalten und den Nutzer fragen, statt zu raten.
-
-### Große Dateien (Binaries)
-
-- Wenn eine stabile Binärdatei in das Repo muss, läuft sie über **Git LFS**,
-  das die Datei durch einen Zeiger ersetzt und die Historie schlank hält.
-- Wenn der Agent das vorschlägt, nennt er die Voraussetzungen: `git-lfs` muss auf jeder Maschine installiert
-  sein. Die Pfadzuordnung lebt in `.gitattributes` und wandert mit dem Repo mit.
+1. Use the existing identifier (a customer number, case number, or the local structure's own
+   key).
+2. Otherwise read the running context: if the conversation already concerns a specific customer, a specific
+   project or topic in the repo, the agent recognizes that and sets the matching identifier.
+3. Otherwise ask, so the document is filed correctly and not guessed.
 
 ---
 
-## Zusammenarbeit: Rollen und Freigaben
+## Git routine
 
-- Der Nutzer entscheidet und prüft, der Agent führt aus. Der Agent arbeitet strukturiert und weitgehend
-  eigenständig, aber in einem Rahmen, den der Nutzer freigibt.
-- Der Agent Schmückt antworten nicht unnötig aus. Er ist Fokusiert, formuliert verständlich,
-  antwortet kompakt und brint die Themen auf dem Punkt. Der Nutzer fragt ggf. nach mehr Inhalt bei Unklarheit.
-- Der Agent verzichtet stark auf Fett-Formatierung. Es wird nicht durch Anderes abgelöst. 
+Goal: the repo stays in a safe and tidy state at all times. The agent handles git carefully, checks the
+state on its own, and reports anything unusual before acting.
 
-### Nur nach Freigabe
+### Session start (always)
 
-- Struktur- oder Schemaänderungen: neue Strukturelemente (Ordner, Zonen, Bereiche oder Themen), Ordner
-  umbenennen oder verschieben, eine Regel lockern oder verschärfen.
-- Entwürfe (`status: draft`) in den aktiven Zustand überführen.
-- Löschungen und alles mit Außenwirkung.
+- `git fetch`, to see what has come in.
+- Check `git status` and the divergence from `origin/main`: are there local changes, is the branch
+  ahead or behind, are conflicts likely?
+- If everything is clean and fast-forward: `git pull` (prefer `--ff-only`). On conflicts or
+  unexpected divergence, don't merge blindly, report first.
+- Secure uncommitted changes before the pull (commit or stash), so nothing is lost.
 
-### Sprich an: entscheiden oder fragen
+### Safety
 
-- Kommunikation ist der Normalfall, nicht die Notlösung. Der Agent fragt aktiv, sobald er auf etwas
-  stößt, das den Nutzer braucht. Er sitzt einen Blocker nicht aus und rät sich nicht daran vorbei.
-- Wenn die Arbeit eine Entscheidung aufwirft, die der Plan nicht abgedeckt hat, ist das Kriterium nicht die
-  Größe der Entscheidung, sondern ob etwas darauf aufbaut, bevor der Nutzer sie sieht. Eine falsche
-  Entscheidung, auf der nichts ruht, kostet eine Bearbeitung; eine falsche Entscheidung, die zum Fundament
-  wird, kostet alles, was seitdem darauf gebaut wurde.
-- Entscheide und halte es fest, wenn im selben Lauf nichts davon abhängt und der Agent sicher ist,
-  was der Nutzer wollen würde.
-- Halte an und frage, wenn irgendetwas davon abhängt oder echter Zweifel besteht.
-- Sicherheit allein reicht nie, denn ein Agent fühlt sich auch dann sicher, wenn er es nicht ist. Der Schutz
-  kommt aus der Verbindung beider Bedingungen: sobald etwas auf der Entscheidung aufbaut, frage, egal wie
-  sicher es sich anfühlt. Kosmetische Korrekturen sind ausgenommen.
+- No `push --force`
+- Rewriting history that's already shared only when the user explicitly wants it, and only within the given scope.
+- NEVER commit secrets, credentials, or personal data (see Data protection).
+- Never use a real name or a real email from the harness in commits or content.
+- When in doubt or on conflicts, stop and ask the user rather than guess.
 
-### Erkenne das Schema, ändere es nicht von dir aus
+### Large files (binaries)
 
-Der Agent merkt, wenn das vorgegebene Schema nicht mehr trägt: ein Dokument passt nirgends sauber hin, ein
-Ordner läuft über, eine Regel ist zu eng oder zu weit. Dann schlägt er die Anpassung vor und wartet auf
-Freigabe. Er entscheidet das nie allein.
-
-### Nachvollziehbarkeit
-
-Ergebnisse werden so abgelegt und dargestellt, dass der Nutzer sie von Hand nachvollziehen kann:
-strukturiert, aber nicht überladen.
+- If a stable binary has to go into the repo, it goes through **Git LFS**,
+  which replaces the file with a pointer and keeps the history lean.
+- When the agent proposes this, it names the prerequisites: `git-lfs` must be installed on every machine.
+  The path mapping lives in `.gitattributes` and travels with the repo.
 
 ---
 
-## Interaktionssprache
+## Collaboration: roles and approvals
 
-Chat und sichtbares Reasoning folgen immer der Sprache des Nutzers. Übernimm sie aus dem, was er
-schreibt, ab der ersten Nachricht.
+- The user decides and reviews, the agent executes. The agent works in a structured way and largely
+  on its own, but within a scope the user approves.
+- The agent doesn't dress up answers unnecessarily. It stays focused, phrases things clearly,
+  answers compactly, and gets to the point. The user asks for more when something is unclear.
+- The agent uses bold formatting sparingly. It isn't replaced by something else.
 
-Über die Session hinaus hält der Nutzer diese Sprache selbst: eine einzelne Zeile in seiner maschinenlokalen
-Agent-Datei (Claude `~/.claude/CLAUDE.md`, Codex `~/.codex/AGENTS.md`). Das ist eine Eigenschaft pro Nutzer
-über alle Projekte, gehört nie in den Repo, und **callbell verwaltet diese Datei nicht** — die README sagt
-dem Nutzer, wie er die Zeile setzt.
+### Only after approval
 
----
+- Structure or schema changes: new structural elements (folders, zones, areas, or topics), renaming
+  or moving folders, relaxing or tightening a rule.
+- Moving drafts (`status: draft`) into the active state.
+- Deletions and anything with outward effect.
 
-## Verweise: wann und wie man auf andere Dateien zeigt
+### Speak up: decide or ask
 
-Jeder Verweis erzeugt Pflegelast: ändert sich ein Pfad oder ein Name, bricht er und muss überall nachgezogen werden.
-Halte sie also sparsam und folge festen Regeln.
+- Communication is the norm, not the last resort. The agent asks actively as soon as it hits
+  something that needs the user. It doesn't sit out a blocker and doesn't guess its way past it.
+- When the work raises a decision the plan didn't cover, the criterion isn't the
+  size of the decision but whether something builds on it before the user sees it. A wrong
+  decision nothing rests on costs one edit; a wrong decision that becomes the foundation
+  costs everything built on it since.
+- Decide and record it when nothing in the same run depends on it and the agent is sure
+  what the user would want.
+- Stop and ask when anything depends on it or there's genuine doubt.
+- Confidence alone is never enough, because an agent feels sure even when it isn't. The protection
+  comes from joining both conditions: once something builds on the decision, ask, no matter how
+  sure it feels. Cosmetic corrections are exempt.
 
-- Verweise nur auf ganze Dateien, NIE auf eine Zeile oder einen Abschnitt (das bricht bei jeder
-  Änderung).
-- Verweise höchstens einmal im selben Dokument auf dieselbe Datei.
-- Verlinke nichts, was ohnehin immer im Kontext liegt (automatisch eingespielte Dateien); ein Zeiger
-  darauf ist redundant.
-- Regeln doppeln einander nicht. Jede Regel ist inhaltlich in sich geschlossen. Slugs sind stabil. Zeige nie auf Pfad, Zeile oder Abschnitt einer
-  anderen Regel, und zerlege nie ein Thema künstlich, nur um es zu verlinken. Wenn etwas wirklich in eine
-  Datei gehört, wird es zusammengeführt, nicht verlinkt.
-- Inhalte und Doku zeigen nie auf die Meta-Ebene. Inhalts- und Dokumentationsdateien verweisen nicht auf
-  Governance- oder Rahmendateien (`AGENTS.md`, Regeln, Skills). Abhängigkeiten laufen nur von der Meta-Ebene
-  zum Inhalt (nach unten), nie zurück. So bricht ein Umbau der Governance keine Inhaltsdatei, und Inhalte
-  bleiben in sich geschlossen.
-- Lege Verweise nicht aus eigenem Antrieb an. Nur wenn die Zieldatei für die Aufgabe wirklich gebraucht
-  wird. Im Zweifel kein Verweis.
-- Jeder Verweis nennt seine Lesepflicht:
-  - Pflichtlektüre: "Bevor du X tust, lies `datei.md`."
-  - Nur bei Bedarf: "Details bei Bedarf in `datei.md`."
-  - Nicht automatisch: "Nur öffnen, wenn du Y tatsächlich tust."
+### Recognize the schema, don't change it on your own
 
----
+The agent notices when the given schema no longer holds: a document fits nowhere cleanly, a
+folder overflows, a rule is too narrow or too wide. Then it proposes the adjustment and waits for
+approval. It never decides this alone.
 
-## Schreibstil beim Anlegen von Dateien
+### Traceability
 
-Gilt für jede Datei, die der Agent anlegt oder schreibt (Markdown, Text, Excel, PDF und so weiter), in
-jedem Format. Die Antwort im Chat ist davon nicht betroffen.
-
-- Keine Em-Dashes und En-Dashe (— | –) als Satzzeichen. Baue Sätze von vornherein so,
-  dass keiner nötig ist (Punkt, Komma, Doppelpunkt). Sätze sollen natürlich und menschlich klingen.
-- Deutsche Ausgabe mit echten Umlauten. Wo Deutsch erwartet wird, schreibe ä, ö, ü und ß direkt aus,
-  nicht umschrieben als ae, oe, ue oder ss. Das wirk Stark unnatürlich
+Results are filed and presented so the user can follow them by hand:
+structured, but not overloaded.
 
 ---
 
-## Unterschiedliche Repo-Typen
+## Interaction language
 
-Callbell unterscheidet zwischen Dev und Ops Projekte die der Agent kennen muss:
-- Dev: Klassische Code-Bases. Kann auch Textdateien enthalten als Projekt-Wiki oder Projekt-Doku.
-- Ops: Text-lastige Repos wie Personal-OS, Business-OS, Wikis, Markdown-RAGS.
-  Kann Code enthalten, bspw. als Skript-Templates, Code-Dokumentation, Code-Snippets.
-  Aber auch als operatives Main-Repo + Sub-Repo das gitignored ist. Das bringt den Vorteil dass die
-  Operative ebene als privates Remote-Repo leben kann, wärend das sub-repo gitignored ist und remote öffentlich ist.
+Chat and visible reasoning always follow the user's language. Take it from what they
+write, from the first message.
+
+Beyond the session, the user holds this language themselves: a single line in their machine-local
+agent file (Claude `~/.claude/CLAUDE.md`, Codex `~/.codex/AGENTS.md`). It's a per-user property
+across all projects, never belongs in the repo, and **callbell doesn't manage this file**; the README tells
+the user how to set the line.
+
+---
+
+## References: when and how to point at other files
+
+Every reference creates maintenance load: if a path or name changes, it breaks and has to be updated everywhere.
+So keep them sparse and follow fixed rules.
+
+- Reference whole files only, NEVER a line or a section (that breaks on every
+  change).
+- Reference the same file at most once in the same document.
+- Don't link anything that's always in context anyway (auto-injected files); a pointer
+  to it is redundant.
+- Rules don't duplicate each other. Each rule is self-contained in content. Slugs are stable. Never point at the path, line, or section of
+  another rule, and never split a topic artificially just to link it. If something really belongs in one
+  file, it's merged, not linked.
+- Content and docs never point at the meta level. Content and documentation files don't reference
+  governance or framing files (`AGENTS.md`, rules, skills). Dependencies run only from the meta level
+  to content (downward), never back. So a governance rebuild breaks no content file, and content
+  stays self-contained.
+- Don't create references on your own initiative. Only when the target file is really needed
+  for the task. When in doubt, no reference.
+- Every reference names its reading obligation:
+  - Required reading: "Before you do X, read `file.md`."
+  - Only as needed: "Details as needed in `file.md`."
+  - Not automatic: "Only open if you actually do Y."
+
+---
+
+## Writing style when creating files
+
+Applies to every file the agent creates or writes (Markdown, text, Excel, PDF, and so on), in
+any format. The reply in the chat is not affected.
+
+- No em dashes or en dashes (— | –) as punctuation. Build sentences from the start so
+  none is needed (period, comma, colon). Sentences should sound natural and human.
+- German output with real umlauts. Where German is expected, write ä, ö, ü, and ß directly,
+  not transcribed as ae, oe, ue, or ss. That reads strongly unnatural.
+
+---
+
+## Different repo types
+
+Callbell distinguishes between dev and ops projects, which the agent must know:
+- Dev: classic code bases. May also hold text files as a project wiki or project docs.
+- Ops: text-heavy repos like personal OS, business OS, wikis, markdown RAGs.
+  May hold code, e.g. as script templates, code documentation, code snippets.
+  But also as an operational main repo plus a sub-repo that's gitignored. That brings the advantage that the
+  operational layer can live as a private remote repo, while the sub-repo is gitignored and public on its remote.

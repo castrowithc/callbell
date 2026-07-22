@@ -1,58 +1,52 @@
 ---
 name: callbell-help
 description: >
-  Kurzreferenz zu callbell in diesem Repo: welche Skills der Kern mitbringt, welche Pakete es sonst noch
-  gibt und wie Agent und Nutzer zusammenarbeiten. Einmalige Anzeige, kein dauerhafter Modus. Auslöser:
-  /callbell-help, "callbell help", "callbell hilfe", "was kann callbell", "welche callbell befehle",
-  "wie arbeite ich hier".
+  Quick reference to callbell in this repo: which skills the core ships, what other packs exist, and how
+  agent and user work together. Shown once, not a persistent mode. Triggers: /callbell-help, "callbell help",
+  "what can callbell do", "which callbell commands", "how do I work here".
 type: skill
 edit: locked
 disable-model-invocation: true
 ---
 
-# Callbell Hilfe
+<!-- Show the user the following card to quide them -->
 
-Zeige diese Karte, wenn du aufgerufen wirst. Einmalig, kein Moduswechsel, nichts wird gespeichert.
+# Callbell Help
 
-Der Kern ist die Schnittstelle zwischen dir und dem Agenten: gemeinsame Normen, ein Gerüst für Backlog und
-Gedächtnis, Ablage, Import, Planung und Git. Er trägt keinen eigenen Zweck — was gearbeitet wird,
-entscheiden die Pakete.
+Show this card when called. Once, no mode change, nothing saved.
+
+The core is the interface between you and the agent: shared norms, a scaffold for backlog and memory, filing, import, planning, and git. It carries no purpose of its own; the packs decide what gets worked on.
 
 ## Skills
 
-| Skill | Auslöser | Was er tut |
-|-------|----------|------------|
-| **start** | `/callbell-start` | Der Einstieg: prüft Abhängigkeiten und Gerüst, ergänzt was fehlt, klärt einmalig Zweck und Rollen. Ruf ihn beim Ankommen oder wenn etwas fehlt. |
-| **filing** | `/callbell-filing` | Entscheidet, wohin eine Datei gehört und wie der Baum wächst. |
-| **plan** | nur `/callbell-plan` | Macht aus einer Idee Arbeitspakete: Warum, Rahmen, Vorgehen, fertig. Du startest ihn; er startet sich nie selbst. |
-| **import** | "liegt in der Ablage", `/callbell-import` | Macht aus Rohmaterial in `__callbell__/zone-import/` geschwärzten, abgelegten Inhalt. |
-| **commit** | `/callbell-commit`, "committe das" | Committet über eine Nachricht, die du gelesen hast: entworfen, vollständig gezeigt, korrigiert, dann committet und gepusht. |
-| **worktree** | `/callbell-worktree` | Git-Worktree für parallele Arbeit, nach dem Merge aufgeräumt. |
-| **help** | `/callbell-help` | Diese Karte. |
+| Skill | Trigger | What it does |
+|-------|---------|--------------|
+| **start** | `/callbell-start` | The way in: checks dependencies and scaffold, adds what's missing, settles purpose and roles once. Call it when you arrive or when something's missing. |
+| **filing** | `/callbell-filing` | Decides where a file belongs and how the tree grows. |
+| **plan** | `/callbell-plan` only | Turns an idea into work packages: why, scope, approach, done. You start it; it never starts itself. |
+| **import** | "it's in the inbox", `/callbell-import` | Turns raw material in `__callbell__/zone-import/` into redacted, filed content. |
+| **commit** | `/callbell-commit`, "commit this" | Commits through a message you've read: drafted, shown in full, corrected, then committed and pushed. |
+| **worktree** | `/callbell-worktree` | A git worktree for parallel work, cleaned up after the merge. |
+| **help** | `/callbell-help` | This card. |
 
-Codex nutzt dieselben Skills mit dem Präfix `@`; Claude nutzt die `/`-Formen oben.
+Codex calls the same skills with the `@` prefix; Claude uses the `/` forms above.
 
-## Pakete
+## Packs
 
-Der Kern allein entscheidet nicht, *welche* Arbeit getan wird. Dafür gibt es Pakete, die du im selben
-Marktplatz einzeln zuschaltest — keines ist vorausgewählt:
+The core doesn't decide *which* work gets done; the packs do. Switch them on individually in the same marketplace; none is preselected:
 
-| Paket | Wofür |
-|-------|-------|
-| **callbell-dev** | Code: die faulste Lösung, die wirklich trägt, in drei Stufen, plus ein Review gegen Überbau — für einen Diff oder das ganze Repo. `/callbell-dev-help` |
-| **callbell-sysadmin** | Server: eine stille Sicherheitsschicht plus Skills für den Betrieb. `/callbell-sysadmin-help` |
+| Pack | For |
+|------|-----|
+| **callbell-dev** | Code: the laziest solution that actually holds, in three levels, plus a review against over-engineering, for a diff or the whole repo. `/callbell-dev-help` |
+| **callbell-sysadmin** | Servers: a quiet safety layer plus skills for operations. `/callbell-sysadmin-help` |
 
-## Wie ihr zusammenarbeitet
+## How you work together
 
-- **Rollen:** du entscheidest und prüfst, der Agent führt strukturiert und weitgehend eigenständig aus.
-- **Freigaben:** Struktur- oder Schemaänderungen (und neue Bereiche in ops) sowie das Überführen von
-  Entwürfen nur nach Freigabe; Routine im etablierten Rahmen erledigt der Agent selbst.
-- **Struktur:** der Pfad sagt WO, das Frontmatter sagt WAS, `status` treibt die Reife.
-- **Zonen:** `__callbell__/zone-import/` (Eingaben) und `__callbell__/zone-export/` (angeforderte
-  Ergebnisse), die zwei flüchtigen Puffer. Die versionierte Arbeitsspur ist `__callbell__/backlog/`
-  (verwalteter Zustand, keine Zone).
+- **Roles:** you decide and review; the agent executes, structured and largely on its own.
+- **Approvals:** structure or schema changes (and new areas in ops), plus promoting drafts, only after approval; routine within the established frame the agent handles itself.
+- **Structure:** the path says WHERE, the frontmatter says WHAT, `status` drives maturity.
+- **Zones:** `__callbell__/zone-import/` (inputs) and `__callbell__/zone-export/` (requested deliverables), the two transient buffers. The versioned work trail is `__callbell__/backlog/` (managed state, not a zone).
 
-## Namensraum
+## Namespace
 
-Die Skills des Kerns tragen das Präfix `callbell-` im Namen — so findest du sie alle auf einmal, wenn du
-`/callbell` tippst. Deine eigenen Skills legst du außerhalb der Pakete an; sie können nicht kollidieren.
+The core's skills carry the `callbell-` prefix in their name, so you find them all at once by typing `/callbell`. You put your own skills outside the packs; they can't collide.

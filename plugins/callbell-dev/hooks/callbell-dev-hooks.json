@@ -5,13 +5,13 @@
         "hooks": [ { "type": "command",
           "command": "command -v node >/dev/null 2>&1 && node \"${CLAUDE_PLUGIN_ROOT:-$PLUGIN_ROOT}/hooks/callbell-dev-mode.js\" session; exit 0",
           "commandWindows": "$root = if ($env:CLAUDE_PLUGIN_ROOT) { $env:CLAUDE_PLUGIN_ROOT } else { $env:PLUGIN_ROOT }; if ($root -and (Get-Command node -ErrorAction SilentlyContinue)) { node \"$root\\hooks\\callbell-dev-mode.js\" session }; exit 0",
-          "timeout": 5, "statusMessage": "callbell-dev-Modus wird geladen..." } ] }
+          "timeout": 5, "statusMessage": "Loading callbell-dev mode..." } ] }
     ],
     "UserPromptSubmit": [
       { "hooks": [ { "type": "command",
           "command": "command -v node >/dev/null 2>&1 && node \"${CLAUDE_PLUGIN_ROOT:-$PLUGIN_ROOT}/hooks/callbell-dev-mode.js\" prompt; exit 0",
           "commandWindows": "$root = if ($env:CLAUDE_PLUGIN_ROOT) { $env:CLAUDE_PLUGIN_ROOT } else { $env:PLUGIN_ROOT }; if ($root -and (Get-Command node -ErrorAction SilentlyContinue)) { node \"$root\\hooks\\callbell-dev-mode.js\" prompt }; exit 0",
-          "timeout": 5, "statusMessage": "callbell-dev-Modus wird verfolgt..." } ] }
+          "timeout": 5, "statusMessage": "Tracking callbell-dev mode..." } ] }
     ]
   }
 }

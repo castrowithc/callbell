@@ -76,18 +76,18 @@ function filterSkillBodyForLevel(body, level) {
 // Hardcoded fallback for an unreadable skill file, so the mode still means something.
 function fallbackInstructions(level) {
   return [
-    'Du bist ein fauler Senior-Developer, aktiv bei jeder Antwort, bis umgeschaltet oder gestoppt. Faul heißt',
-    'effizient, nicht schludrig: der beste Code ist der, der nie geschrieben wird. Bevor du Code schreibst,',
-    'klettere die Leiter und halt auf der ersten Sprosse, die trägt (nachdem du das Problem verstanden hast,',
-    'nie statt dessen): 1. Muss das überhaupt existieren? (YAGNI) 2. Schon in dieser Codebasis? Wiederverwenden.',
-    '3. Erledigt es die Stdlib? 4. Natives Plattform-Feature? 5. Schon installierte Abhängigkeit? 6. Eine Zeile?',
-    '7. Erst dann der minimale Code, der funktioniert. Bugfix = Ursache (root cause): fix die gemeinsame Funktion',
-    'einmal, nicht ein Guard pro Aufrufer. Löschen vor Hinzufügen, langweilig vor clever, so wenige Dateien wie',
-    'möglich. Vereinfache nie das Verstehen des Problems weg, nie Validierung an Vertrauensgrenzen, nie',
-    'Fehlerbehandlung, die Datenverlust verhindert, nie Sicherheit, nie ausdrücklich Verlangtes. Nicht-triviale',
-    'Logik lässt einen lauffähigen Check zurück. Steuert, was du baust, nicht wie du redest.',
+    'You are a lazy senior developer, active on every response until switched or stopped. Lazy means',
+    'efficient, not sloppy: the best code is the code never written. Before you write code, climb the',
+    'ladder and stop at the first rung that holds (after you understand the problem, never instead of it):',
+    '1. Does this need to exist at all? (YAGNI) 2. Already in this codebase? Reuse it. 3. Does the stdlib do',
+    'it? 4. A native platform feature? 5. An already-installed dependency? 6. One line? 7. Only then the',
+    'minimal code that works. Bugfix = root cause: fix the shared function once, not one guard per caller.',
+    'Delete before adding, boring before clever, as few files as possible. Never simplify away understanding',
+    'the problem, never validation at trust boundaries, never error handling that prevents data loss, never',
+    'security, never what was explicitly asked. Non-trivial logic leaves a runnable check behind. Governs',
+    'what you build, not how you talk.',
     '',
-    'Umschalten: /callbell-dev lite|full|ultra. Aus: "normaler Modus" oder "stop dev".',
+    'Switch: /callbell-dev lite|full|ultra. Off: "normal mode" or "stop dev".',
   ].join('\n');
 }
 
@@ -125,7 +125,7 @@ const event = process.argv[2] === 'prompt' ? 'UserPromptSubmit' : 'SessionStart'
 if (event === 'SessionStart') {
   const level = readLevel();
   if (level) {
-    try { emit('SessionStart', level, 'CALLBELL-DEV FAUL-MODUS AKTIV — Stufe: ' + level + '\n\n' + instructions(level)); }
+    try { emit('SessionStart', level, 'CALLBELL-DEV LAZY MODE ACTIVE, level: ' + level + '\n\n' + instructions(level)); }
     catch { /* stdout closed at hook exit must not surface as a failure */ }
   }
   process.exit(0);
@@ -150,19 +150,19 @@ function finish() {
       const arg = m[1] || '';
       if (arg === 'off' || arg === 'stop' || isDeactivation(arg)) {
         clearLevel();
-        emit('UserPromptSubmit', 'off', 'CALLBELL-DEV FAUL-MODUS AUS');
+        emit('UserPromptSubmit', 'off', 'CALLBELL-DEV LAZY MODE OFF');
         return;
       }
       const level = normalizeLevel(arg) || DEFAULT_LEVEL;
       setLevel(level);
       // First activation carries the full filtered body: no default-on SessionStart loaded it, because the
       // pack does not self-activate.
-      emit('UserPromptSubmit', level, 'CALLBELL-DEV FAUL-MODUS AN — Stufe: ' + level + '\n\n' + instructions(level));
+      emit('UserPromptSubmit', level, 'CALLBELL-DEV LAZY MODE ON, level: ' + level + '\n\n' + instructions(level));
       return;
     }
     if (isDeactivation(lower)) {
       clearLevel();
-      emit('UserPromptSubmit', 'off', 'CALLBELL-DEV FAUL-MODUS AUS');
+      emit('UserPromptSubmit', 'off', 'CALLBELL-DEV LAZY MODE OFF');
       return;
     }
     // Ordinary prompt: a one-line reminder keeps the active mode from drifting between turns without
@@ -170,7 +170,7 @@ function finish() {
     // each compact via SessionStart.
     const level = readLevel();
     if (level) {
-      emit('UserPromptSubmit', level, 'CALLBELL-DEV FAUL-MODUS AKTIV — Stufe: ' + level + ' (bleibt aktiv bis "normaler Modus").');
+      emit('UserPromptSubmit', level, 'CALLBELL-DEV LAZY MODE ACTIVE, level: ' + level + ' (stays active until "normal mode").');
     }
   } catch { /* best-effort, never block the prompt */ }
 }

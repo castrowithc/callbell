@@ -1,94 +1,56 @@
 ---
 name: callbell-import
 description: >
-  Nimm Rohmaterial, das der Nutzer in __callbell__/zone-import/ abgelegt hat, und mache abgelegtes Wissen
-  daraus. Nutze dies immer, wenn der Nutzer in irgendeiner Formulierung oder Sprache signalisiert, dass er
-  etwas zum Verarbeiten hinterlegt hat ("liegt in der Ablage", "ich habe da was reingelegt", "it is in the
-  inbox", "ho caricato un file"), oder wenn er __callbell__/zone-import/ direkt nennt. Deckt Binärdateien
-  (Bilder, PDF, Office, Exporte) und Text ab (Markdown, txt, Obsidian-Notizen, Claude-Code-Web-Exporte).
-  Wandelt nach Markdown, schwärzt sensible Daten gemäß der Datenschutznorm, legt das Ergebnis über die Ablagelogik der
-  Vorlage ab und verschiebt danach das Original ins Archiv. Nutze es auch bei "verarbeite meinen Import",
-  "wandle diese Datei um", "callbell-import" oder "/callbell-import".
+  Turn raw material the user dropped in __callbell__/zone-import/ into filed knowledge. Use whenever the user
+  signals, in any wording or language, that they left something to process ("it's in the inbox", "I dropped a
+  file in there"), or names __callbell__/zone-import/ directly.
+  Covers binaries (images, PDF, Office, exports) and text (Markdown, txt, Obsidian notes, Claude Code web
+  exports). Converts to Markdown, redacts per the data-protection norm, files the result through the repo's
+  filing logic, then moves the original to the archive. Also on "process my import", "convert this file",
+  "callbell-import", "/callbell-import".
 type: skill
 edit: locked
 ---
 
-# Import: aus Rohmaterial wird abgelegtes Wissen
+# Import
 
-Die Zone `__callbell__/zone-import/` ist die eingehende Werkbank: der Nutzer legt
-dort Rohmaterial ab, der Agent macht daraus etwas, das der Repo tragen kann. `__callbell__/zone-import/`
-selbst ist flüchtig und unversioniert; nur das gewandelte, geschwärzte Ergebnis wird dauerhafter Inhalt an
-seinem richtigen Platz.
+The user drops raw material in `__callbell__/zone-import/`; convert it, redact it, and file the result. The zone is transient and unversioned, so only the converted, redacted result becomes permanent content. Take type and placement from `callbell-frontmatter` and the repo's filing conventions; handle sensitive data by the core's data-protection norm.
 
-Dieser Skill ist die Prozedur. Was jeder Typ bedeutet und wohin er gehört, legt `callbell-frontmatter` mit
-den Ablagekonventionen des Repos fest; wie mit sensiblen Daten umzugehen ist, regelt die Datenschutznorm des
-Kerns.
+## Recognize the trigger
 
-## Den Auslöser erkennen
+The user rarely says "run the import skill". They tell you in their own words, in whatever language they write in, that they left you something: "it's in the inbox", "I dropped a file in there". Read the intent, not a fixed phrase. On any such signal, or when the user names `__callbell__/zone-import/`, go look.
 
-Der Nutzer sagt selten "führe den Import-Skill aus". Er sagt in seinen eigenen Worten, dass er dir etwas
-hinterlegt hat: "liegt in der Ablage", "ich habe eine Datei reingelegt", "it is in the inbox" und so
-weiter. Lies die Absicht, nicht eine feste Formulierung. Wenn so ein Hinweis kommt oder der Nutzer
-`__callbell__/zone-import/` nennt, sieh dort nach.
+## Steps
 
-## Schritte
+1. **Take inventory.** List what sits in `__callbell__/zone-import/` (skip the `processed/` archive). Report what you found and what you plan to do before you change anything.
+2. **Convert to Markdown.** Render each piece as Markdown: extract and describe binaries (image, PDF, Office); clean up text and notes (Markdown, txt, Obsidian, web exports). Keep the meaning, drop the noise.
+3. **Redact as you convert.** Keep sensitive data out of the filed, versioned file. Replace it in place with a placeholder in the document's language, e.g. `[social security number redacted]`. Report every redaction so the user can decide exceptions per file.
+4. **Identify the entity.** Work out which customer, project, or topic the material belongs to, in the data-protection norm's order: an existing identifier first, else the running context, else ask. Say which one you chose.
+5. **Set the target.** Read the content, decide what should happen, and propose it: fold into an existing project, set up a new one (only after approval), or file it in place. Then file the converted result per the repo's filing conventions.
+6. **Mark the provenance.** Add an `imported-<type>` entry to the filed file's `tags:` (vocabulary below) so its origin stays findable. Keep the normal content `type`; the tag rides on top.
+7. **Archive the original.** Move the processed original to `__callbell__/zone-import/processed/<yyyy-mm>/` (the month you processed it). It stays there, transient and unversioned, until cleanup.
+8. **Report.** Summarize what you converted, where it went, every redaction, and which entity you assigned, so the user can follow it by hand and correct it.
 
-1. **Bestandsaufnahme.** Liste auf, was in `__callbell__/zone-import/` liegt (das Archiv `processed/`
-   ausgenommen). Melde, was du gefunden hast und was du vorhast, bevor du inhaltlich etwas änderst.
-2. **Nach Markdown wandeln.** Lies jedes Stück und gib seinen Inhalt als Markdown wieder: Binärdateien
-   (Bild, PDF, Office), indem du ihren Inhalt herausziehst und beschreibst, Text und Notizen (Markdown,
-   txt, Obsidian, Web-Exporte), indem du sie aufräumst. Erhalte den Sinn, wirf das Rauschen weg.
-3. **Beim Wandeln schwärzen.** Die Datenschutznorm gilt: sensible Daten fließen nicht in die
-   abgelegte, versionierte Datei. Ersetze sie an Ort und Stelle durch einen Platzhalter in der Sprache des
-   Dokuments, zum Beispiel `[Sozialversicherungsnummer geschwärzt]` oder
-   `[social security number redacted]`. Melde jede Schwärzung, damit der Nutzer Ausnahmen pro Datei
-   entscheiden kann.
-4. **Die Entität identifizieren.** Bestimme, zu welchem Kunden, Projekt oder Thema das Material gehört,
-   nach der Rangfolge der Datenschutznorm (eine Kundennummer, wenn es eine gibt, sonst der
-   laufende Kontext, wenn er schon eine bestimmte Entität betrifft, sonst nachfragen). Teile in jedem Fall
-   mit, wofür du dich entschieden hast.
-5. **Das Ziel festlegen.** Erarbeite aus dem Inhalt, was passieren soll, und schlage es vor: in ein
-   bestehendes Projekt überführen, ein neues Projekt aufsetzen (nur nach Freigabe) oder an der richtigen Stelle ablegen. Lege das gewandelte Ergebnis nach den
-   Ablagekonventionen des Repos an seinem richtigen Platz ab.
-6. **Die Herkunft kennzeichnen.** Ergänze an der abgelegten Datei einen `tags:`-Eintrag `imported-<typ>`
-   (Vokabular unten), damit die Herkunft auffindbar bleibt. Die Datei behält ihren normalen inhaltlichen
-   `type`; der Tag kommt hinzu.
-7. **Das Original archivieren.** Verschiebe das verarbeitete Original nach
-   `__callbell__/zone-import/processed/<yyyy-mm>/` (der Monat der Verarbeitung). Dort bleibt es, flüchtig
-   und unversioniert, bis zum Aufräumen.
-8. **Berichten.** Fasse zusammen, was gewandelt wurde, wohin es ging, jede Schwärzung und welche Entität du
-   zugeordnet hast, damit der Nutzer es von Hand nachvollziehen und korrigieren kann.
+## Provenance tags
 
-## Herkunfts-Tags
+The filed file carries an `imported-<type>` tag so a later search finds all imports (`imported-*`) or one kind (`imported-pdf`):
 
-Die abgelegte Datei trägt einen Tag `imported-<typ>`, damit eine spätere Suche alle Importe (`imported-*`)
-oder eine bestimmte Art findet (`imported-pdf`):
-
-| Quelle | Tag |
+| Source | Tag |
 |---|---|
 | PDF | `imported-pdf` |
-| Bild (jedes Format) | `imported-img` |
+| Image (any format) | `imported-img` |
 | CSV | `imported-csv` |
-| Excel oder Tabelle | `imported-xls` |
-| Word oder Dokument | `imported-doc` |
+| Excel or spreadsheet | `imported-xls` |
+| Word or document | `imported-doc` |
 | Markdown | `imported-md` |
-| Reiner Text | `imported-txt` |
+| Plain text | `imported-txt` |
 
-## Archiv und Aufräumen
+## Archive and cleanup
 
-`__callbell__/zone-import/` darf nicht unbegrenzt wachsen. Die Monatsbehälter
-`__callbell__/zone-import/processed/<yyyy-mm>/` machen das Aufräumen einfach: ein alter Monat lässt sich in
-einem Zug leeren. Ein verarbeitetes Original nach `processed/` zu verschieben ist Routine, das macht der
-Agent selbst. **Einen Behälter zu leeren ist eine Löschung**, also schlägt der Agent es vor und wartet auf
-Freigabe; er räumt das Archiv nie von sich aus. Nimm Kalenderwochen
-(`<yyyy-Www>`) statt Monaten nur dann, wenn das wöchentliche Aufkommen es rechtfertigt.
+Don't let `__callbell__/zone-import/` grow without bound. The monthly bins `processed/<yyyy-mm>/` keep cleanup cheap: an old month empties in one move. Move a processed original into `processed/` on your own; that's routine. Emptying a bin is a deletion, so propose it and wait for approval. Never clear the archive yourself. Switch to calendar weeks (`<yyyy-Www>`) only if weekly volume warrants it.
 
-## Grenzen
+## Limits
 
-- **Das abgelegte Ergebnis ist geschwärzt, das archivierte Original nicht.** Echte Daten überleben nur in
-  `__callbell__/zone-import/` und dessen Archiv `processed/`, beide unversioniert. Nichts Personenbezogenes
-  erreicht eine versionierte Datei. Das gilt unabhängig davon, ob der Repo öffentlich oder privat ist.
-- **Keine neue Struktur von dir aus.** Ein neues Projekt oder ein neuer Bereich ist eine Strukturänderung:
-  schlage sie vor, lege sonst in das bestehende Schema ab.
-- **Ergebnisse gehen den anderen Weg.** Fertige Ausgaben, die der Nutzer aus dem Repo mitnehmen will,
-  gehören nach `__callbell__/zone-export/`, nicht hierher.
+- **The filed result is redacted; the archived original is not.** Real data survives only in `__callbell__/zone-import/` and its `processed/` archive, both unversioned. Nothing personal reaches a versioned file, whether the repo is public or private.
+- **No new structure on your own.** A new project or area is a structure change: propose it, otherwise file into the existing schema.
+- **Results go the other way.** Finished outputs the user wants to take out of the repo belong in `__callbell__/zone-export/`, not here.

@@ -5,7 +5,7 @@
         "hooks": [ { "type": "command",
           "command": "node \"${CLAUDE_PLUGIN_ROOT:-$PLUGIN_ROOT}/hooks/callbell-context.js\"; exit 0",
           "commandWindows": "$root = if ($env:CLAUDE_PLUGIN_ROOT) { $env:CLAUDE_PLUGIN_ROOT } else { $env:PLUGIN_ROOT }; if ($root -and (Get-Command node -ErrorAction SilentlyContinue)) { node \"$root\\hooks\\callbell-context.js\" }; exit 0",
-          "timeout": 5, "statusMessage": "callbell-Kontext wird geladen..." } ] }
+          "timeout": 5, "statusMessage": "Loading callbell context..." } ] }
     ]
   }
 }

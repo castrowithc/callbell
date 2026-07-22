@@ -1,31 +1,31 @@
 ---
 description: >
-  Wie im Kundenbereich gearbeitet wird: Identifikation, Suche, Ablage pro Kunde und die
-  Datenschutzleitplanken. Ein Overlay für den Bereich, gilt und wird gelesen, wenn dort gearbeitet wird.
+  How work is done in the customers area: identification, search, per-customer filing, and the
+  data-protection guardrails. An overlay for the area, in force and read when work happens there.
 type: meta
 edit: locked
 ---
 
 # Framework: Customers
 
-<!-- Vorlage. Kopiere sie nach <area>-customers/framework.md (zum Beispiel business-customers/framework.md)
-und passe sie an. Sie beschreibt, wie im Kundenbereich gearbeitet wird. -->
+<!-- Template. Copy it to <area>-customers/framework.md (e.g. business-customers/framework.md)
+and adapt it. It describes how work is done in the customers area. -->
 
-## Identifikation
-- Ein Kunde wird über **<ID scheme> + Kurzname** identifiziert (zum Beispiel eine Fall- oder Kundennummer plus einen
-  beschreibenden Kurznamen). Das Schema wird hier einmal festgelegt.
-- Ein Unterordner `<id>/` pro Kunde mit einer `index.md` als Kopf; weitere Dateien darunter folgen den
-  allgemeinen Ablageregeln.
+## Identification
+- A customer is identified by **<ID scheme> + short name** (e.g. a case or customer number plus a
+  descriptive short name). The scheme is fixed here once.
+- One subfolder `<id>/` per customer with an `index.md` as its head; further files below it follow the
+  general filing rules.
 
-## Suche
-- Zuerst nach der `<id>` suchen (eindeutig), dann nach dem Kurznamen. Bei Unklarheit nachfragen statt raten.
+## Search
+- Search by the `<id>` first (unique), then by the short name. When unclear, ask rather than guess.
 
-## Ablage pro Kunde
-- `<id>/index.md`: der Stammdatensatz des Kunden (Kurzname, Status, worum es geht). **Keine** Kontaktdaten.
-- Fälle, Fakten, Entscheidungen als typisierte Dateien unter `<id>/` (siehe `callbell-filing`).
+## Per-customer filing
+- `<id>/index.md`: the customer's master record (short name, status, what it's about). **No** contact data.
+- Cases, facts, decisions as typed files under `<id>/` (see `callbell-filing`).
 
-## Datenschutzleitplanken
-- **Keine Kontaktdaten** (Adresse, Telefon, E-Mail, Zahlungsdaten) im Repo, auch nicht, wenn sie
-  versehentlich gepostet werden. Der Agent weist darauf hin und nimmt sie nicht auf.
-- Stammdaten und Kommunikation liegen im Quellsystem (CRM/Postfach); hier nur, was für die
-  Planung nötig ist.
+## Data-protection guardrails
+- **No contact data** (address, phone, email, payment data) in the repo, not even if it's posted by
+  accident. The agent points this out and doesn't take it in.
+- Master data and communication live in the source system (CRM/mailbox); here only what's needed for
+  planning.

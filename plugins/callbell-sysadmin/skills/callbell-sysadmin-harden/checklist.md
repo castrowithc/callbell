@@ -1,16 +1,15 @@
 ---
 description: >
-  Begleitdatei zu callbell-sysadmin-harden: eine Prüfliste für neue und bestehende Server (Abnahme und
-  Nachprüfung). Halte den Stand je Server in dessen Domäne fest.
+  Companion to callbell-sysadmin-harden: a checklist for new and existing servers (sign-off and re-check).
+  Record the state per server in its domain.
 type: playbook
 edit: locked
 ---
 
-# Prüfliste Härtung
+# Hardening checklist
 
-> Für neue Server und regelmäßige Nachprüfungen. Befehle in Klammern sind Beispiele für Debian/Ubuntu mit
-> systemd; auf anderen Distributionen das Gegenstück verwenden. Halte den Stand je Server in dessen Domäne
-> fest.
+> For new servers and regular re-checks. Commands in parentheses are examples for Debian/Ubuntu with
+> systemd; on other distributions use the counterpart. Record the state per server in its domain.
 
 ## SSH
 
@@ -21,51 +20,51 @@ edit: locked
 - [ ] LoginGraceTime <= 30s
 - [ ] ClientAliveInterval = 300
 - [ ] X11Forwarding = no
-- [ ] SSH-Port geändert (oder die bewusste Entscheidung festgehalten)
-- [ ] Nur die nötigen Benutzer haben SSH-Zugang (`AllowUsers`, keine verwaisten Einträge)
+- [ ] SSH port changed (or the deliberate choice recorded)
+- [ ] Only the needed users have SSH access (`AllowUsers`, no stale entries)
 
 ## Firewall
 
-- [ ] Server-Firewall aktiv (UFW: `ufw status`; firewalld; die Firewall eines Panels)
-- [ ] Nur die benötigten Ports offen
-- [ ] Provider-Firewall aktiv (etwa Hetzner, IONOS) und eingerichtet
-- [ ] Kein direkter Zugriff von außen auf interne Dienste
+- [ ] Server firewall active (UFW: `ufw status`; firewalld; a panel's firewall)
+- [ ] Only the needed ports open
+- [ ] Provider firewall active (e.g. Hetzner, IONOS) and set up
+- [ ] No direct external access to internal services
 
 ## fail2ban
 
-- [ ] Jail `sshd` aktiv (maxretry = 3, bantime >= 1h)
-- [ ] Jail `recidive` aktiv mit `bantime = -1` (dauerhaft) und `findtime = 1w`
-- [ ] `dbpurgeage = 365d` in `/etc/fail2ban/fail2ban.local` gesetzt
-- [ ] Die eigene öffentliche IP des Servers in `ignoreip` (Schutz davor, sich selbst auszusperren)
-- [ ] Dienstspezifische Jails aktiv (Panel, Caddy- und Docker-Anwendungen und so weiter)
+- [ ] Jail `sshd` active (maxretry = 3, bantime >= 1h)
+- [ ] Jail `recidive` active with `bantime = -1` (permanent) and `findtime = 1w`
+- [ ] `dbpurgeage = 365d` set in `/etc/fail2ban/fail2ban.local`
+- [ ] The server's own public IP in `ignoreip` (so you don't lock yourself out)
+- [ ] Service-specific jails active (panel, Caddy and Docker applications, and so on)
 
-## Systemhärtung
+## System hardening
 
-- [ ] Automatische Sicherheitsupdates aktiv (`systemctl status unattended-upgrades` / `dnf-automatic`)
-- [ ] Automatischer Neustart bewusst entschieden (freiwillig auf unkritischen Servern: Zeitpunkt nach dem
-      Sicherungsfenster; sonst manuell)
-- [ ] NTP aktiv (`timedatectl`)
-- [ ] Log-Rotation eingerichtet
-- [ ] Keine unnötigen Dienste laufen (`systemctl list-units --type=service --state=running`)
+- [ ] Automatic security updates active (`systemctl status unattended-upgrades` / `dnf-automatic`)
+- [ ] Automatic reboot deliberately decided (optional on uncritical servers: time after the backup window;
+      otherwise manual)
+- [ ] NTP active (`timedatectl`)
+- [ ] Log rotation set up
+- [ ] No unnecessary services running (`systemctl list-units --type=service --state=running`)
 
-## Benutzer und Rechte
+## Users and permissions
 
-- [ ] Keine root-Anmeldung möglich
-- [ ] Admin-Benutzer eingerichtet
-- [ ] sudoers-Regeln minimal und festgehalten
-- [ ] Monitoring-Benutzer ohne sudo (sofern vorhanden)
+- [ ] No root login possible
+- [ ] Admin user set up
+- [ ] sudoers rules minimal and recorded
+- [ ] Monitoring user without sudo (if present)
 
-## Sicherung
+## Backup
 
-- [ ] Timer der Sicherung aktiv (etwa `systemctl status borgmatic.timer`)
-- [ ] Letzte Sicherung erfolgreich
-- [ ] Passphrase und Schlüssel im Passwortspeicher hinterlegt
-- [ ] Benachrichtigungen eingerichtet und funktionierend
-- [ ] Wiederherstellungstest durchgeführt (Datum festhalten)
+- [ ] Backup timer active (e.g. `systemctl status borgmatic.timer`)
+- [ ] Last backup successful
+- [ ] Passphrase and keys stored in the password store
+- [ ] Notifications set up and working
+- [ ] Restore test performed (record the date)
 
-## Sonstiges
+## Other
 
-- [ ] SSH-Schlüssel für externe Dienste (etwa GitHub) vorhanden und mit Passphrase geschützt
-- [ ] Keine Zugangsdaten in Git-Repos
-- [ ] Docker-Ports auf 127.0.0.1 gebunden (falls Docker installiert ist)
-- [ ] Auf Docker-Servern: die Stack-Konventionen aus Skill `callbell-sysadmin-deploy` eingehalten
+- [ ] SSH key for external services (e.g. GitHub) present and passphrase-protected
+- [ ] No credentials in Git repos
+- [ ] Docker ports bound to 127.0.0.1 (if Docker is installed)
+- [ ] On Docker servers: the stack conventions from skill `callbell-sysadmin-deploy` followed

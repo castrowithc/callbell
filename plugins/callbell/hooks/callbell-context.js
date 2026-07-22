@@ -182,13 +182,13 @@ const projectType = resolveProjectType(root);
 const scaffold = hasScaffold(root);
 push([
   projectType === 'unknown'
-    ? 'PROJECT TYPE: unknown (noch keine Code- oder Ops-Marker; leite ihn aus der anstehenden Aufgabe ab)'
+    ? 'PROJECT TYPE: unknown (no code or ops markers yet; infer it from the task at hand)'
     : 'PROJECT TYPE: ' + projectType,
   scaffold
-    ? 'CALLBELL SCAFFOLD: yes (__callbell__/ ist vorhanden; seine Normen sind in Kraft)'
-    : 'CALLBELL SCAFFOLD: no (kein __callbell__/ hier, also kein Backlog, keine Zonen und keine Memory-Ebene; die Normen, die sie regeln, sind nicht geladen und gelten nicht)',
+    ? 'CALLBELL SCAFFOLD: yes (__callbell__/ is present; its norms are in force)'
+    : 'CALLBELL SCAFFOLD: no (no __callbell__/ here, so no backlog, no zones, and no memory layer; the norms that govern them are not loaded and do not apply)',
   ...(pluginRoot ? ['CALLBELL PLUGIN ROOT: ' + pluginRoot.split(path.sep).join('/')
-    + ' (mitgelieferte Skripte und Templates liegen hier)'] : []),
+    + ' (bundled scripts and templates live here)'] : []),
 ].join('\n'));
 
 // Project STATE, and only the two indices. Purpose and roles live in the user's own AGENTS.md, which the
@@ -201,10 +201,10 @@ const stateFiles = [
 
 const state = section(stateFiles, root);
 if (state.length) {
-  push('Projektstatus (automatisch beim Sitzungsstart geladen: der Memory-Index und der Backlog-Index):');
+  push('Project status (loaded automatically at session start: the memory index and the backlog index):');
   push(state.join('\n\n'));
 } else if (pluginRoot) {
-  push('In diesem Ordner ist noch kein callbell-Projekt eingerichtet (Ambient-Modus). Skills und Regeln sind überall aktiv, aber dieser Ordner hat kein Backlog und kein Memory. `/callbell-start` richtet eines ein: erstellt das Gerüst und meldet es und fragt nach git, Ruleset und Zweck.');
+  push('No callbell project is set up in this folder yet (ambient mode). Skills and rules are active everywhere, but this folder has no backlog and no memory. `/callbell-start` sets one up: it creates the scaffold, reports it, and asks about git, ruleset, and purpose.');
 }
 
 // Always-on payload: the rules (norms) and the minimal AGENTS.md ruleset.
@@ -223,8 +223,8 @@ const projectRules = collect(path.join(root, '.claude', 'rules'));
 if (codexHost && projectRules.length) {
   // Pointed at, not injected, for the same reason as the plugin's own rules below: a project's rule set
   // has no size limit either, and the agent can open a file that sits in the repo it is working in.
-  push('Projekt-Normen. Lies diese Dateien JETZT, bevor du antwortest, und befolge sie die ganze '
-    + 'Sitzung über:\n' + projectRules.map(f => '- ' + f.split(path.sep).join('/')).join('\n'));
+  push('Project norms. Read these files NOW, before you answer, and follow them for the whole '
+    + 'session:\n' + projectRules.map(f => '- ' + f.split(path.sep).join('/')).join('\n'));
 }
 if (pluginRoot) {
   // The rules are POINTED AT, not injected. A pointer costs ~80 characters where a body costs ten
@@ -254,8 +254,8 @@ if (pluginRoot) {
   const readNow = kernel.concat(scaffoldRules);
 
   if (readNow.length) {
-    push('Callbell-Normen. Lies diese Dateien JETZT, bevor du antwortest, und befolge sie die ganze '
-      + 'Sitzung über:\n' + readNow.map(f => '- ' + abs(f)).join('\n'));
+    push('Callbell norms. Read these files NOW, before you answer, and follow them for the whole '
+      + 'session:\n' + readNow.map(f => '- ' + abs(f)).join('\n'));
   }
   // The AGENTS.md ruleset auto-merges natively only inside the project tree; the plugin's copy sits
   // outside it, so inject it here — but only when the project carries no root ruleset of its own,
@@ -264,7 +264,7 @@ if (pluginRoot) {
   const ruleset = path.join(pluginRoot, 'AGENTS.md');
   if (!hasOwnRuleset && fs.existsSync(ruleset)) {
     const body = bodyOf(ruleset);
-    if (body) push('Projekt-Ruleset (aus AGENTS.md):\n' + body);
+    if (body) push('Project ruleset (from AGENTS.md):\n' + body);
   }
 }
 
@@ -272,7 +272,7 @@ const out = blocks.join('\n\n');
 // A guarantee, not a hope: nothing leaves this script over budget. If a future edit adds an unbudgeted
 // path, this catches it here rather than in a user's session where the symptom is silence.
 if (out.length > BUDGET) {
-  process.stderr.write('callbell: Payload ' + out.length + ' über Budget ' + BUDGET + ', abgeschnitten\n');
+  process.stderr.write('callbell: payload ' + out.length + ' over budget ' + BUDGET + ', truncated\n');
   process.stdout.write(out.slice(0, BUDGET) + '\n');
 } else if (out) {
   process.stdout.write(out + '\n');
