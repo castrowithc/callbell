@@ -9,8 +9,7 @@ status: active        # active | final | archived
 # Project: <name>
 
 <!-- Vorlage. Kopiere sie nach __callbell__/backlog/<project>/index.md.
-Der Projektkopf: das große Ganze, plus das Verzeichnis seiner Aufgaben. Jede Aufgabe ist ihre eigene Datei
-(siehe callbell-backlog). Dieser Index ist auch der EINZIGE Ort, an dem Reihenfolge und Abhängigkeit zwischen
+Der Projektkopf: das große Ganze, plus das Verzeichnis seiner Aufgaben. Jede Aufgabe ist ihre eigene Datei. Dieser Index ist auch der EINZIGE Ort, an dem Reihenfolge und Abhängigkeit zwischen
 Aufgaben festgehalten werden, denn eine Aufgabe nennt nie eine andere Aufgabe. -->
 
 ## Ziel

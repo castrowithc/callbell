@@ -73,7 +73,7 @@ brauchst".
   die Anweisung, ihn zu lesen, also schreib ihn nicht.
 - **Mehrere zusammengehörige Pakete** sind ein Grund, einen Projektordner
   `__callbell__/backlog/<projekt>/` vorzuschlagen. Schlage ihn vor, erkläre ihn in einem Satz, und lege ihn
-  **erst nach Freigabe** an (siehe `callbell-governance`). Gruppiere innerhalb eines großen Projekts in der
+  **erst nach Freigabe** an. Gruppiere innerhalb eines großen Projekts in der
   `index.md` mit Überschriften (Backend, Frontend). Eine Überschrift ist Gruppierung genug; sie wird nie
   eine Dateiebene.
 - Neue Pakete starten mit `status: draft`. **Im Entwurf sterben die Annahmen:** forme sie mit dem Nutzer,

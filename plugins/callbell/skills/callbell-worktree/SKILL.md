@@ -19,10 +19,10 @@ wegzuräumen. Für mehrere Sessions oder Themen gleichzeitig.
 - Auf direkte Anfrage des Nutzers.
 - Oder wenn parallele oder kollidierende Arbeit aufkommt (ein neuer Strang, während ein Branch offen ist):
   schlage einen Worktree vor, erkläre ihn in ein bis zwei Sätzen und lege ihn erst nach Freigabe an (ein
-  neues Strukturelement, siehe `callbell-governance`).
+  neues Strukturelement).
 - Schlage für einen parallelen Strang außerdem ein eigenes Backlog-Projekt
   `__callbell__/backlog/<projekt>/` vor: es isoliert die Backlog-Änderungen dieses Strangs, damit die
-  Worktrees nicht auf gemeinsamen Dateien kollidieren (siehe `callbell-backlog`).
+  Worktrees nicht auf gemeinsamen Dateien kollidieren.
 
 ## Einrichten
 1. Zustand prüfen (`git status`), offene Änderungen im Hauptordner sichern (committen oder stashen).

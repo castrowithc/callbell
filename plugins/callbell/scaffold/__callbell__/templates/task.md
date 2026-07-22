@@ -15,7 +15,7 @@ Sie nennt NIE eine andere Aufgabe; Reihenfolge und Abhängigkeit leben im Verzei
 index.md des Projekts). Bemiss sie so, dass sie in eine Sitzung passt; lässt sie sich nicht schätzen, ist sie
 nicht verstanden und muss zerlegt werden. Kopiere sie nach __callbell__/backlog/task-<slug>.md (oder
 __callbell__/backlog/<project>/) und fülle sie aus.
-Siehe callbell-backlog; das Planungsverfahren ist die Skill callbell-plan. -->
+Das Planungsverfahren ist die Skill callbell-plan. -->
 
 ## Warum
 <!-- Wofür ist das? Genug Kontext, um beim Arbeiten gut zu entscheiden, keine Wiederholung des Titels. -->

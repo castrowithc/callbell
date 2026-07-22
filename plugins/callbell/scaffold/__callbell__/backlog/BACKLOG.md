@@ -2,8 +2,8 @@
 description: >
   Überblick über den operativen Arbeitspfad (__callbell__/backlog/): die flachen Wurzeleinträge und jedes Projekt, jeweils mit
   Status und kurzer Beschreibung. Wird beim Sitzungsstart über den Hook geladen (wie der Memory-Index
-  MEMORY.md), damit der Agent den offenen Stand kennt, ohne jede Datei zu öffnen. Betriebslogik: Regel
-  callbell-backlog.
+  MEMORY.md), damit der Agent den offenen Stand kennt, ohne jede Datei zu öffnen. Betriebslogik: die
+  Scaffold-Norm.
 type: meta
 edit: shared
 ---
@@ -12,7 +12,7 @@ edit: shared
 
 <!-- Oberster Überblick über den Arbeitspfad. Aufgaben ohne Projekt liegen flach als task-<slug>.md in
      __callbell__/backlog/; ein Projekt ist ein Ordner __callbell__/backlog/<project>/ mit eigener index.md.
-     Ort, Projekte und Lebenszyklus legt callbell-backlog fest; die Planungsarbeit ist die Skill
+     Ort, Projekte und Lebenszyklus legt die Scaffold-Norm fest; die Planungsarbeit ist die Skill
      callbell-plan.
 
      Eine Zeile pro aktiver Wurzelaufgabe und eine Zeile pro Projekt (mit Verweis auf dessen index.md):

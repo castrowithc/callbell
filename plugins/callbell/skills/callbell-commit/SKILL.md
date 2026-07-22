@@ -23,7 +23,7 @@ geht.
 - Schlage ihn vor, wenn eine inhaltliche Änderung fertig und uncommittet ist.
 
 ## Warum das ein Skill ist und keine Zeile in einer Regel
-`callbell-git` trug "kein Co-Author und kein Tool-Branding" als Norm und verlor sie 23 Mal über drei Repos
+Die Git-Norm trug "kein Co-Author und kein Tool-Branding" und verlor sie 23 Mal über drei Repos
 hinweg, weil eine Harness-Anweisung, die zum Commit-Zeitpunkt feuert, eine beim Session-Start gelesene
 Zeile schlägt. Ob eine Branding-Zeile vorhanden ist, lässt sich maschinell prüfen, denn der Text steht ja
 da, also kann ein Repo, das eine harte Garantie will, einen `commit-msg`-Hook ergänzen. callbell liefert
@@ -57,7 +57,7 @@ Commit ist, statt einer Erinnerung, die an einem hängt. Das ist dieser Skill.
 6. **Wenn ein Hook ablehnt**, lies, was er sagt, und behebe die Ursache. **Nie** `--no-verify`. Ein
    auslösender Hook heißt, dass etwas in die Nachricht geraten ist, das dort nicht hingehört.
 
-7. **Pushe** gemäß `callbell-git`: automatisch bei einem als Solo deklarierten Projekt, sonst vorher fragen.
+7. **Pushe** gemäß der Git-Norm: automatisch bei einem als Solo deklarierten Projekt, sonst vorher fragen.
    Melde, welche Fassung hinausgegangen ist und ob gepusht oder nur committet wurde.
 
 ## Hinweise

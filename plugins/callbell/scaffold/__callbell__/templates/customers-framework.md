@@ -28,4 +28,4 @@ und passe sie an. Sie beschreibt, wie im Kundenbereich gearbeitet wird. -->
 - **Keine Kontaktdaten** (Adresse, Telefon, E-Mail, Zahlungsdaten) im Repo, auch nicht, wenn sie
   versehentlich gepostet werden. Der Agent weist darauf hin und nimmt sie nicht auf.
 - Stammdaten und Kommunikation liegen im Quellsystem (CRM/Postfach); hier nur, was für die
-  Planung nötig ist (siehe `callbell-data-protection`).
+  Planung nötig ist.

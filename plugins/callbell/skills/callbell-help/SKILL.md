@@ -46,8 +46,7 @@ Marktplatz einzeln zuschaltest — keines ist vorausgewählt:
 
 - **Rollen:** du entscheidest und prüfst, der Agent führt strukturiert und weitgehend eigenständig aus.
 - **Freigaben:** Struktur- oder Schemaänderungen (und neue Bereiche in ops) sowie das Überführen von
-  Entwürfen nur nach Freigabe; Routine im etablierten Rahmen erledigt der Agent selbst (siehe
-  `callbell-governance`).
+  Entwürfen nur nach Freigabe; Routine im etablierten Rahmen erledigt der Agent selbst.
 - **Struktur:** der Pfad sagt WO, das Frontmatter sagt WAS, `status` treibt die Reife.
 - **Zonen:** `__callbell__/zone-import/` (Eingaben) und `__callbell__/zone-export/` (angeforderte
   Ergebnisse), die zwei flüchtigen Puffer. Die versionierte Arbeitsspur ist `__callbell__/backlog/`
@@ -57,4 +56,3 @@ Marktplatz einzeln zuschaltest — keines ist vorausgewählt:
 
 Die Skills des Kerns tragen das Präfix `callbell-` im Namen — so findest du sie alle auf einmal, wenn du
 `/callbell` tippst. Deine eigenen Skills legst du außerhalb der Pakete an; sie können nicht kollidieren.
-Abschalten: "stop callbell" oder "normaler Modus".

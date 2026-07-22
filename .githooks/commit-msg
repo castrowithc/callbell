@@ -1,5 +1,5 @@
 #!/bin/sh
-# Rejects co-author and tool branding in commit messages (callbell-git: "no co-author or tool branding").
+# Rejects co-author and tool branding in commit messages (callbell norm: no co-author or tool branding).
 #
 # Why a hook and not a norm: an agent harness instructs the agent to append a co-author trailer, so the
 # default behavior actively fights the rule, and the rule is one line among hundreds read at session start.
@@ -19,7 +19,7 @@ pattern='^Co-Authored-By:|^Signed-off-by:.*(claude|anthropic)|Generated with \[C
 if grep -qiE "$pattern" "$msg"; then
   echo "" >&2
   echo "commit-msg: rejected — co-author or tool branding in the message." >&2
-  echo "callbell-git: 'Commit messages: short, imperative, \"what and where\", no co-author or tool branding, always in English.'" >&2
+  echo "callbell: 'Commit messages: short, imperative, \"what and where\", no co-author or tool branding, always in English.'" >&2
   echo "" >&2
   echo "Offending line(s):" >&2
   grep -inE "$pattern" "$msg" | sed 's/^/  /' >&2

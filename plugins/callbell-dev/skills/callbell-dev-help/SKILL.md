@@ -24,8 +24,8 @@ schreib keine Flag-Dateien, persistiere nichts.
 | **full** | `/callbell-dev` | Die Leiter durchgesetzt: YAGNI → Stdlib → nativ → eine Zeile → Minimum. Standard. |
 | **ultra** | `/callbell-dev ultra` | YAGNI-Extremist. Löschen vor Hinzufügen. Stellt Anforderungen infrage, bevor gebaut wird. |
 
-Die Stufe gilt für die Arbeit, für die sie aufgerufen wurde, nicht für die ganze
-Session. Ruf sie erneut auf, wenn du sie zurückwillst.
+Einmal gesetzt bleibt die Stufe über die ganze Session aktiv, in jedem Turn bekräftigt,
+bis du sie wechselst oder abschaltest.
 
 ## Skills
 
@@ -37,7 +37,7 @@ Session. Ruf sie erneut auf, wenn du sie zurückwillst.
 
 ## Stopp
 
-Sag "stop" oder "normaler Modus". Jederzeit fortsetzen, indem du den Skill
+Sag "normaler Modus" oder "stop dev". Jederzeit fortsetzen, indem du den Skill
 erneut aufrufst.
 
 ## Setzt voraus

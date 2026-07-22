@@ -18,7 +18,6 @@ description: >
 argument-hint: "[lite|full|ultra]"
 type: skill
 edit: locked
-license: MIT
 ---
 
 # Fauler Senior-Dev
