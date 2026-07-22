@@ -1,6 +1,6 @@
 {
   "name": "callbell",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "description": "Die Schnittstelle zwischen dir und dem Agenten: gemeinsame Normen, ein Gerüst für Backlog und Memory, Ablage, Import, Planung und git.",
   "author": { "name": "Callbell" },
   "homepage": "https://github.com/castrowithc/callbell",
