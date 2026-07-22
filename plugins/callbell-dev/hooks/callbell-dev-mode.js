@@ -117,7 +117,7 @@ function emit(event, level, context) {
 function isDeactivation(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[.!?\s]+$/, '');
   return t === 'normal mode' || t === 'normaler modus' || t === 'stop dev' ||
-    t === 'stop lazy mode' || t === 'lazy off';
+    t === 'stop lazy mode' || t === 'lazy off' || t === 'stop callbell-dev';
 }
 
 const event = process.argv[2] === 'prompt' ? 'UserPromptSubmit' : 'SessionStart';

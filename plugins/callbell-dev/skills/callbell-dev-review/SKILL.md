@@ -15,7 +15,7 @@ edit: locked
 attribution: github.com/DietrichGebert/ponytail
 ---
 
-# callbell-review
+# callbell-dev-review
 
 Review diffs for unnecessary complexity. One line per finding: location, what
 to cut, what replaces it. The diff's best outcome is getting shorter.

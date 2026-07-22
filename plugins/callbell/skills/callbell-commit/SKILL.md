@@ -6,7 +6,6 @@ description: >
   "commit and push", or whenever a finished change enters permanent history. Showing the message before the
   commit is the whole point.
 argument-hint: "[what the change is about]"
-license: MIT
 type: skill
 edit: locked
 ---

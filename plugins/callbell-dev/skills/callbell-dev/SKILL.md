@@ -29,7 +29,7 @@ code is the code never written.
 ## Persistence
 
 ACTIVE EVERY RESPONSE. No drift back to over-building. Still active if
-unsure. Off only: "stop callbel-dev" / "normal mode". Default: **full**.
+unsure. Off only: "stop callbell-dev" / "normal mode". Default: **full**.
 Switch: `/callbell-dev lite|full|ultra`.
 
 ## The ladder
@@ -64,7 +64,7 @@ every sibling caller still broken. Fix it once, where all callers route through.
 - Fewest files possible. Shortest working diff wins — but only once you understand the problem. The smallest change in the wrong place isn't lazy, it's a second bug.
 - Complex request? Ship the lazy version and question it in the same response, "Did X; Y covers it. Need full X? Say so." Never stall on an answer you can default.
 - Two stdlib options, same size? Take the one that's correct on edge cases. Lazy means writing less code, not picking the flimsier algorithm.
-- Mark deliberate simplifications that cut a real corner with a known ceiling (global lock, O(n²) scan, naive heuristic) with a `callbel-dev:` comment naming the ceiling and upgrade path (`# callbel-dev: global lock, per-account locks if throughput matters`).
+- Mark deliberate simplifications that cut a real corner with a known ceiling (global lock, O(n²) scan, naive heuristic) with a `callbell-dev:` comment naming the ceiling and upgrade path (`# callbell-dev: global lock, per-account locks if throughput matters`).
 
 ## Output
 
@@ -116,8 +116,7 @@ test, YAGNI applies to tests too.
 
 ## Boundaries
 
-callbell-dev governs what you build, not how you talk (pair with Caveman for
-terse prose). "stop callbell-dev" / "normal mode": revert. Level persists until
-changed or session end.
+callbell-dev governs what you build, not how you talk. "stop callbell-dev" /
+"normal mode": revert. Level persists until changed or session end.
 
 The shortest path to done is the right path.

@@ -12,7 +12,7 @@
   "interface": {
     "displayName": "Callbell Sysadmin",
     "shortDescription": "Server-manager pack: safety layer plus server-ops skills",
-    "longDescription": "Adds a passive server safety layer and on-demand skills for setting up, hardening, backing up, and operating servers and Docker stacks. Active on a host that declares its identity in __callbell__/.host-identity; otherwise nothing server-specific loads.",
+    "longDescription": "Adds a passive server safety layer and on-demand skills for setting up, hardening, backing up, and operating servers and Docker stacks. Active on a host that declares its identity in __callbell__/.host-identity; otherwise nothing server-specific loads. Requires the callbell core.",
     "developerName": "Callbell",
     "category": "Productivity",
     "capabilities": ["Instructions", "Lifecycle hooks"],

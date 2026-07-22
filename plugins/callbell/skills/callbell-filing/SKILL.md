@@ -5,7 +5,6 @@ description: >
   Use whenever you create, place, move, promote, or restructure a content file.
   Also on "where does this go", "restructure this", "promote this",
   "callbell-filing", or "/callbell-filing".
-license: MIT
 type: skill
 edit: locked
 ---
@@ -24,7 +23,7 @@ Area folders are an **ops** structure, and so is their register. In an ops repo,
 
 ## Look for a template first
 
-Before reinventing a recurring area structure (customers, projects, objects), check `__callbell__/templates/` for a fitting template and instantiate it. Which templates exist depends on the lens: the customer pattern ships only with the **ops** scaffold, so in a code repo you don't look for it. Where it exists, it works like this: the area `business-customers/` gets a `framework.md` (how to identify, how to search, which data never flows in) and a subfolder `<id>/index.md` per customer. Only if no template fits do you build your own and propose recording the pattern as a template.
+Before reinventing a recurring area structure (customers, projects, objects), check `__callbell__/templates/` for a fitting template and instantiate it. The customer pattern ships with every scaffold; in a **code** repo you rarely reach for it, but it's there. Where it fits, it works like this: the area `business-customers/` gets a `framework.md` (how to identify, how to search, which data never flows in) and a subfolder `<id>/index.md` per customer. Only if no template fits do you build your own and propose recording the pattern as a template.
 
 ## Area folder first
 

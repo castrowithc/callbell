@@ -27,6 +27,7 @@ The core is the interface between you and the agent: shared norms, a scaffold fo
 | **import** | "it's in the inbox", `/callbell-import` | Turns raw material in `__callbell__/zone-import/` into redacted, filed content. |
 | **commit** | `/callbell-commit`, "commit this" | Commits through a message you've read: drafted, shown in full, corrected, then committed and pushed. |
 | **worktree** | `/callbell-worktree` | A git worktree for parallel work, cleaned up after the merge. |
+| **adhd** | `/callbell-adhd` | Shapes output for an ADHD reader: next action first, numbered steps, state restated each turn. Stays on until "stop adhd mode". |
 | **help** | `/callbell-help` | This card. |
 
 Codex calls the same skills with the `@` prefix; Claude uses the `/` forms above.

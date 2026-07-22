@@ -94,7 +94,7 @@ Your **own** skills sit entirely outside the plugins and can't collide with any 
 This repo **is** a marketplace: the always-on collection `callbell` plus optional purpose packs, each its own installable plugin under `plugins/`. There's no build step and nothing is generated: each plugin is written here directly, and what you read is what gets installed.
 
 - `plugins/callbell/`: the collection, what you install and runs always-on:
-  - `skills/`: a flat folder, seven skills: the way in, filing, planning, import, commit, worktree, help.
+  - `skills/`: a flat folder, eight skills: the way in, filing, planning, import, commit, worktree, adhd, help.
   - `rules/core/`: norms that apply in every repo. The session tells the agent to read them right away.
   - `rules/scaffold/`: norms that mean something only where a `__callbell__/` scaffold exists (backlog,
     zones, frontmatter, memory, structure). Loaded only there, but then right away, like the core norms; a
@@ -102,7 +102,7 @@ This repo **is** a marketplace: the always-on collection `callbell` plus optiona
   - `hooks/callbell-context.js`: the SessionStart hook: reports the scaffold, injects the memory and backlog
     indices, and points the agent at the rules. Claude runs it from the plugin; under Codex it must be
     registered by hand (see Installation).
-- `.claude-plugin/marketplace.json`: the marketplace catalogue that lists the collection and each pack.
+- `.claude-plugin/marketplace.json` and `.agents/plugins/marketplace.json`: the two marketplace catalogues (Claude and Codex) that list the collection and each pack; kept in sync by hand.
 - `node scripts/callbell-publish.js`: stamp the version, commit, push.
 
 ## License
