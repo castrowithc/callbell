@@ -98,7 +98,7 @@ function hasScaffold(dir) {
 }
 
 // Derived, never declared. A stored lens needs somewhere to live and someone to keep it true, and both
-// cost more than the heuristic is worth: `/callbell:start` reports what is missing by looking at the
+// cost more than the heuristic is worth: `/callbell-start` reports what is missing by looking at the
 // files, so nothing here depends on a field a user could leave stale.
 //
 // Code markers first: a markdown-only root would otherwise fall through to markdownHeavy -> ops.
@@ -204,7 +204,7 @@ if (state.length) {
   push('Projektstatus (automatisch beim Sitzungsstart geladen: der Memory-Index und der Backlog-Index):');
   push(state.join('\n\n'));
 } else if (pluginRoot) {
-  push('In diesem Ordner ist noch kein callbell-Projekt eingerichtet (Ambient-Modus). Skills und Regeln sind überall aktiv, aber dieser Ordner hat kein Backlog und kein Memory. `/callbell:start` richtet eines ein: erstellt das Gerüst und meldet es und fragt nach git, Ruleset und Zweck.');
+  push('In diesem Ordner ist noch kein callbell-Projekt eingerichtet (Ambient-Modus). Skills und Regeln sind überall aktiv, aber dieser Ordner hat kein Backlog und kein Memory. `/callbell-start` richtet eines ein: erstellt das Gerüst und meldet es und fragt nach git, Ruleset und Zweck.');
 }
 
 // Always-on payload: the rules (norms) and the minimal AGENTS.md ruleset.

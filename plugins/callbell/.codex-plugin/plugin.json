@@ -1,7 +1,7 @@
 {
   "name": "callbell",
   "version": "0.1.21",
-  "description": "The interface between you and the agent: shared norms, a scaffold for backlog and memory, filing, import, planning, and git.",
+  "description": "Die Schnittstelle zwischen dir und dem Agenten: gemeinsame Normen, ein Gerüst für Backlog und Memory, Ablage, Import, Planung und git.",
   "author": { "name": "Callbell" },
   "homepage": "https://github.com/castrowithc/callbell",
   "repository": "https://github.com/castrowithc/callbell",
@@ -11,15 +11,15 @@
   "hooks": "./hooks/callbell-hooks.json",
   "interface": {
     "displayName": "Callbell",
-    "shortDescription": "Shared norms, filing, backlog and memory for any repo",
-    "longDescription": "The interface between you and the agent: shared norms, a scaffold for backlog and memory, filing, import, planning, and git. /callbell:start is the way in — it checks what a folder is missing and lays it down. What kind of work gets done is decided by the purpose packs you switch on beside it.",
+    "shortDescription": "Gemeinsame Normen, Ablage, Backlog und Memory für jedes Repo",
+    "longDescription": "Die Schnittstelle zwischen dir und dem Agenten: gemeinsame Normen, ein Gerüst für Backlog und Memory, Ablage, Import, Planung und git. /callbell-start ist der Einstieg — es prüft, was einem Ordner fehlt, und legt es an. Welche Arbeit getan wird, entscheiden die Purpose-Packs, die du daneben einschaltest.",
     "developerName": "Callbell",
     "category": "Productivity",
     "capabilities": ["Instructions", "Lifecycle hooks"],
     "defaultPrompt": [
-      "Set up this project with callbell.",
-      "Where does this file belong?",
-      "Process what I put in the import zone."
+      "Richte dieses Projekt mit callbell ein.",
+      "Wohin gehört diese Datei?",
+      "Verarbeite, was ich in die Import-Zone gelegt habe."
     ]
   }
 }

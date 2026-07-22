@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-// The check behind /callbell:start. Reports what is MISSING and nothing else, so a healthy repo
+// The check behind /callbell-start. Reports what is MISSING and nothing else, so a healthy repo
 // produces one line and the skill stays worth calling a fourth time.
 //
 // This script IS the Node check. If Node is absent the call fails, and that failure is the answer —

@@ -1,7 +1,7 @@
 {
   "name": "callbell-dev",
   "version": "0.1.3",
-  "description": "Code pack for callbell: a lazy senior developer who builds the simplest thing that works, plus the review, audit and debt skills that check it.",
+  "description": "Code-Pack für callbell: ein fauler Senior-Developer, der die einfachste funktionierende Lösung baut, plus ein Review-Skill, der sie prüft.",
   "author": { "name": "Callbell" },
   "homepage": "https://github.com/castrowithc/callbell",
   "repository": "https://github.com/castrowithc/callbell",
@@ -11,15 +11,15 @@
   "hooks": "./hooks/callbell-dev-hooks.json",
   "interface": {
     "displayName": "Callbell Dev",
-    "shortDescription": "The laziest code that actually works",
-    "longDescription": "Code pack for callbell. A lazy senior developer at three levels — lite, full, ultra — who asks whether a thing needs to exist before building it, reaches for the standard library and the platform before writing custom code, and leaves one runnable check behind. Four more skills review a diff, audit a repo, harvest deferred shortcuts, and show the measured impact. Requires the callbell core.",
+    "shortDescription": "Der faulste Code, der tatsächlich funktioniert",
+    "longDescription": "Code-Pack für callbell. Ein fauler Senior-Developer auf drei Ebenen — lite, full, ultra — der fragt, ob eine Sache existieren muss, bevor er sie baut, zur Standardbibliothek und Plattform greift, bevor er eigenen Code schreibt, und einen lauffähigen Check hinterlässt. Ein Review-Skill prüft einen Diff oder ein ganzes Repo auf Over-Engineering. Erfordert den callbell-Core.",
     "developerName": "Callbell",
     "category": "Productivity",
     "capabilities": ["Instructions"],
     "defaultPrompt": [
-      "Build this the laziest way that works.",
-      "Review this diff for over-engineering.",
-      "Audit this repo for what I can delete."
+      "Bau das auf die faulste Weise, die funktioniert.",
+      "Prüfe diesen Diff auf Over-Engineering.",
+      "Prüfe dieses Repo darauf, was ich löschen kann."
     ]
   }
 }

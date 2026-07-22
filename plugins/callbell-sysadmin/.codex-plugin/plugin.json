@@ -1,7 +1,7 @@
 {
   "name": "callbell-sysadmin",
   "version": "0.1.3",
-  "description": "Server-manager pack for callbell: a passive safety layer plus on-demand server-ops skills, active where a host identity is declared.",
+  "description": "Server-Manager-Pack für callbell: eine passive Sicherheitsschicht plus On-Demand-Server-Ops-Skills, aktiv dort, wo eine Host-Identität deklariert ist.",
   "author": { "name": "Callbell" },
   "homepage": "https://github.com/castrowithc/callbell",
   "repository": "https://github.com/castrowithc/callbell",
@@ -11,15 +11,15 @@
   "hooks": "./hooks/callbell-sysadmin-hooks.json",
   "interface": {
     "displayName": "Callbell Sysadmin",
-    "shortDescription": "Server-manager pack: safety layer plus server-ops skills",
-    "longDescription": "Adds a passive server-safety layer and on-demand skills for setting up, hardening, backing up, and running servers and Docker stacks. Active on a host that declares its identity in __callbell__/.host-identity; otherwise nothing server-specific loads.",
+    "shortDescription": "Server-Manager-Pack: Sicherheitsschicht plus Server-Ops-Skills",
+    "longDescription": "Fügt eine passive Server-Sicherheitsschicht hinzu und On-Demand-Skills zum Einrichten, Härten, Sichern und Betreiben von Servern und Docker-Stacks. Aktiv auf einem Host, der seine Identität in __callbell__/.host-identity deklariert; sonst lädt nichts Serverspezifisches.",
     "developerName": "Callbell",
     "category": "Productivity",
     "capabilities": ["Instructions", "Lifecycle hooks"],
     "defaultPrompt": [
-      "Harden this server.",
-      "Set up backups for this server.",
-      "Set up a new server."
+      "Härte diesen Server.",
+      "Richte Backups für diesen Server ein.",
+      "Richte einen neuen Server ein."
     ]
   }
 }

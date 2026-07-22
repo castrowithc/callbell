@@ -3,7 +3,7 @@
 // callbell-dev — persistent lazy mode. ONE script, two events chosen by argv:
 //   `session` (SessionStart)      — re-inject the active level if the mode is on (survives clear/compact
 //                                    via the matcher); silent when off, because callbell-dev never self-activates.
-//   `prompt`  (UserPromptSubmit)  — act on `/callbell-dev:dev [level]` and "normal mode"/"stop dev";
+//   `prompt`  (UserPromptSubmit)  — act on `/callbell-dev [level]` and "normal mode"/"stop dev";
 //                                    otherwise keep the active mode present with a one-line reminder.
 //
 // The dev skill body is the single source of truth. The hook injects only the active level's table row and
@@ -19,7 +19,7 @@ const os = require('os');
 
 const LEVELS = ['lite', 'full', 'ultra'];
 const DEFAULT_LEVEL = 'full';
-const SKILL_PATH = path.join(__dirname, '..', 'skills', 'dev', 'SKILL.md');
+const SKILL_PATH = path.join(__dirname, '..', 'skills', 'callbell-dev', 'SKILL.md');
 const STATE_FILE = '.callbell-dev-active';
 
 // Codex sets PLUGIN_ROOT (and, for compat, CLAUDE_PLUGIN_ROOT); Claude sets only the latter. So PLUGIN_ROOT
@@ -87,7 +87,7 @@ function fallbackInstructions(level) {
     'Fehlerbehandlung, die Datenverlust verhindert, nie Sicherheit, nie ausdrücklich Verlangtes. Nicht-triviale',
     'Logik lässt einen lauffähigen Check zurück. Steuert, was du baust, nicht wie du redest.',
     '',
-    'Umschalten: /callbell-dev:dev lite|full|ultra. Aus: "normaler Modus" oder "stop dev".',
+    'Umschalten: /callbell-dev lite|full|ultra. Aus: "normaler Modus" oder "stop dev".',
   ].join('\n');
 }
 
@@ -143,8 +143,9 @@ function finish() {
   const lower = prompt.toLowerCase();
 
   try {
-    // An explicit switch: /callbell-dev:dev [level] (also $callbell-dev:dev, @…, or bare /dev).
-    const m = lower.match(/^[/@$](?:callbell-dev:)?dev\b\s*(\w+)?/);
+    // An explicit switch: /callbell-dev [level] (also $callbell-dev, @callbell-dev). The negative lookahead
+    // keeps /callbell-dev-review and /callbell-dev-help — separate skills sharing the prefix — from matching.
+    const m = lower.match(/^[/@$]callbell-dev(?![-\w])\s*(\w+)?/);
     if (m) {
       const arg = m[1] || '';
       if (arg === 'off' || arg === 'stop' || isDeactivation(arg)) {

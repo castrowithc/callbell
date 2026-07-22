@@ -1,30 +1,29 @@
 # Callbell
 
-*[English](README.md) · [Deutsch](README.de.md)*
+**Ein Experte, umgeben von Experten.** Du bist der Experte; die Agents und Sub-Agents sind Experten, die
+für dich arbeiten. Und die Kommunikation dazwischen ist **faul**: die schlankste Lösung, die wirklich
+trägt, statt Aufwand auf Vorrat. Der Name ist die Metapher, eine **Call Bell** (Service-Glocke): du
+klingelst, die Experten kommen. Deshalb trägt alles, was callbell liefert, das Präfix `callbell`.
 
-**One expert, surrounded by experts.** You are the expert; the agents and subagents are experts who work
-for you. And the communication between them is **lazy**: the leanest solution that actually holds, not
-effort on spec. The name is the metaphor, a **call bell** (the service bell on a counter): you ring, the
-experts come. That is why everything callbell ships carries the `callbell` prefix.
+Callbell ist **nicht** auf Coding begrenzt. Es ist ein Rahmen für agentische Solo-Arbeit, für Devs und
+Non-Devs gleichermaßen.
 
-Callbell is **not** limited to coding. It is a frame for agentic solo work, for devs and non-devs alike.
+## Der Always-on-Core
 
-## The always-on core
+Callbells Core ist **ein Plugin**, einmal pro Gerät installiert und in jedem Ordner aktiv. Es trägt die
+Skills, die Normen und einen Session-Hook, der den Kontext liefert. Installieren und arbeiten — nichts zu
+kopieren, nichts zu konfigurieren. Optionale Zweck-Packs installieren sich genauso aus demselben
+Marketplace, nur wenn du sie willst.
 
-Callbell's core is **one plugin**, installed once per device and active in every folder. It carries the
-skills, the norms, and a session hook that supplies the context. Install it and work — nothing to copy,
-nothing to configure. Optional purpose packs install the same way from the same marketplace, only if you
-want them.
+Der Core ist bewusst zweckneutral. Er verändert, wie du und der Agent zusammenarbeiten — Konventionen,
+Frontmatter, Zonen, Backlog, Memory, Datenschutz, Git und wohin eine Datei gehört — und hat keine Meinung
+dazu, *woran* du arbeitest. Diese Meinung bringt ein Pack mit, und du installierst nur die, die du willst.
+Ein Repo voller Code und ein Repo voller Markdown, das ein Thema steuert, bekommen denselben Core; sie
+unterscheiden sich darin, welches Pack daneben steht.
 
-The core is deliberately purpose-neutral. It changes how you and the agent work together — conventions,
-frontmatter, zones, backlog, memory, data protection, Git, and where a file belongs — and it takes no view
-on *what* you are working on. That view is what a pack brings, and you install only the ones you want. A
-repo full of code and a repo full of markdown steering a topic get the same core; they differ in which
-pack sits beside it.
+## Installation
 
-## Install
-
-Add the marketplace once, then install what you want from it.
+Den Marketplace einmal hinzufügen, dann daraus installieren, was du willst.
 
 **Claude Code:**
 
@@ -40,110 +39,117 @@ codex plugin marketplace add castrowithc/callbell
 codex plugin add callbell@callbell
 ```
 
-On Codex, one step follows: **type `/hooks` and trust the callbell hook.** Codex treats hooks that ship
-inside a plugin as non-managed and skips them until you have seen and approved the definition, so until you
-do, the skills work but you get no norms, no project context, and no lens. Trust is tied to the hook's
-registration, not its script, so you approve it once at first install and updates keep it.
+Unter Codex folgt ein Handgriff: **tippe `/hooks` und gib den callbell-Hook frei.** Codex behandelt Hooks,
+die in einem Plugin stecken, als nicht verwaltet und überspringt sie, bis du die Definition gesehen und
+freigegeben hast. Bis dahin funktionieren zwar die Skills, aber es gibt keine Normen, keinen Projektkontext
+und keine Linse. Die Freigabe hängt an der Registrierung des Hooks, nicht an seinem Skript, also gibst du
+sie einmal bei der Erstinstallation frei und Updates behalten sie.
 
-If you registered the hook by hand in `~/.codex/hooks.json` under an earlier version, remove that entry now
-or the context arrives twice.
+Hast du den Hook unter einer früheren Version von Hand in `~/.codex/hooks.json` eingetragen, entferne den
+Eintrag jetzt, sonst kommt der Kontext doppelt.
 
-## What you can install
+## Was du installieren kannst
 
-- **`callbell`** — the always-on core: the norms, the session hook, and `/callbell:start` as the way in.
-  Nothing else is required to use it. It carries no purpose of its own — what kind of work gets done is
-  what the packs below decide.
-- **`callbell-dev`** — a code pack: a lazy senior developer at three levels (`lite`, `full`, `ultra`) who
-  asks whether a thing needs to exist before building it, reaches for the standard library and the platform
-  before writing custom code, and leaves one runnable check behind. A second skill reviews for
-  over-engineering, across a diff or a whole repo. Install with
-  `claude plugin install callbell-dev@callbell` or `codex plugin add callbell-dev@callbell`.
-- **`callbell-sysadmin`** — a server-manager pack: a passive safety layer that asks for explanation and
-  confirmation before destructive commands, plus skills to set up, harden, back up, deploy to, and check a
-  Linux host. **Before you install it:** it is for working *on a server* — you need shell access to that
-  host and root or sudo on it, and some skills assume Docker where your stack uses it. It stays completely
-  silent until a host identity is declared (`__callbell__/.host-identity`), so installing it device-wide
-  costs your code repos nothing. Install with `claude plugin install callbell-sysadmin@callbell` or
-  `codex plugin add callbell-sysadmin@callbell`, then run **`/callbell-sysadmin:start`** in the folder you
-  administer from: it lays out a folder per host, reads that machine's inventory itself, and writes the
-  identity.
+- **`callbell`** — der Always-on-Core: die Normen, der Session-Hook und `/callbell-start` als Einstieg.
+  Mehr braucht es nicht. Er trägt keinen eigenen Zweck — welche Art Arbeit getan wird, entscheiden die
+  Packs darunter.
+- **`callbell-dev`** — ein Code-Pack: ein fauler Senior-Entwickler in drei Stufen (`lite`, `full`, `ultra`),
+  der zuerst fragt, ob eine Sache überhaupt existieren muss, nach Standardbibliothek und Plattform greift,
+  bevor er eigenen Code schreibt, und eine lauffähige Prüfung hinterlässt. Ein zweites Skill prüft auf
+  Überbau, wahlweise für ein Diff oder ein ganzes Repo.
+  Installation mit `claude plugin install callbell-dev@callbell` bzw.
+  `codex plugin add callbell-dev@callbell`.
+- **`callbell-sysadmin`** — ein Server-Manager-Pack: eine passive Sicherheitsschicht, die vor zerstörerischen
+  Befehlen Erklärung und Bestätigung verlangt, dazu Skills, um einen Linux-Host aufzusetzen, zu härten, zu
+  sichern, zu bespielen und zu prüfen. **Vor der Installation:** es ist für die Arbeit *auf einem Server* —
+  du brauchst Shell-Zugang zu diesem Host und root oder sudo darauf, und einige Skills setzen Docker voraus,
+  wo dein Stack es nutzt. Es bleibt vollständig still, bis eine Host-Identität deklariert ist
+  (`__callbell__/.host-identity`); geräteweit installiert kostet es deine Code-Repos also nichts.
+  Installation mit `claude plugin install callbell-sysadmin@callbell` bzw.
+  `codex plugin add callbell-sysadmin@callbell`, danach **`/callbell-sysadmin-start`** in dem Ordner, aus
+  dem du administrierst: es legt einen Ordner je Host an, liest den Bestand der Maschine selbst aus und
+  schreibt die Identität.
 
-## Usage
+## Nutzung
 
-1. **Install** as above.
-2. Run **`/callbell:start`** in the folder you want to work in. It checks what is there — Node, git, the
-   scaffold, your ruleset — and **creates the missing scaffold right away and reports it**; for git, the
-   ruleset, and purpose it asks, because those are decisions, not just files. Run it whenever you start
-   somewhere new; on a folder that is already set up it costs you one line.
-3. Work. The skills and norms are active immediately, in any folder.
+1. Wie oben **installieren**.
+2. **`/callbell-start`** in dem Ordner ausführen, in dem du arbeiten willst. Er prüft, was da ist — Node,
+   git, das Gerüst, dein Ruleset — und **legt das fehlende Gerüst gleich an und meldet es**; über git,
+   Ruleset und Zweck fragt er, das sind Entscheidungen, keine bloßen Dateien. Ruf ihn auf, wann immer du
+   irgendwo neu anfängst; in einem eingerichteten Ordner kostet er dich eine Zeile.
+3. Arbeiten. Die Skills und Normen sind sofort aktiv, in jedem Ordner.
 
-**The most callbell will ever ask of you: Node on your PATH.** The session hook that supplies the norms and
-project context runs on Node, so `node` has to be on your PATH (Nix/nvm users: on the *non-interactive*
-shell's PATH). Without it nothing breaks loudly — no errors, no failed prompts — but you lose everything the
-hook delivers: the always-on norms, the project context, and the memory and backlog indexes. The skills
-themselves still load and run, but they run without the norms that are supposed to shape them. Treat it as
-a degraded mode, not a supported one.
+**Das Höchste, worum callbell dich je bittet: Node im PATH.** Der Session-Hook, der die Normen und den
+Projektkontext liefert, läuft über Node — `node` muss also im PATH sein (Nix/nvm: im PATH der
+*non-interactive* Shell). Fehlt es, bricht nichts lautstark — keine Fehler, keine abgebrochenen Prompts —,
+aber alles, was der Hook liefert, fällt weg: die Always-on-Normen, der Projektkontext und die Memory- und
+Backlog-Indizes. Die Skills selbst laden und laufen weiter, aber ohne die Normen, die sie prägen sollen.
+Ein Notbetrieb, kein unterstützter Zustand.
 
-## Interaction language
+## Interaktionssprache
 
-This is your setup, on a level with Node and git, and callbell does not take it off your hands. callbell's
-skills and norms are written in a language of their own. Without a fixed anchor an agent drifts into that
-language over time, whatever you speak. Anchor your own and it stays with you, whatever language the shipped
-skills are in.
+Das ist deine Vorbereitung, auf einer Ebene mit Node und git, und callbell nimmt sie dir nicht ab.
+callbells Skills und Normen sind in einer eigenen Sprache geschrieben. Ohne einen festen Anker zieht ein
+Agent mit der Zeit in diese Sprache, egal welche du sprichst. Verankerst du deine eigene, bleibt er bei
+dir, egal in welcher Sprache die mitgelieferten Skills stehen.
 
-Within a session callbell follows your language from your first message anyway. To make that hold across
-sessions, pin one line in your **own** machine-local agent file (`~/.claude/CLAUDE.md` on Claude,
-`~/.codex/AGENTS.md` on Codex), in your own words, for example:
+Innerhalb einer Session folgt callbell deiner Sprache ohnehin ab der ersten Nachricht. Damit das über
+Sessions hinweg hält, setzt du eine Zeile in deiner **eigenen** maschinenlokalen Agent-Datei
+(`~/.claude/CLAUDE.md` unter Claude, `~/.codex/AGENTS.md` unter Codex), in deinen eigenen Worten, zum
+Beispiel:
 
-> Always answer me in German (chat and visible reasoning).
+> Antworte mir immer auf Deutsch (Chat und sichtbares Reasoning).
 
-That file is yours. callbell does not manage it and writes nothing into it. The one place callbell does take
-a language is the entry point itself: call it with a language argument (`/callbell:start german`) and it runs
-that single pass in that language, because unlike a typed message the call otherwise carries no language
-signal. Nothing is stored.
+Diese Datei gehört dir. callbell verwaltet sie nicht und schreibt nichts hinein. Die eine Stelle, an der
+callbell eine Sprache doch entgegennimmt, ist der Einstieg selbst: rufst du ihn mit einem Sprach-Argument
+auf (`/callbell-start deutsch`), führt er diesen einen Lauf in dieser Sprache, weil der Aufruf im Gegensatz
+zu einer getippten Nachricht sonst kein Sprachsignal trägt. Gespeichert wird dabei nichts.
 
-## The `__callbell__` folder
+## Der Ordner `__callbell__`
 
-The first `start` in a folder brings `__callbell__/` into being — and `start` creates it and tells you,
-rather than asking: the scaffold is folders and files callbell manages, reversible and nothing to negotiate
-over. It carries the work trail and the memory that travel with the project instead of living inside one
-agent:
+Beim ersten `start` in einem Ordner entsteht `__callbell__/` — und `start` legt es an und sagt es dir,
+statt zu fragen: das Gerüst sind Ordner und Dateien, die callbell verwaltet, reversibel und nichts, worüber
+man verhandelt. Es trägt die Arbeitsspur und das Gedächtnis, die mit dem Projekt reisen statt in einem
+einzelnen Agenten zu liegen:
 
-- `backlog/` — the versioned work trail: tasks and projects.
-- `memory/` — what holds across sessions, as files in the repo.
-- `templates/` — the templates tasks and projects are cut from.
-- `zone-import/` and `zone-export/` — the two volatile buffers: raw material in, requested results out.
+- `backlog/` — die versionierte Arbeitsspur: Tasks und Projekte.
+- `memory/` — was über Sitzungen hinweg gilt, als Dateien im Repo.
+- `templates/` — die Vorlagen, aus denen Tasks und Projekte entstehen.
+- `zone-import/` und `zone-export/` — die zwei flüchtigen Puffer: Rohmaterial hinein, angeforderte
+  Ergebnisse hinaus.
 
-`plan`, `import`, `filing`, and the frontmatter standard all stand on it; without the folder they have no
-ground. What `start` does *ask* about — git, ruleset, purpose and roles — are decisions it cannot announce.
-The folder explains itself in its own `README.md` when you look inside.
+Darauf stehen `plan`, `import`, `filing` und der Frontmatter-Standard; ohne den Ordner haben sie keinen
+Boden. Was `start` dagegen *fragt* — git, Ruleset, Zweck und Rollen — sind Entscheidungen, die er nicht
+ankündigen kann. Der Ordner erklärt sich in seiner eigenen `README.md`, wenn du hineinsiehst.
 
-## Namespaces
+## Namensräume
 
-Each plugin is its own namespace, and that is what keeps names apart: the core's skills are called
-`/callbell:start`, `/callbell:filing`, `/callbell:plan` and so on, a pack's are `/callbell-dev:review`,
-`/callbell-sysadmin:harden`. The skill name never repeats the plugin name — the prefix already says it.
+Jedes Plugin ist sein eigener Namensraum, und jeder Skill trägt seinen Plugin-Namen als Präfix: die Skills
+des Kerns heißen `/callbell-start`, `/callbell-filing`, `/callbell-plan` und so weiter, die eines Packs
+`/callbell-dev-review`, `/callbell-sysadmin-harden`. Das Präfix ist bewusst da, nicht redundant — tippst du
+`/callbell`, findest du damit alle Skills des Kerns auf einmal, mit `/callbell-sysadmin` alle des
+Server-Packs.
 
-Your **own** skills live outside the plugins entirely and cannot collide with any of this.
+Deine **eigenen** Skills liegen ganz außerhalb der Plugins und können mit alldem nicht kollidieren.
 
-## This repo
+## Dieses Repo
 
-This repo **is** a marketplace: the always-on `callbell` collection plus optional purpose packs, each its
-own installable plugin under `plugins/`. There is no build step and nothing is generated: every plugin is
-authored here directly, and what you read is what gets installed.
+Dieses Repo **ist** ein Marketplace: die Always-on-Collection `callbell` plus optionale Zweck-Packs, jedes
+ein eigenes installierbares Plugin unter `plugins/`. Es gibt keinen Build-Schritt und nichts wird
+generiert: jedes Plugin wird hier direkt geschrieben, und was du liest, ist das, was installiert wird.
 
-- `plugins/callbell/` — the collection, what you install and run always-on:
-  - `skills/` — one flat folder, seven skills: entry, filing, planning, import, commit, worktree, help.
-  - `rules/core/` — norms that hold in any repo. The session tells the agent to read them straight away.
-  - `rules/scaffold/` — norms that only mean anything where a `__callbell__/` scaffold exists (backlog,
-    zones, frontmatter, memory, structure). Loaded only there — but then straight away, like the core
-    norms; a repo without a scaffold pays nothing for them.
-  - `hooks/callbell-context.js` — the SessionStart hook: reports the scaffold, injects the memory and
-    backlog indexes, and points the agent at the rules. Claude runs it from the plugin; on Codex it has to
-    be registered by hand (see Install).
-- `.claude-plugin/marketplace.json` — the marketplace catalog, listing the collection and every pack.
-- `node scripts/callbell-publish.js` — stamp the version, commit, push.
+- `plugins/callbell/` — die Collection, das, was du installierst und always-on läuft:
+  - `skills/` — ein flacher Ordner, sieben Skills: Einstieg, Ablage, Planung, Import, Commit, Worktree, Hilfe.
+  - `rules/core/` — Normen, die in jedem Repo gelten. Die Session weist den Agenten an, sie sofort zu lesen.
+  - `rules/scaffold/` — Normen, die nur dort etwas bedeuten, wo ein `__callbell__/`-Gerüst existiert
+    (Backlog, Zonen, Frontmatter, Memory, Struktur). Nur dort geladen — dann aber sofort, wie die
+    Kern-Normen; ein Repo ohne Gerüst zahlt nichts.
+  - `hooks/callbell-context.js` — der SessionStart-Hook: meldet das Gerüst, injiziert die Memory- und
+    Backlog-Indizes und verweist den Agenten auf die Regeln. Claude führt ihn aus dem Plugin aus; unter
+    Codex muss er von Hand registriert werden (siehe Installation).
+- `.claude-plugin/marketplace.json` — der Marketplace-Katalog, der die Collection und jedes Pack listet.
+- `node scripts/callbell-publish.js` — Version stempeln, committen, pushen.
 
-## License
+## Lizenz
 
-MIT, see [LICENSE](LICENSE).
+MIT, siehe [LICENSE](LICENSE).

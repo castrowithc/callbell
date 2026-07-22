@@ -60,7 +60,7 @@ if (host) {
   // Der Ordner ist der Kern des Versprechens. Fehlt er, sag es, statt den Agenten auf einen Pfad zu
   // scopen, an dem nichts liegt — genau dieses stille Scheitern war der Anlass für die drei Zustände.
   if (!domainExists) {
-    lines.push('Der Ordner ' + host + '/ liegt noch nicht vor. Lege ihn über /callbell-sysadmin:start an,' +
+    lines.push('Der Ordner ' + host + '/ liegt noch nicht vor. Lege ihn über /callbell-sysadmin-start an,' +
       ' bevor du Material über diesen Host ablegst.');
   }
   blocks.push(lines.join('\n'));
