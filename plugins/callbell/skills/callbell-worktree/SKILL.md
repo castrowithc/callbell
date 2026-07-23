@@ -16,7 +16,7 @@ Open a second working thread with `git worktree`, without stashing the open stat
 ## When
 - On the user's direct request.
 - When parallel or colliding work comes up (a new thread while a branch is open): propose a worktree, explain it in a sentence or two, and create it only after approval (it's a new structural element).
-- For a parallel thread, also propose its own backlog project `__callbell__/backlog/<project>/`. It isolates that thread's backlog changes so the worktrees don't collide on shared files.
+- For a parallel thread in a repo that has a scaffold, also propose its own backlog project `__callbell__/backlog/<project>/`. It isolates that thread's backlog changes so the worktrees don't collide on shared files.
 
 ## Set up
 1. Check state (`git status`); save open changes in the main folder (commit or stash).

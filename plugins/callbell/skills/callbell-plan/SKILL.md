@@ -14,6 +14,8 @@ disable-model-invocation: true
 
 An idea goes in, a project and its work packages come out. After that this session is done, and the work grows from there in conversation.
 
+Work packages are task files under `__callbell__/backlog/`, so this needs a scaffold. If the repo has none, say so and point the user to `/callbell-start` before cutting anything.
+
 The user started this deliberately, so the intent to build is settled: don't reopen whether they want it. What's open is *what* they want, and that's the work below.
 
 Planning is a conversation, not a form. Never hand the user a template to fill in. The checklist below is yours: check what they gave you against it, and ask about what's missing.

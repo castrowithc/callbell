@@ -46,7 +46,7 @@ The core doesn't decide *which* work gets done; the packs do. Switch them on ind
 - **Roles:** you decide and review; the agent executes, structured and largely on its own.
 - **Approvals:** structure or schema changes (and new areas in ops), plus promoting drafts, only after approval; routine within the established frame the agent handles itself.
 - **Structure:** the path says WHERE, the frontmatter says WHAT, `status` drives maturity.
-- **Zones:** `__callbell__/zone-import/` (inputs) and `__callbell__/zone-export/` (requested deliverables), the two transient buffers. The versioned work trail is `__callbell__/backlog/` (managed state, not a zone).
+- **Zones and work trail** exist once a scaffold does (`/callbell-start` lays it down): `__callbell__/zone-import/` (inputs) and `__callbell__/zone-export/` (requested deliverables) are the two transient buffers, and `__callbell__/backlog/` is the versioned work trail (managed state, not a zone).
 
 ## Namespace
 
