@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "callbell",
   "displayName": "Callbell",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "The interface between you and the agent: shared norms, a scaffold for backlog and memory, filing, import, planning, and git.",
   "author": { "name": "Callbell", "url": "https://github.com/castrowithc" },
   "homepage": "https://github.com/castrowithc/callbell",
