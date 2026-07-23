@@ -176,7 +176,9 @@ any format. The reply in the chat is not affected.
 
 ## Different repo types
 
-Callbell distinguishes between dev and ops projects, which the agent must know:
+Callbell distinguishes dev work from ops work. This is not a fixed label on the repo root, settled in
+advance: a repo can steer in markdown while its code lives in a nested or sibling repo, so the agent
+reads the distinction from the path it is actually working in, at the moment a task needs it.
 - Dev: classic code bases. May also hold text files as a project wiki or project docs.
 - Ops: text-heavy repos like personal OS, business OS, wikis, markdown RAGs.
   May hold code, e.g. as script templates, code documentation, code snippets.
