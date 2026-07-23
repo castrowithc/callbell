@@ -1,6 +1,6 @@
 {
   "name": "callbell-dev",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Code pack for callbell: a lazy senior developer who builds the simplest working solution, plus a review skill that checks it.",
   "author": { "name": "Callbell" },
   "homepage": "https://github.com/castrowithc/callbell",
