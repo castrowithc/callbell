@@ -28,7 +28,7 @@ function resolveRoot() {
   if (process.env.CLAUDE_PROJECT_DIR) return process.env.CLAUDE_PROJECT_DIR;
   if (!process.stdin.isTTY) {
     try {
-      const raw = fs.readFileSync(0, 'utf8');
+      const raw = fs.readFileSync(0, 'utf8').replace(/^﻿/, ''); // tolerate a stdin BOM
       const payload = raw ? JSON.parse(raw) : null;
       if (payload && typeof payload.cwd === 'string' && payload.cwd) return payload.cwd;
     } catch { /* no or invalid JSON on stdin -> fallback */ }
