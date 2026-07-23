@@ -81,9 +81,12 @@ if (fs.existsSync(path.dirname(hostSettings))) {
   let host = {};
   try { host = JSON.parse(fs.readFileSync(hostSettings, 'utf8')); } catch { /* absent or invalid */ }
   // Name what is missing, never what is set: half-configured has to read differently from untouched,
-  // or the user who already set one of the two concludes their setting had no effect.
+  // or the user who already set one of them concludes their setting had no effect.
   const want = [];
   if (!(host.attribution && host.attribution.commit === '')) want.push('"attribution": {"commit": "", "pr": ""}');
+  // Its own key beside attribution, and the docs do not say an empty attribution covers it. One line here
+  // against a Co-Authored-By that has to be rewritten out of a shared history later.
+  if (host.includeCoAuthoredBy !== false) want.push('"includeCoAuthoredBy": false');
   if (host.includeGitInstructions !== false) want.push('"includeGitInstructions": false');
   if (want.length) {
     notes.push('attribution: the host adds commit text of its own unless told not to. In '
