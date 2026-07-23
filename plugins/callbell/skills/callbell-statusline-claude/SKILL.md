@@ -55,6 +55,12 @@ on every render.
 - `fixed`: four fixed rows — Model/Thinking/Dir · Branch/Diff · Out/In/Cost · Method/Reset/Weekly Reset —
   each showing only its active widgets. Use when wrap misbehaves.
 
+## Separator
+The `separator` field sets the dimmed string drawn between widgets. Default `" │ "`. Set it to `" · "`,
+`" | "`, or `"  "` (two spaces, no visible divider) in `~/.callbell/statusline.json`, or ask the skill to
+change it. Re-running setup after a plugin update copies the latest renderer and **tops up new config
+fields** (like `separator`) into an existing config, without touching the user's widget choices.
+
 ## Colours (fixed in the renderer)
 Context bar: green · >35% yellow · >45% orange · >70% red, relative to the model's own window size. Diff
 `+` green, `-` red-orange.

@@ -29,16 +29,25 @@ fs.mkdirSync(callbellDir, { recursive: true });
 fs.copyFileSync(path.join(pluginRoot, 'scripts', 'callbell-statusline.js'), rendererDst);
 done.push('renderer copied to ' + rendererDst);
 
-// 3. default config only if absent — never clobber the user's widget choices
-if (!fs.existsSync(configFile)) {
-    const def = {
-        layout: 'wrap',
-        widgets: ['model', 'thinking', 'dir', 'branch', 'diff', 'out', 'context', 'cost', 'reset', 'weekly-reset', 'method']
-    };
-    fs.writeFileSync(configFile, JSON.stringify(def, null, 2) + '\n');
-    done.push('default config written to ' + configFile);
+// 3. config: create with defaults if absent, else top up missing top-level fields (e.g. a new
+//    "separator") without ever touching the user's widget choices.
+const DEFAULTS = {
+    layout: 'wrap',
+    separator: ' │ ',
+    widgets: ['model', 'thinking', 'dir', 'branch', 'diff', 'out', 'context', 'cost', 'reset', 'weekly-reset', 'method']
+};
+const existed = fs.existsSync(configFile);
+let config = {};
+if (existed) { try { config = JSON.parse(fs.readFileSync(configFile, 'utf8')); } catch { config = {}; } }
+let changed = !existed;
+for (const key of Object.keys(DEFAULTS)) {
+    if (!(key in config)) { config[key] = DEFAULTS[key]; changed = true; }
+}
+if (changed) {
+    fs.writeFileSync(configFile, JSON.stringify(config, null, 2) + '\n');
+    done.push((existed ? 'config topped up (new fields) at ' : 'default config written to ') + configFile);
 } else {
-    done.push('config left as is (already present) at ' + configFile);
+    done.push('config left as is at ' + configFile);
 }
 
 // 4. point the host statusLine at the stable renderer, keep every other setting

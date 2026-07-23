@@ -20,9 +20,10 @@ function loadConfig() {
         const c = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
         return {
             layout: c.layout === 'fixed' ? 'fixed' : 'wrap',
+            separator: typeof c.separator === 'string' ? c.separator : ' │ ',
             widgets: Array.isArray(c.widgets) && c.widgets.length ? c.widgets : DEFAULT_WIDGETS
         };
-    } catch { return { layout: 'wrap', widgets: DEFAULT_WIDGETS }; }
+    } catch { return { layout: 'wrap', separator: ' │ ', widgets: DEFAULT_WIDGETS }; }
 }
 
 // ---------------- input ----------------
@@ -147,8 +148,9 @@ const WIDGETS = {
 const cfg = loadConfig();
 const git = gitInfo(data);
 const render = (type) => (WIDGETS[type] ? WIDGETS[type](data, git) : null);
-const SEP = '  ';
-const rowText = (segs) => segs.map(s => s.colored).join(SEP);
+const SEP = cfg.separator;
+const SEP_COLORED = noColor ? SEP : C.dim + SEP + C.reset;
+const rowText = (segs) => segs.map(s => s.colored).join(SEP_COLORED);
 
 let out;
 if (cfg.layout === 'fixed') {
