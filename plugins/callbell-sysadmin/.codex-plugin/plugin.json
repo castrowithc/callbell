@@ -1,6 +1,6 @@
 {
   "name": "callbell-sysadmin",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Server-manager pack for callbell: a passive safety layer plus on-demand server-ops skills, active where a host identity is declared.",
   "author": { "name": "Callbell" },
   "homepage": "https://github.com/castrowithc/callbell",
