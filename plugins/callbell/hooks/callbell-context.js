@@ -39,6 +39,12 @@
 const fs = require('fs');
 const path = require('path');
 
+// The scaffold top-up (used further down). Loaded defensively: an older bundle running beside a newer
+// hook might not carry the shared module, and a missing top-up must never break context injection.
+let scaffoldTopUp = null;
+try { ({ scaffoldTopUp } = require('../scripts/callbell-scaffold-topup.js')); }
+catch { /* older bundle without the shared module: skip the top-up */ }
+
 // Set when running as a plugin: the plugin's own root, carrying the bundled always-on payload.
 // Claude exposes CLAUDE_PLUGIN_ROOT; Codex exposes PLUGIN_ROOT (and the legacy alias). Empty otherwise.
 const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT || process.env.PLUGIN_ROOT || '';
@@ -47,7 +53,7 @@ function resolveRoot() {
   if (process.env.CLAUDE_PROJECT_DIR) return process.env.CLAUDE_PROJECT_DIR;
   if (!process.stdin.isTTY) {
     try {
-      const raw = fs.readFileSync(0, 'utf8');
+      const raw = fs.readFileSync(0, 'utf8').replace(/^﻿/, ''); // tolerate a stdin BOM
       const payload = raw ? JSON.parse(raw) : null;
       if (payload && typeof payload.cwd === 'string' && payload.cwd) return payload.cwd;
     } catch { /* no or invalid JSON on stdin -> fallback */ }
@@ -126,6 +132,19 @@ function push(text) {
 // (field-checked 2026-07-20, it cost `start` its scaffold step). Here the value is real, already
 // substituted by the host, and correct for the running version, so one line hands it to every skill.
 const scaffold = hasScaffold(root);
+
+// A scaffold that already exists is topped up to the current bundle. A plugin update can ship new template
+// files, and the design is that the user need not re-run /callbell-start to get them: the gap is filled
+// here and the user is told what was added, never asked, because the added files are needed. This is the
+// one place the hook writes rather than only reporting; it copies only missing files, never overwrites,
+// and is wrapped so a failure here never costs the context below. It is idempotent, so resume and compact
+// starts are a no-op once the scaffold is current.
+let toppedUp = [];
+if (pluginRoot && scaffold && scaffoldTopUp) {
+  try { toppedUp = scaffoldTopUp(root, path.join(pluginRoot, 'scaffold'), { apply: true }).created; }
+  catch { /* a top-up failure must not break context injection */ }
+}
+
 push([
   scaffold
     ? 'CALLBELL SCAFFOLD: yes (__callbell__/ is present; its norms are in force)'
@@ -133,6 +152,13 @@ push([
   ...(pluginRoot ? ['CALLBELL PLUGIN ROOT: ' + pluginRoot.split(path.sep).join('/')
     + ' (bundled scripts and templates live here)'] : []),
 ].join('\n'));
+
+// Report what the top-up added, so the agent tells the user. Not silent (the user should know what
+// changed), never a question (the files are needed, that is why they ship).
+if (toppedUp.length) {
+  push('SCAFFOLD TOPPED UP: a plugin update added ' + toppedUp.length + ' missing file(s) to the scaffold, '
+    + 'applied automatically: ' + toppedUp.join(', ') + '. Tell the user what was added.');
+}
 
 // Project STATE, and only the two indices. Purpose and roles live in the user's own AGENTS.md, which the
 // host loads natively — carrying a second copy of them from here would double the payload and give the

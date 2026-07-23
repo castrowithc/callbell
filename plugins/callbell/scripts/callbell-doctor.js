@@ -18,6 +18,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { execFileSync } = require('child_process');
+const { scaffoldTopUp } = require('./callbell-scaffold-topup.js');
 
 const argv = process.argv.slice(2);
 const apply = argv.includes('--apply');
@@ -39,26 +40,8 @@ function has(cmd, args) {
   catch { return false; }
 }
 
-// Recursive walk of the shipped bundle, returning paths relative to its root. The bundle is the
-// single source of what a scaffold contains, so this never carries a hardcoded file list and a
-// scaffold that grows needs no change here.
-function walk(dir, base = dir) {
-  let out = [];
-  let entries;
-  try { entries = fs.readdirSync(dir, { withFileTypes: true }); }
-  catch { return out; }
-  for (const e of entries) {
-    const full = path.join(dir, e.name);
-    if (e.isDirectory()) out = out.concat(walk(full, base));
-    else out.push(path.relative(base, full).split(path.sep).join('/'));
-  }
-  return out;
-}
-
-function copy(from, to) {
-  fs.mkdirSync(path.dirname(to), { recursive: true });
-  fs.copyFileSync(from, to);
-}
+// The scaffold walk-and-copy lives in callbell-scaffold-topup.js, shared with the session hook so the two
+// never disagree on which bundle files a scaffold should carry.
 
 // --- environment ------------------------------------------------------------
 // Checked every run, never cached. The case this skill exists for — a new host, an uninstall, a
@@ -132,26 +115,20 @@ for (const list of [missing, notes]) {
 // Compared file by file against the shipped bundle. This is what makes a version stamp unnecessary:
 // the question "is anything missing" is answered by looking, not by comparing numbers.
 
-// One scaffold, no ops/code branch. The lens used to select extra files here; what it selected were two
-// framework.md that restated the filing rules, so the branch went with them. Templates are inert — an
-// unused one costs a file, while a branch costs an argument, a code path, and a way to be wrong.
-const base = path.join(bundle, '__callbell__');
-const absent = walk(base).filter(rel => !fs.existsSync(path.join(target, '__callbell__', rel)));
+// One scaffold, no ops/code branch: templates are inert, so an unused one costs a file while a branch
+// costs an argument, a code path, and a way to be wrong. The compare-and-copy is scaffoldTopUp, shared
+// with the session hook.
+const { absent, created: scaffoldCreated } = scaffoldTopUp(target, bundle, { apply });
 
-// Under --apply this is about to be fixed, so it is reported as CREATED rather than twice.
+// Under --apply the gap is fixed in the same pass, so it is reported as CREATED rather than twice.
 if (!apply) {
   if (!fs.existsSync(path.join(target, '__callbell__'))) {
     missing.push('scaffold: no __callbell__/ here, so no backlog, memory, or zones.');
   } else if (absent.length) {
     missing.push('scaffold: ' + absent.length + ' file(s) missing — ' + absent.join(', '));
   }
-}
-
-if (apply) {
-  for (const rel of absent) {
-    copy(path.join(base, rel), path.join(target, '__callbell__', rel));
-    created.push('__callbell__/' + rel);
-  }
+} else {
+  created.push(...scaffoldCreated);
 }
 
 // --- .gitignore -------------------------------------------------------------
