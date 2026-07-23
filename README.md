@@ -48,8 +48,9 @@ If you registered the hook by hand under an earlier version in `~/.codex/hooks.j
   root or sudo on it, and some skills assume Docker where your stack uses it. It stays completely silent
   until a host identity is declared (`__callbell__/.host-identity`); installed machine-wide, it therefore
   costs your code repos nothing. Install with `claude plugin install callbell-sysadmin@callbell` or
-  `codex plugin add callbell-sysadmin@callbell`, then **`/callbell-sysadmin-start`** in the folder you
-  administer from: it creates a folder per host, reads the machine's own inventory, and writes the identity.
+  `codex plugin add callbell-sysadmin@callbell`, then **`/callbell-sysadmin-add-host`** in the folder you
+  administer from: it creates a folder per host, reads the machine's own inventory, writes the identity, and
+  offers to provision an unfinished machine.
 
 ## Usage
 

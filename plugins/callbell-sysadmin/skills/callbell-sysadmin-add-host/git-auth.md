@@ -1,6 +1,6 @@
 ---
 description: >
-  Companion to callbell-sysadmin-setup: set up access to the Git forge for cloning. A scoped token (the
+  Companion to callbell-sysadmin-add-host: set up access to the Git forge for cloning. A scoped token (the
   common case), a deploy key, or an account SSH key, with the GitHub path walked in full.
 type: playbook
 edit: locked

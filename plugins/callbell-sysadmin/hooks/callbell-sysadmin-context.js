@@ -60,7 +60,7 @@ if (host) {
   // The folder is the core of the promise. If it's missing, say so rather than scoping the agent to a path
   // with nothing at it: that silent failure is exactly what the three states exist for.
   if (!domainExists) {
-    lines.push('The folder ' + host + '/ does not exist yet. Create it via /callbell-sysadmin-start' +
+    lines.push('The folder ' + host + '/ does not exist yet. Create it via /callbell-sysadmin-add-host' +
       ' before you file material about this host.');
   }
   blocks.push(lines.join('\n'));

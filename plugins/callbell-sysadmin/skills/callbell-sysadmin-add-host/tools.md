@@ -1,6 +1,6 @@
 ---
 description: >
-  Companion to callbell-sysadmin-setup: install the standard command-line tools (micro, mc, fzf, tmux, git)
+  Companion to callbell-sysadmin-add-host: install the standard command-line tools (micro, mc, fzf, tmux, git)
   across distributions and load the tmux configuration.
 type: playbook
 edit: locked

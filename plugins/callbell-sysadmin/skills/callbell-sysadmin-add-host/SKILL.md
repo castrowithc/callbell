@@ -1,16 +1,17 @@
 ---
-name: callbell-sysadmin-start
+name: callbell-sysadmin-add-host
 description: >
-  The way into callbell-sysadmin: creates the server working folder or adds another host domain beside it,
-  reads the host's own inventory, and sets the host identity. Start it by typing /callbell-sysadmin-start.
+  The one way into callbell-sysadmin: adds a host as a working domain, reads the machine's inventory, sets
+  the host identity, and on an unprovisioned machine offers to bring it up. Run once per host by typing
+  /callbell-sysadmin-add-host.
 type: skill
 edit: locked
 disable-model-invocation: true
 ---
 
-# /callbell-sysadmin-start
+# /callbell-sysadmin-add-host
 
-The first stop in a server working folder. The hook tells each session which domain is its workspace; here you create that domain.
+The one entry point of the pack, run once for each host. It lays down that host's working domain, and when the machine turns out to be unprovisioned, it carries on into bringing it up. The hook tells each session which domain is its workspace; here you create that domain.
 
 **A domain is a folder named after the host, and it reads like a small repo of its own without its own git:** everything about that machine lives in it, and `__callbell__/` is the one shared center. It carries `framework.md` (how the host is run) and `index.md` (what's on it), and grows lazily: new material joins an existing file where one fits, otherwise it becomes a new one below.
 
@@ -105,7 +106,32 @@ Two things can't be read off the machine, and those are the only ones you ask ab
 
 If the ruleset is missing entirely, create it from `server-agents.md`, with `CLAUDE.md` beside it as the one-line switch `@AGENTS.md`: the same mechanic as the core, so both hosts read the same content without doubling it. Add by **appending, never replacing**, and write only after confirmation: the file belongs to the user.
 
-## 7. Close
+## 7. Provision, but only on an unfinished machine
+
+You read the inventory in step 4, so you already know what's in front of you. If it shows an admin account beside root, a firewall, the standard tools and a backup timer, this host is already up: **skip this section**, say nothing, go to the close. A running box is never reprovisioned, and a pointer that always fires is advertising.
+
+Only when the inventory shows an unfinished machine, no admin account beside root, no firewall, none of the standard tools, no backup timer, do you offer to bring it up. **Ask first, and settle the decisions in plan mode.** This part runs on the host as the admin user, never as root, and the safety layer's two-connection pattern for SSH and firewall holds before every destructive step.
+
+**Decisions first (in plan mode, before any change).** Ask actively, assume nothing:
+
+1. Distribution, init system, package manager (Ubuntu/Debian `apt`/`systemd`/`ufw`, Fedora/RHEL `dnf`/`firewalld`, Alpine `apk`/OpenRC). Unclear: `cat /etc/os-release`, `ps -p1 -o comm=`.
+2. Server type and purpose (sets the firewall tool, automatic reboot, and whether Docker gets set up).
+3. Git authentication: scoped token (the common case), deploy key, or account SSH key (details: `git-auth.md`).
+4. Tools: confirm the default set (`micro`, `mc`, `fzf`, `tmux`, `git`).
+5. Docker server? If so, the deploy step and the database dumps run at the end.
+
+Hardening and backup decisions don't fall here: `callbell-sysadmin-harden` settles firewall, SSH port, and automatic reboot, `callbell-sysadmin-backup` settles the backup parameters, each in its own skill's plan mode. Record every decision in this host's domain.
+
+Then, in order:
+
+- **Base.** Admin user with sudo (never work as root), install the SSH key. Set up Git globally (`user.name`, `user.email`, `init.defaultBranch main`, `pull.rebase false`).
+- **Tools.** See `tools.md` in this folder (`micro`, `mc`, `fzf`, `tmux`, `git` across distributions, plus the tmux config in `templates/tmux.conf`).
+- **Hardening.** Load `callbell-sysadmin-harden` and run it (SSH, firewall, fail2ban, users, system; distribution-aware). Record every deviation from the baseline in the domain, with its reason.
+- **Backup.** Load `callbell-sysadmin-backup` and run it (encrypted off-site target, notification, credentials, staggered start time, restore test).
+- **Docker (Docker servers only).** Load `callbell-sysadmin-deploy` for the stack conventions; the database dumps hook in before the backup.
+- **Sign-off.** Walk the `callbell-sysadmin-harden` sign-off checklist point by point, record the result in the domain, and verify the first backup and a restore test.
+
+## 8. Close
 
 Two lines, in the user's language, with names rather than prose:
 
@@ -114,10 +140,6 @@ Two lines, in the user's language, with names rather than prose:
 ❗ Missing: purpose of the host in web01/framework.md
 ```
 
-What was already there appears nowhere. Close by saying the domain counts as the workspace from the **next** session on, because the hook reads at startup: this session you know it, but the hook hasn't announced it yet.
+What was already there appears nowhere. If you provisioned in step 7, the close also names what was brought up and what still needs a hand (the first backup, a restore test). Close by saying the domain counts as the workspace from the **next** session on, because the hook reads at startup: this session you know it, but the hook hasn't announced it yet.
 
 If there was nothing to do, the close is one line.
-
-**One line more, but only on a fresh machine.** You read the inventory in step 4, so you know what's in front of you. If it shows no admin account beside root, no firewall, none of the standard tools, and no backup timer, then this is an unfinished machine, and you name `/callbell-sysadmin-setup` as the way to bring it fully up.
-
-**Only then.** On a set-up server this pointer doesn't appear: a pointer that always fires is advertising, and it breaks this skill's rule that a run with no findings is one line. When in doubt, leave it out: whoever has a fresh machine notices without you, and whoever has a running one is only unsettled by an offer to provision it from scratch.
