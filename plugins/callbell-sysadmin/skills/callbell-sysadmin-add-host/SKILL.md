@@ -2,14 +2,13 @@
 name: callbell-sysadmin-add-host
 description: >
   The one way into callbell-sysadmin: adds a host as a working domain, reads the machine's inventory, sets
-  the host identity, and on an unprovisioned machine offers to bring it up. Run once per host by typing
-  /callbell-sysadmin-add-host.
+  the host identity, and on an unprovisioned machine offers to bring it up. Run once per host.
 type: skill
 edit: locked
 disable-model-invocation: true
 ---
 
-# /callbell-sysadmin-add-host
+# callbell-sysadmin-add-host
 
 The one entry point of the pack, run once for each host. It lays down that host's working domain, and when the machine turns out to be unprovisioned, it carries on into bringing it up. The hook tells each session which domain is its workspace; here you create that domain.
 
@@ -19,9 +18,17 @@ The one entry point of the pack, run once for each host. It lays down that host'
 
 **The one rule to hang on: report only what's missing.** A check that reports success is noise. In a set-up folder, a run is one line.
 
-## 1. Dependencies (silent when met)
+## 1. Scaffold (create it if it's missing)
 
-This pack requires the core, and the core creates `__callbell__/`. So check the scaffold stands first. If it's missing, that's not this skill's failure: call `/callbell-start`, let it do its work, then continue here. If it stands, say nothing about it.
+This pack needs the core's scaffold `__callbell__/`, and the core owns it. Check it stands first. If it does, say nothing and go on.
+
+If it's missing, don't stop and don't ask: a new host is a fresh folder, so a missing scaffold is the normal case here, not an error. Lay it down with the core's own bootstrap, the one the core entry `callbell-start` runs:
+
+```
+node <core-root>/scripts/callbell-doctor.js --apply
+```
+
+`<core-root>` is the core plugin's folder: the `CALLBELL PLUGIN ROOT` named in the session context (the core's root, not this pack's `<plugin-root>` from step 3). The script copies only what's missing and never overwrites: scaffold, `.gitignore`, ruleset templates. If there's no git repo, offer `git init` in the same breath. The host's purpose and ruleset content come later, in step 6. Go to step 2 only once `__callbell__/` stands.
 
 This holds even when someone later reaches straight for a sweep without ever having been here: the check runs, it just stays quiet as long as there's nothing to do.
 
