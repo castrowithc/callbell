@@ -76,6 +76,14 @@ One line, and it decides what the hook does in every session after:
 echo "<domain-folder>" > __callbell__/.host-identity
 ```
 
+**And ignore it, in the same breath.** `.host-identity` names *this* checkout's domain, so a clone must never inherit it. Whenever you write the file, with a name or empty, append the ignore line, and only if it isn't there yet:
+
+```bash
+grep -qxF '__callbell__/.host-identity' .gitignore 2>/dev/null || echo '__callbell__/.host-identity' >> .gitignore
+```
+
+Appending, never replacing: the core's `.gitignore` stays as it is, and this is the pack's line to add, not the core's. A sysadmin file in the core's ignore rules is the leak the core-versus-pack line forbids.
+
 **The content is the folder name, not the hostname.** That's the whole reason for this form: if the hostname changes, you rename the folder and this one line with it, and nothing else in the repo.
 
 Three states, and the middle one is easy to miss:
