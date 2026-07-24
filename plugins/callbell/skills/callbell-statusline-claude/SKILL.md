@@ -22,12 +22,17 @@ render script is delivered payload the user never edits.
 - This configures **Claude Code's** statusline specifically — hence the `-claude` name.
 
 ## Set up
+`<plugin-root>` below is the folder this skill loaded from: the session context names it as `CALLBELL PLUGIN
+ROOT`, otherwise it's two levels above this `SKILL.md`. Substitute that real absolute path before running;
+never type `$CLAUDE_PLUGIN_ROOT` into a shell here (the host only substitutes it inside hook commands, so in
+an ad-hoc shell it is empty and the call fails), and never hardcode a fixed path (it carries the version
+number and is wrong after the next update).
+
 1. Run the setup script. It copies the renderer to `~/.callbell/statusline.js` (a stable path that survives
    plugin updates, because the statusLine command runs without the plugin context), writes a default widget
    config if none exists, and points `~/.claude/settings.json` at it with a 60s refresh (needed so the
    reset countdowns tick between events):
-   - Bash: `node "$CLAUDE_PLUGIN_ROOT/scripts/callbell-statusline-setup.js"`
-   - PowerShell: `node "$env:CLAUDE_PLUGIN_ROOT/scripts/callbell-statusline-setup.js"`
+   `node "<plugin-root>/scripts/callbell-statusline-setup.js"`
 2. Tell the user it appears at the next interaction. It replaces any previous statusline.
 3. **Ask whether the layout looks right.** If widgets are cut off or the dynamic wrapping misbehaves on
    their terminal, switch to the fixed layout: set `"layout": "fixed"` in `~/.callbell/statusline.json`.
