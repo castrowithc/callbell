@@ -2,18 +2,19 @@
 name: callbell-statusline-claude
 description: >
   Set up the Claude Code statusline: a configurable bar with toggleable widgets — model, reasoning effort,
-  directory, git branch and diff, token usage, cost, and rate-limit resets. Start it by typing
+  directory, git branch and diff, token usage, cost, rate-limit usage bars and resets. Start it by typing
   /callbell-statusline-claude; pass "disable X" or "enable Y" to toggle widgets.
-type: skill
-edit: locked
 disable-model-invocation: true
 argument-hint: "[enable/disable widgets]"
+license: MIT
+type: skill
+edit: locked
 ---
 
-# /callbell-statusline-claude
+# callbell-statusline-claude
 
 Configure the bar at the bottom of Claude Code: model, thinking effort, directory, git branch and diff,
-token usage, cost, and rate-limit resets. Which widgets show is chosen in `~/.callbell/statusline.json`; the
+token usage, cost, rate-limit usage and resets. Which widgets show is chosen in `~/.callbell/statusline.json`; the
 render script is delivered payload the user never edits.
 
 ## When
@@ -41,13 +42,18 @@ number and is wrong after the next update).
 Entries in the `widgets` array of `~/.callbell/statusline.json`. Drop an entry to hide it, reorder to reorder.
 
 `model` · `thinking` (reasoning effort) · `dir` · `branch` · `diff` (git `+/-` and `pushed | commit needed |
-push needed`) · `out` (last response tokens) · `context` (input bar, labelled `In:`) · `cost` · `reset`
-(5h window) · `weekly-reset` (7d window) · `method` (`Sub`/`API`).
+push needed`) · `out` (last response tokens) · `context` (input bar, labelled `In:`) · `cost` · `session`
+(5h usage bar, labelled `Session:`) · `reset` (5h window, labelled `Session Reset:`) · `weekly` (7d usage
+bar, labelled `Weekly:`) · `weekly-reset` (7d window, labelled `Weekly Reset:`) · `method`
+(`Subscription`/`API`).
 
 - Git widgets (`branch`, `diff`) hide themselves outside a repo — so a plain folder or an Obsidian vault
   shows no git segment.
-- `reset` and `weekly-reset` need a Pro/Max subscription and hide on API usage; `method` shows which is in
-  effect, so an empty reset is legible.
+- `session`, `reset`, `weekly`, and `weekly-reset` need a Pro/Max subscription and hide on API usage;
+  `method` shows which is in effect, so an empty rate-limit segment is legible.
+- New widgets shipped in an update are not auto-inserted into an existing `widgets` array (that array is
+  your explicit choice, dropping an entry hides it). Add `session` and `weekly` with `enable session,
+  weekly` or by hand.
 
 ## Toggling from an argument
 If the user passed one ("disable out, weekly-reset", "enable method", "put cost first"), edit the `widgets`
@@ -57,15 +63,15 @@ on every render.
 ## Layout
 - `wrap` (default): widgets flow left to right and reflow onto more lines when the window is too narrow.
   Nothing is dropped.
-- `fixed`: four fixed rows — Model/Thinking/Dir · Branch/Diff · Out/In/Cost · Method/Reset/Weekly Reset —
-  each showing only its active widgets. Use when wrap misbehaves.
+- `fixed`: four fixed rows — Model/Thinking/Dir · Branch/Diff · Out/In/Cost · Session/Session Reset/Weekly/
+  Weekly Reset/Method — each showing only its active widgets. Use when wrap misbehaves.
 
 ## Separator
-The `separator` field sets the dimmed string drawn between widgets. Default `" │ "`. Set it to `" · "`,
-`" | "`, or `"  "` (two spaces, no visible divider) in `~/.callbell/statusline.json`, or ask the skill to
+The `separator` field sets the dimmed string drawn between widgets. Default `" • "`. Set it to `" │ "`,
+`" · "`, `" | "`, or `"  "` (two spaces, no visible divider) in `~/.callbell/statusline.json`, or ask the skill to
 change it. Re-running setup after a plugin update copies the latest renderer and **tops up new config
 fields** (like `separator`) into an existing config, without touching the user's widget choices.
 
 ## Colours (fixed in the renderer)
-Context bar: green · >35% yellow · >45% orange · >70% red, relative to the model's own window size. Diff
-`+` green, `-` red-orange.
+Usage bars (`context`, `session`, `weekly`): green · >35% yellow · >45% orange · >70% red. The context bar
+is relative to the model's own window size, the rate-limit bars to each limit. Diff `+` green, `-` red-orange.

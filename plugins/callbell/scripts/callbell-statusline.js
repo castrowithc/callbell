@@ -13,17 +13,17 @@ const path = require('path');
 
 // ---------------- config ----------------
 const CONFIG_FILE = path.join(os.homedir(), '.callbell', 'statusline.json');
-const DEFAULT_WIDGETS = ['model', 'thinking', 'dir', 'branch', 'diff', 'out', 'context', 'cost', 'reset', 'weekly-reset', 'method'];
+const DEFAULT_WIDGETS = ['model', 'thinking', 'dir', 'branch', 'diff', 'out', 'context', 'cost', 'session', 'reset', 'weekly', 'weekly-reset', 'method'];
 
 function loadConfig() {
     try {
         const c = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
         return {
             layout: c.layout === 'fixed' ? 'fixed' : 'wrap',
-            separator: typeof c.separator === 'string' ? c.separator : ' │ ',
+            separator: typeof c.separator === 'string' ? c.separator : ' • ',
             widgets: Array.isArray(c.widgets) && c.widgets.length ? c.widgets : DEFAULT_WIDGETS
         };
-    } catch { return { layout: 'wrap', separator: ' │ ', widgets: DEFAULT_WIDGETS }; }
+    } catch { return { layout: 'wrap', separator: ' • ', widgets: DEFAULT_WIDGETS }; }
 }
 
 // ---------------- input ----------------
@@ -41,6 +41,17 @@ const C = {
 };
 const seg = (plain, color) => ({ plain, colored: noColor ? plain : color + plain + C.reset });
 const k = (n) => Math.round(n / 1000) + 'K';
+
+// A percent bar: label, 0-100 percent, and an optional dimmed suffix (e.g. a token fraction).
+function barSeg(label, pct, suffix) {
+    const color = pct > 70 ? C.red : pct > 45 ? C.orange : pct > 35 ? C.yellow : C.green;
+    const w = 10, f = Math.max(0, Math.min(w, Math.round(pct * w / 100)));
+    const bar = '▓'.repeat(f) + '░'.repeat(w - f);
+    const plain = `${label}: ${bar} ${pct}%${suffix ? ' ' + suffix : ''}`;
+    const colored = noColor ? plain
+        : `${C.dim}${label}:${C.reset} ${color}${bar} ${pct}%${C.reset}${suffix ? ' ' + C.dim + suffix + C.reset : ''}`;
+    return { plain, colored };
+}
 
 function hms(epochSec, withDays) {
     let s = epochSec - Math.floor(Date.now() / 1000);
@@ -120,28 +131,29 @@ const WIDGETS = {
         }
         const size = cw.context_window_size;
         if (tok == null || !size) return null;
-        const pct = Math.round(100 * tok / size);
-        const color = pct > 70 ? C.red : pct > 45 ? C.orange : pct > 35 ? C.yellow : C.green;
-        const w = 10, f = Math.max(0, Math.min(w, Math.round(pct * w / 100)));
-        const bar = '▓'.repeat(f) + '░'.repeat(w - f);
-        const plain = `In: ${bar} ${pct}% (${k(tok)}/${k(size)})`;
-        const colored = noColor ? plain
-            : `${C.dim}In:${C.reset} ${color}${bar} ${pct}%${C.reset} ${C.dim}(${k(tok)}/${k(size)})${C.reset}`;
-        return { plain, colored };
+        return barSeg('In', Math.round(100 * tok / size), `(${k(tok)}/${k(size)})`);
     },
     cost: (d) => {
         const c = d.cost && d.cost.total_cost_usd;
         return c != null ? seg('💰$' + Number(c).toFixed(2), C.green) : null;
     },
+    session: (d) => {
+        const r = d.rate_limits && d.rate_limits.five_hour;
+        return r && r.used_percentage != null ? barSeg('Session', Math.round(r.used_percentage)) : null;
+    },
     reset: (d) => {
         const r = d.rate_limits && d.rate_limits.five_hour && d.rate_limits.five_hour.resets_at;
-        return r != null ? seg('Reset: ' + hms(r, false), C.dim) : null;
+        return r != null ? seg('Session Reset: ' + hms(r, false), C.dim) : null;
+    },
+    weekly: (d) => {
+        const r = d.rate_limits && d.rate_limits.seven_day;
+        return r && r.used_percentage != null ? barSeg('Weekly', Math.round(r.used_percentage)) : null;
     },
     'weekly-reset': (d) => {
         const r = d.rate_limits && d.rate_limits.seven_day && d.rate_limits.seven_day.resets_at;
         return r != null ? seg('Weekly Reset: ' + hms(r, true), C.dim) : null;
     },
-    method: (d) => seg('Method: ' + (d.rate_limits ? 'Sub' : 'API'), C.dim)
+    method: (d) => seg('Method: ' + (d.rate_limits ? 'Subscription' : 'API'), C.dim)
 };
 
 // ---------------- compose ----------------
@@ -159,7 +171,7 @@ if (cfg.layout === 'fixed') {
         ['model', 'thinking', 'dir'],
         ['branch', 'diff'],
         ['out', 'context', 'cost'],
-        ['method', 'reset', 'weekly-reset']
+        ['session', 'reset', 'weekly', 'weekly-reset', 'method']
     ];
     out = ROWS
         .map(row => row.filter(t => active.has(t)).map(render).filter(Boolean))

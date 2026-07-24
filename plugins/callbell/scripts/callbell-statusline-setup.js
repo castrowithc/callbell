@@ -33,8 +33,8 @@ done.push('renderer copied to ' + rendererDst);
 //    "separator") without ever touching the user's widget choices.
 const DEFAULTS = {
     layout: 'wrap',
-    separator: ' │ ',
-    widgets: ['model', 'thinking', 'dir', 'branch', 'diff', 'out', 'context', 'cost', 'reset', 'weekly-reset', 'method']
+    separator: ' • ',
+    widgets: ['model', 'thinking', 'dir', 'branch', 'diff', 'out', 'context', 'cost', 'session', 'reset', 'weekly', 'weekly-reset', 'method']
 };
 const existed = fs.existsSync(configFile);
 let config = {};
