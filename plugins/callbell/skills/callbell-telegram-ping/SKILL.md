@@ -33,10 +33,15 @@ send script itself is host-neutral, so a manual test works on Codex too.
 Walk the user through this. The script lays down the folder and an empty skeleton; the user fills in only
 their two values, in their own editor, so the token never passes through the session.
 
+`<plugin-root>` below is the folder this skill loaded from: the session context names it as `CALLBELL PLUGIN
+ROOT`, otherwise it's two levels above this `SKILL.md`. Substitute that real absolute path before running;
+never type `$CLAUDE_PLUGIN_ROOT` into a shell here (the host only substitutes it inside hook commands, so in
+an ad-hoc shell it is empty and the call fails), and never hardcode a fixed path (it carries the version
+number and is wrong after the next update).
+
 1. **Lay down the base.** Run the script's `--init`. It creates `~/.callbell/` and, if none exists, a
    skeleton `telegram.json` (`{ "enabled": false, "token": "", "chat_id": "" }`), then reports the path:
-   - Bash: `node "$CLAUDE_PLUGIN_ROOT/scripts/callbell-telegram-notify.js" --init`
-   - PowerShell: `node "$env:CLAUDE_PLUGIN_ROOT/scripts/callbell-telegram-notify.js" --init`
+   `node "<plugin-root>/scripts/callbell-telegram-notify.js" --init`
 2. **Create a bot.** In Telegram, message `@BotFather`, send `/newbot`, follow the prompts. It returns a
    **bot token** like `123456:ABC-DEF...`.
 3. **Get the chat id.** The user sends any message to their new bot, then opens
@@ -49,8 +54,7 @@ their two values, in their own editor, so the token never passes through the ses
    machine (same bot, same chat); copy it to each. The `Host` line in the message says which machine rang.
 5. **Test it.** Run the script's `--test`. It sends a ping and, on success, sets `enabled: true` so the
    channel goes live. Report what it prints:
-   - Bash: `node "$CLAUDE_PLUGIN_ROOT/scripts/callbell-telegram-notify.js" --test`
-   - PowerShell: `node "$env:CLAUDE_PLUGIN_ROOT/scripts/callbell-telegram-notify.js" --test`
+   `node "<plugin-root>/scripts/callbell-telegram-notify.js" --test`
 
    A message should arrive on the user's device. If it says the values are unfilled or Telegram refused,
    relay that line; it names the cause without ever showing the token.
