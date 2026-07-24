@@ -6,14 +6,19 @@
 //
 //   node callbell-telegram-notify.js            — hook mode: read the Notification payload on stdin, send,
 //                                                  and stay SILENT no matter what (never block a session).
-//   node callbell-telegram-notify.js --test     — send a test ping and REPORT the outcome, so the setup
-//                                                  skill can confirm the channel works.
+//   node callbell-telegram-notify.js --init      — lay down ~/.callbell/ and a skeleton telegram.json the
+//                                                  user only fills with their values. Reports and exits.
+//   node callbell-telegram-notify.js --test      — send a test ping and REPORT the outcome; on success turn
+//                                                  the channel on. Ignores the enabled switch (you test
+//                                                  before turning it on).
 //
-// The secret lives outside every repo, in the host-neutral ~/.callbell/telegram.json ({ token, chat_id }),
-// the same store the rest of callbell's user-global state uses. This script only READS it, never writes it,
-// and never echoes the token into output, a log, or an error (the bot URL carries the token, so no error
-// message ever includes the URL). Absent or malformed config is a normal OFF state, not an error: the
-// channel is quiet and the session runs exactly as before.
+// The secret lives outside every repo, in the host-neutral ~/.callbell/telegram.json
+// ({ enabled, token, chat_id }), the same store the rest of callbell's user-global state uses. In hook mode
+// this script only READS the secret and never echoes the token into output, a log, or an error (the bot URL
+// carries the token, so no error message ever includes the URL). --init writes only a skeleton with empty
+// values, and --test writes back only the enabled flag; neither ever writes a token, so the token reaches
+// the file only by the user's own hand and never through the session. An off, absent, or unfilled config is
+// a normal quiet state, not an error: the session runs exactly as before.
 //
 // Only Claude is auto-wired (its Notification/idle_prompt event is the "waiting for you" signal). Codex has
 // no attention event, only a per-turn Stop, so it is deliberately not wired; this script stays host-neutral
@@ -25,21 +30,46 @@ const path = require('path');
 const https = require('https');
 const { execFileSync } = require('child_process');
 
-const TEST = process.argv.slice(2).includes('--test');
+const args = process.argv.slice(2);
+const TEST = args.includes('--test');
+const INIT = args.includes('--init');
+const TALK = TEST || INIT; // both talk to the user; hook mode is mute
 const CONFIG = path.join(os.homedir(), '.callbell', 'telegram.json');
 const BODY_MAX = 500; // keep the push scannable on a phone; Telegram's own hard cap is 4096
 
-// --test talks to the user; hook mode is mute, and exits 0 whatever happened so it never blocks a session.
-function say(msg) { if (TEST) process.stdout.write(msg + '\n'); }
-function done(code) { process.exit(TEST ? code : 0); }
+// --test/--init talk to the user; hook mode is mute and exits 0 whatever happened, so it never blocks.
+function say(msg) { if (TALK) process.stdout.write(msg + '\n'); }
+function done(code) { process.exit(TALK ? code : 0); }
+
+// --- --init: lay down the base the user only fills -------------------------
+// The folder and a skeleton with empty values, so the user never has to create either by hand; they open
+// the file and paste their token and chat id. Written with enabled:false, so an unfilled skeleton is off.
+if (INIT) {
+  fs.mkdirSync(path.dirname(CONFIG), { recursive: true });
+  if (fs.existsSync(CONFIG)) {
+    say('Config already at ' + CONFIG + '. Fill in "token" and "chat_id" if they are empty, then run --test.');
+  } else {
+    fs.writeFileSync(CONFIG, JSON.stringify({ enabled: false, token: '', chat_id: '' }, null, 2) + '\n');
+    say('Laid down a skeleton at ' + CONFIG + '. Open it, paste your bot token and chat id, then run --test.');
+  }
+  done(0);
+}
 
 // --- config -----------------------------------------------------------------
 let cfg;
 try { cfg = JSON.parse(fs.readFileSync(CONFIG, 'utf8')); }
-catch { say('Telegram channel is off: no ' + CONFIG + '. Create it with { "token": ..., "chat_id": ... } to turn it on.'); done(0); }
-if (!cfg || !cfg.token || !cfg.chat_id) {
-  say('Telegram config at ' + CONFIG + ' is missing "token" or "chat_id".');
-  done(1);
+catch { say('No config at ' + CONFIG + '. Run --init to lay down a skeleton, then fill it in.'); done(0); }
+
+const configured = !!(cfg && cfg.token && cfg.chat_id);
+// Explicit off switch: enabled:false silences the channel without losing the saved values. A file that has
+// real values but no enabled key stays on, so a hand-written config keeps working.
+const on = configured && cfg.enabled !== false;
+
+if (!TEST) {
+  if (!on) done(0);                 // hook mode: silent unless truly on
+} else if (!configured) {
+  say('Fill "token" and "chat_id" in ' + CONFIG + ' first (run --init to lay down a skeleton).');
+  done(1);                          // test mode ignores the switch, but needs real values
 }
 
 // --- who is ringing ---------------------------------------------------------
@@ -91,7 +121,15 @@ const req = https.request({
   let out = '';
   res.on('data', (c) => { out += c; });
   res.on('end', () => {
-    if (res.statusCode === 200) { say('Sent. Check your Telegram.'); done(0); }
+    if (res.statusCode === 200) {
+      // A confirmed send turns the channel on. Writes back only the flag, never the token.
+      if (TEST && cfg.enabled !== true) {
+        try { cfg.enabled = true; fs.writeFileSync(CONFIG, JSON.stringify(cfg, null, 2) + '\n'); }
+        catch { /* the send worked; enabling is best-effort */ }
+      }
+      say('Sent. Check your Telegram.' + (TEST ? ' The channel is on.' : ''));
+      done(0);
+    }
     // Report Telegram's own error text, never the request URL (it holds the token).
     let why = 'HTTP ' + res.statusCode;
     try { const j = JSON.parse(out); if (j.description) why = j.description; } catch { /* keep the status */ }

@@ -22,33 +22,37 @@ that waiting has started.
 
 ## How it works
 On Claude, the plugin's `Notification` hook fires when Claude has been idle waiting for you and runs the send
-script. The secret lives in `~/.callbell/telegram.json`, outside every repo, read only, never logged. With
-no config the channel is simply off and the session runs unchanged.
+script. The secret lives in `~/.callbell/telegram.json`, outside every repo, read only, never logged. The
+config carries an explicit `enabled` flag, so the channel's on/off state is not guessed from the file's mere
+presence. Off, absent, or unfilled, the channel is quiet and the session runs unchanged.
 
 Codex has no idle/attention event (only a per-turn `Stop`), so the automatic ping is Claude-only for now. The
 send script itself is host-neutral, so a manual test works on Codex too.
 
 ## Set up (once)
-Walk the user through this; the token must be written by the user, never pasted into the session.
+Walk the user through this. The script lays down the folder and an empty skeleton; the user fills in only
+their two values, in their own editor, so the token never passes through the session.
 
-1. **Create a bot.** In Telegram, message `@BotFather`, send `/newbot`, follow the prompts. It returns a
+1. **Lay down the base.** Run the script's `--init`. It creates `~/.callbell/` and, if none exists, a
+   skeleton `telegram.json` (`{ "enabled": false, "token": "", "chat_id": "" }`), then reports the path:
+   - Bash: `node "$CLAUDE_PLUGIN_ROOT/scripts/callbell-telegram-notify.js" --init`
+   - PowerShell: `node "$env:CLAUDE_PLUGIN_ROOT/scripts/callbell-telegram-notify.js" --init`
+2. **Create a bot.** In Telegram, message `@BotFather`, send `/newbot`, follow the prompts. It returns a
    **bot token** like `123456:ABC-DEF...`.
-2. **Get the chat id.** The user sends any message to their new bot, then opens
+3. **Get the chat id.** The user sends any message to their new bot, then opens
    `https://api.telegram.org/bot<TOKEN>/getUpdates` in a browser and reads `message.chat.id` from the JSON.
    (Substitute the real token in that URL. This is the one time the token appears in a URL, in the user's
    own browser, not in the session.)
-3. **Store the secret.** The user creates `~/.callbell/telegram.json` themselves, with:
-   ```json
-   { "token": "123456:ABC-DEF...", "chat_id": "987654321" }
-   ```
-   Do not offer to write this file for them: keeping the token out of the session transcript is the point.
-   The same file works on every machine (same bot, same chat); copy it to each. The `Host` line in the
-   message says which machine rang.
-4. **Test it.** Run the send script in test mode and report what it prints:
+4. **Fill in the two values.** The user opens `~/.callbell/telegram.json` in their editor and pastes the
+   token and chat id into the skeleton. Do not offer to write these for them: keeping the token out of the
+   session transcript is the point. Leave `enabled` as is; the test turns it on. The same file works on every
+   machine (same bot, same chat); copy it to each. The `Host` line in the message says which machine rang.
+5. **Test it.** Run the script's `--test`. It sends a ping and, on success, sets `enabled: true` so the
+   channel goes live. Report what it prints:
    - Bash: `node "$CLAUDE_PLUGIN_ROOT/scripts/callbell-telegram-notify.js" --test`
    - PowerShell: `node "$env:CLAUDE_PLUGIN_ROOT/scripts/callbell-telegram-notify.js" --test`
 
-   A message should arrive on the user's device. If it says the config is missing or Telegram refused,
+   A message should arrive on the user's device. If it says the values are unfilled or Telegram refused,
    relay that line; it names the cause without ever showing the token.
 
 ## The message
@@ -66,4 +70,5 @@ for your input"), so a finished run and an open question both read as "you are n
 from the body once you glance. That is deliberate: both mean the ball is in your court.
 
 ## Turning it off
-Delete or rename `~/.callbell/telegram.json`. The channel goes quiet; nothing else changes.
+Set `"enabled": false` in `~/.callbell/telegram.json` to mute it while keeping your values, or delete the
+file entirely. Either way the channel goes quiet; nothing else changes.
