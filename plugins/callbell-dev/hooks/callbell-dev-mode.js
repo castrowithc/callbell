@@ -8,7 +8,7 @@
 //
 // The dev skill body is the single source of truth. The hook injects only the active level's table row and
 // worked example (filter-not-truncate), so injection stays small under Codex's ~2500-token cap. Borrows
-// ponytail's filterSkillBodyForMode and per-host emit adapter (field-proven), including their two guards.
+// ponytail's filterSkillBodyForLevel and per-host emit adapter (field-proven), including their two guards.
 //
 // Degrades quietly without node: the hook registration guards BOTH shells, so a missing node never blocks a
 // session; the dev skill itself is plain markdown and keeps working, only the persistence goes quiet.
@@ -20,18 +20,18 @@ const os = require('os');
 const LEVELS = ['lite', 'full', 'ultra'];
 const DEFAULT_LEVEL = 'full';
 const SKILL_PATH = path.join(__dirname, '..', 'skills', 'callbell-dev', 'SKILL.md');
-const STATE_FILE = '.callbell-dev-active';
+const STATE_FILE = 'dev-active';
 
 // Codex sets PLUGIN_ROOT (and, for compat, CLAUDE_PLUGIN_ROOT); Claude sets only the latter. So PLUGIN_ROOT
-// on its own is the host marker (plugin-mechanics §5). Never a flag we pass ourselves — one hooks.json
+// on its own is the host marker. Never a flag we pass ourselves — one hooks.json
 // serves both manifests, so a flag would be present for both hosts or neither.
 const isCodex = Boolean(process.env.PLUGIN_ROOT);
 
-// A single user-level "I am working lazy" bit, deliberately not per-repo. Codex keeps it in its persistent
-// PLUGIN_DATA; Claude in its config dir.
+// A single user-level "I am working lazy" bit, deliberately not per-repo. It lives in the shared,
+// host-neutral ~/.callbell store — the one home outside the versioned install path, so the mode survives a
+// plugin update on both hosts, and one store holds all host-global state rather than two.
 function stateDir() {
-  if (isCodex && process.env.PLUGIN_DATA) return process.env.PLUGIN_DATA;
-  return process.env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), '.claude');
+  return path.join(os.homedir(), '.callbell');
 }
 const statePath = () => path.join(stateDir(), STATE_FILE);
 

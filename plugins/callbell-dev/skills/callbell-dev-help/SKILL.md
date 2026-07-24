@@ -33,6 +33,8 @@ Once set, the level stays active for the whole session, reaffirmed each turn, un
 | **review** | `/callbell-dev-review` | Over-engineering review of a diff: `L42: yagni: Factory, one product. Inline.` Append `repo` for a pass over the whole tree, sorted by largest cut first. |
 | **help** | `/callbell-dev-help` | This card. |
 
+Codex calls the same skills with the `@` prefix; Claude uses the `/` forms above.
+
 ## Stop
 
 Say "normal mode" or "stop dev". Resume anytime by calling the skill again.
