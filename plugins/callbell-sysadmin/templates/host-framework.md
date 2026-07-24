@@ -3,7 +3,7 @@ description: >
   A host's framework: what this machine is for, how work is done on it, and what's off-limits on it.
   Applies to everything that happens in this domain.
 type: meta
-edit: shared
+edit: locked
 ---
 
 # Framework: <host>

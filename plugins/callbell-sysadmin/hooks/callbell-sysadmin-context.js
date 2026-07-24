@@ -72,13 +72,12 @@ if (host) {
   ].join('\n'));
 }
 
-// The passive safety layer: the pack's rules/, injected in both identity states. The on-demand skills
-// stay asleep until called, so only these rules travel along.
-function bodyOf(file) {
-  let text = fs.readFileSync(file, 'utf8').replace(/^﻿/, '');    // strip BOM
-  text = text.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, '');         // strip YAML frontmatter
-  return text.split(/\r?\n/).filter(l => !/^\s*@[\w./-]+\s*$/.test(l)).join('\n').trim();
-}
+// The passive safety layer: the pack's rules/, POINTED AT (not inlined), in both identity states — the same
+// transport the core hook uses. A pointer costs ~80 characters where a rule body costs thousands, so this
+// never risks the host's SessionStart cap (over it, the host drops nearly the whole payload) and the safety
+// rules can grow to any size. The absolute path is the host's own substitution of the plugin root, so the
+// install version and the host are irrelevant. The on-demand skills stay asleep until called, so only these
+// rules travel along.
 function collect(dir) {
   let out = [];
   let entries;
@@ -92,14 +91,12 @@ function collect(dir) {
 }
 
 if (pluginRoot) {
-  const parts = [];
-  for (const f of collect(path.join(pluginRoot, 'rules'))) {
-    const body = bodyOf(f);
-    if (body) parts.push('--- ' + path.relative(pluginRoot, f).split(path.sep).join('/') + ' ---\n' + body);
-  }
-  if (parts.length) {
-    blocks.push('Server safety layer (passive, in force while a host identity is present):');
-    blocks.push(parts.join('\n\n'));
+  const abs = f => f.split(path.sep).join('/');
+  const rules = collect(path.join(pluginRoot, 'rules'));
+  if (rules.length) {
+    blocks.push('Server safety layer (passive, in force while a host identity is present). Read these files '
+      + 'NOW, before you answer, and follow them for the whole session:\n'
+      + rules.map(f => '- ' + abs(f)).join('\n'));
   }
 }
 
