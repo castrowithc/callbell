@@ -95,7 +95,7 @@ Your **own** skills sit entirely outside the plugins and can't collide with any 
 This repo **is** a marketplace: the always-on collection `callbell` plus optional purpose packs, each its own installable plugin under `plugins/`. There's no build step and nothing is generated: each plugin is written here directly, and what you read is what gets installed.
 
 - `plugins/callbell/`: the collection, what you install and runs always-on:
-  - `skills/`: a flat folder, eight skills: the way in, filing, planning, import, commit, worktree, adhd, help.
+  - `skills/`: a flat folder, ten skills: the way in, filing, planning, huddling, import, commit, worktree, adhd, the Claude statusline, help.
   - `rules/core/`: norms that apply in every repo. The session tells the agent to read them right away.
   - `rules/scaffold/`: norms that mean something only where a `__callbell__/` scaffold exists (backlog,
     zones, frontmatter, memory, structure). Loaded only there, but then right away, like the core norms; a

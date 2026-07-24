@@ -15,7 +15,7 @@ disable-model-invocation: true
 
 Show this card when called. Once, no mode change, nothing saved.
 
-The core is the interface between you and the agent: shared norms, a scaffold for backlog and memory, filing, import, planning, and git. It carries no purpose of its own; the packs decide what gets worked on.
+The core is the interface between you and the agent: shared norms, a scaffold for backlog and memory, filing, import, brainstorming, planning, and git. It carries no purpose of its own; the packs decide what gets worked on.
 
 ## Skills
 
@@ -24,10 +24,12 @@ The core is the interface between you and the agent: shared norms, a scaffold fo
 | **start** | `/callbell-start` | The way in: checks dependencies and scaffold, adds what's missing, settles purpose and roles once. Call it when you arrive or when something's missing. |
 | **filing** | `/callbell-filing` | Decides where a file belongs and how the tree grows. |
 | **plan** | `/callbell-plan` only | Turns an idea into work packages: why, scope, approach, done. You start it; it never starts itself. |
+| **huddle** | "brainstorm this", `/callbell-huddle` | Thinks a thing through from several distinct roles before it hardens — brainstorming, not planning. Stays on until you end it. |
 | **import** | "it's in the inbox", `/callbell-import` | Turns raw material in `__callbell__/zone-import/` into redacted, filed content. |
 | **commit** | `/callbell-commit`, "commit this" | Commits through a message you've read: drafted, shown in full, corrected, then committed and pushed. |
 | **worktree** | `/callbell-worktree` | A git worktree for parallel work, cleaned up after the merge. |
 | **adhd** | `/callbell-adhd` | Shapes output for an ADHD reader: next action first, numbered steps, state restated each turn. Stays on until "stop adhd mode". |
+| **statusline** | `/callbell-statusline-claude` | Sets up a configurable Claude Code statusline: toggleable widgets read from `~/.callbell`. |
 | **help** | `/callbell-help` | This card. |
 
 Codex calls the same skills with the `@` prefix; Claude uses the `/` forms above.
