@@ -31,21 +31,46 @@ done.push('renderer copied to ' + rendererDst);
 
 // 3. config: create with defaults if absent, else top up missing top-level fields (e.g. a new
 //    "separator") without ever touching the user's widget choices.
+// Widgets are an ordered { name: bool } map: the full menu is always present, a widget shows when true, and
+// the key order is the render order. WIDGET_ORDER is the canonical menu and its default order.
+const WIDGET_ORDER = ['model', 'thinking', 'dir', 'branch', 'diff', 'out', 'context', 'cost', 'session', 'reset', 'weekly', 'weekly-reset', 'method'];
 const DEFAULTS = {
     layout: 'wrap',
     separator: ' • ',
-    widgets: ['model', 'thinking', 'dir', 'branch', 'diff', 'out', 'context', 'cost', 'session', 'reset', 'weekly', 'weekly-reset', 'method']
+    widgets: Object.fromEntries(WIDGET_ORDER.map(w => [w, true])) // a fresh config gets every widget on
 };
 const existed = fs.existsSync(configFile);
 let config = {};
 if (existed) { try { config = JSON.parse(fs.readFileSync(configFile, 'utf8')); } catch { config = {}; } }
 let changed = !existed;
-for (const key of Object.keys(DEFAULTS)) {
+
+// Scalar fields: fill if absent, never overwrite the user's value.
+for (const key of ['layout', 'separator']) {
     if (!(key in config)) { config[key] = DEFAULTS[key]; changed = true; }
 }
+
+// Widgets, all non-destructive:
+//   fresh / absent -> the full map, every widget on.
+//   legacy array   -> migrate: listed widgets on in their order, the rest appended off below.
+//   map            -> keep the user's on/off and order untouched.
+if (!existed || config.widgets == null || (typeof config.widgets !== 'object')) {
+    config.widgets = { ...DEFAULTS.widgets };
+    changed = true;
+} else if (Array.isArray(config.widgets)) {
+    const migrated = {};
+    for (const w of config.widgets) if (typeof w === 'string' && !(w in migrated)) migrated[w] = true;
+    config.widgets = migrated;
+    changed = true;
+}
+// Keep the menu complete: any known widget missing from it is appended off, so a widget shipped in a later
+// update shows up (off) on the next run. The user's existing keys and their order are left as they are.
+for (const w of WIDGET_ORDER) {
+    if (!(w in config.widgets)) { config.widgets[w] = false; changed = true; }
+}
+
 if (changed) {
     fs.writeFileSync(configFile, JSON.stringify(config, null, 2) + '\n');
-    done.push((existed ? 'config topped up (new fields) at ' : 'default config written to ') + configFile);
+    done.push((existed ? 'config migrated/topped up at ' : 'default config written to ') + configFile);
 } else {
     done.push('config left as is at ' + configFile);
 }

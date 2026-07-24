@@ -15,13 +15,23 @@ const path = require('path');
 const CONFIG_FILE = path.join(os.homedir(), '.callbell', 'statusline.json');
 const DEFAULT_WIDGETS = ['model', 'thinking', 'dir', 'branch', 'diff', 'out', 'context', 'cost', 'session', 'reset', 'weekly', 'weekly-reset', 'method'];
 
+// The config carries widgets as an ordered { name: bool } map (0.6.0+): the full menu is present, a widget
+// is on when its value is true, and the key order is the render order. A pre-0.6.0 array of names is still
+// read, so a config the setup has not migrated yet keeps working. Either way this returns the enabled names
+// in order, which is all the compose step below needs.
+function enabledWidgets(w) {
+    if (w && typeof w === 'object' && !Array.isArray(w)) return Object.keys(w).filter(n => w[n] === true);
+    if (Array.isArray(w) && w.length) return w.filter(n => typeof n === 'string');
+    return DEFAULT_WIDGETS;
+}
+
 function loadConfig() {
     try {
         const c = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
         return {
             layout: c.layout === 'fixed' ? 'fixed' : 'wrap',
             separator: typeof c.separator === 'string' ? c.separator : ' • ',
-            widgets: Array.isArray(c.widgets) && c.widgets.length ? c.widgets : DEFAULT_WIDGETS
+            widgets: enabledWidgets(c.widgets)
         };
     } catch { return { layout: 'wrap', separator: ' • ', widgets: DEFAULT_WIDGETS }; }
 }
