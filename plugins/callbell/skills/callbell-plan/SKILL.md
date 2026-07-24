@@ -5,12 +5,13 @@ description: >
   with why, scope, approach, and a definition of done. The user starts it with /callbell-plan, never on its
   own: only the user knows whether they want this built or are still thinking about it, and from the outside
   those two look identical.
+disable-model-invocation: true
+license: MIT
 type: skill
 edit: locked
-disable-model-invocation: true
 ---
 
-# /callbell-plan
+# callbell-plan
 
 An idea goes in, a project and its work packages come out. After that this session is done, and the work grows from there in conversation.
 

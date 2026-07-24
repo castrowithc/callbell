@@ -4,6 +4,7 @@ description: >
   The norms that apply in every callbell repo, regardless of scaffold and type: naming and format
   conventions, data protection, git routine, roles and approvals, interaction language, references, and
   writing style.
+license: MIT
 type: rule
 edit: locked
 ---
@@ -182,5 +183,3 @@ reads the distinction from the path it is actually working in, at the moment a t
 - Dev: classic code bases. May also hold text files as a project wiki or project docs.
 - Ops: text-heavy repos like personal OS, business OS, wikis, markdown RAGs.
   May hold code, e.g. as script templates, code documentation, code snippets.
-  But also as an operational main repo plus a sub-repo that's gitignored. That brings the advantage that the
-  operational layer can live as a private remote repo, while the sub-repo is gitignored and public on its remote.

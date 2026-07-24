@@ -2,10 +2,11 @@
 name: callbell-sysadmin-docker-update
 description: >
   Updates a Docker stack or the Docker engine: update classes, per-stack flow, migration on database major
-  versions, prohibitions. Start it by typing /callbell-sysadmin-docker-update.
+  versions, prohibitions. Start it by naming callbell-sysadmin-docker-update.
+disable-model-invocation: true
+license: MIT
 type: skill
 edit: locked
-disable-model-invocation: true
 ---
 
 # Docker update strategy

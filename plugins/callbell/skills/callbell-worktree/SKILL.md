@@ -2,14 +2,15 @@
 name: callbell-worktree
 description: >
   Set up a git worktree for parallel work: a new branch in its own folder sharing one git database, so
-  separate threads never collide. Cleans up after the merge. Start it by typing /callbell-worktree.
-type: skill
-edit: locked
+  separate threads never collide. Cleans up after the merge. Start it by naming callbell-worktree.
 disable-model-invocation: true
 argument-hint: "[branch-name]"
+license: MIT
+type: skill
+edit: locked
 ---
 
-# /callbell-worktree
+# callbell-worktree
 
 Open a second working thread with `git worktree`, without stashing the open state in the main folder. For running several sessions or topics at once.
 

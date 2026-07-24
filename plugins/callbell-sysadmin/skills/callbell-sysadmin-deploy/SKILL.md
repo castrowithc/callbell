@@ -3,10 +3,11 @@ name: callbell-sysadmin-deploy
 description: >
   Sets up a new Docker stack by fixed conventions: directory layout, required compose settings,
   capabilities, network, reverse proxy, SMTP and OIDC placeholders, security-relevant variables, acceptance
-  checklist. Start it by typing /callbell-sysadmin-deploy.
+  checklist. Start it by naming callbell-sysadmin-deploy.
+disable-model-invocation: true
+license: MIT
 type: skill
 edit: locked
-disable-model-invocation: true
 ---
 
 # Setting up a Docker stack: conventions and procedure

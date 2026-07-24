@@ -1,12 +1,12 @@
 ---
 name: callbell-adhd
 description: >
-  Shape output for a reader with ADHD: lead with the next action, number multi-step work, restate state across turns, suppress tangents, give specific time estimates, make wins visible. Invoke with /callbell-adhd; stays on until "stop adhd mode"
+  Shape output for a reader with ADHD: lead with the next action, number multi-step work, restate state across turns, suppress tangents, give specific time estimates, make wins visible. Invoke by naming callbell-adhd; stays on until "stop adhd mode"
 disable-model-invocation: true
+attribution: github.com/ayghri/i-have-adhd
 license: MIT
 type: skill
 edit: locked
-attribution: github.com/ayghri/i-have-adhd
 ---
 
 # callbell-adhd

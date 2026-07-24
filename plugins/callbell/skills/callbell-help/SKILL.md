@@ -4,12 +4,13 @@ description: >
   Quick reference to callbell in this repo: which skills the core ships, what other packs exist, and how
   agent and user work together. Shown once, not a persistent mode. Triggers: /callbell-help, "callbell help",
   "what can callbell do", "which callbell commands", "how do I work here".
+disable-model-invocation: true
+license: MIT
 type: skill
 edit: locked
-disable-model-invocation: true
 ---
 
-<!-- Show the user the following card to quide them -->
+<!-- Show the user the following card to guide them -->
 
 # Callbell Help
 

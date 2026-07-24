@@ -9,10 +9,12 @@
     { "name": "callbell-dev",
       "source": { "source": "local", "path": "./plugins/callbell-dev" },
       "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
-      "category": "Productivity" },
+      "category": "Productivity",
+      "description": "Code pack: the laziest solution that actually works, in three levels (lite, full, ultra), plus a review skill. Requires the callbell core." },
     { "name": "callbell-sysadmin",
       "source": { "source": "local", "path": "./plugins/callbell-sysadmin" },
       "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
-      "category": "Productivity" }
+      "category": "Productivity",
+      "description": "Sysadmin pack: a passive safety layer plus on-demand server-ops skills, active where a host identity is declared. Requires the callbell core." }
   ]
 }

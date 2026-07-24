@@ -3,10 +3,11 @@ name: callbell-sysadmin-checkup
 description: >
   Regular all-round check of a server: system (kernel, reboot, disk, time, resources), pending updates,
   drift from the hardening, backup liveness, compared with what's recorded about the host, as a dated
-  report. For the routine "is everything still running well". Start it by typing /callbell-sysadmin-checkup.
+  report. For the routine "is everything still running well". Start it by naming callbell-sysadmin-checkup.
+disable-model-invocation: true
+license: MIT
 type: skill
 edit: locked
-disable-model-invocation: true
 ---
 
 # Server checkup: sweep, drift, report

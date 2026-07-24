@@ -2,11 +2,12 @@
 name: callbell-sysadmin-backup
 description: >
   Sets up or retrofits an encrypted, off-site backup with BorgBackup and Borgmatic to an SSH/SFTP target:
-  create the repo, configuration, notification, credentials, restore test. Start it by typing
-  /callbell-sysadmin-backup.
+  create the repo, configuration, notification, credentials, restore test. Start it by naming
+  callbell-sysadmin-backup.
+disable-model-invocation: true
+license: MIT
 type: skill
 edit: locked
-disable-model-invocation: true
 ---
 
 # Setting up a backup: Borg + Borgmatic + off-site SSH/SFTP target

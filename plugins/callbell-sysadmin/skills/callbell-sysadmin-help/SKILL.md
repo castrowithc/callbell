@@ -2,11 +2,12 @@
 name: callbell-sysadmin-help
 description: >
   Quick reference to callbell-sysadmin: whether the pack is active here, how to switch it on, which skill you
-  want when, and which of them only read. Shown once, not a persistent mode. Start it by typing
-  /callbell-sysadmin-help.
+  want when, and which of them only read. Shown once, not a persistent mode. Start it by naming
+  callbell-sysadmin-help.
+disable-model-invocation: true
+license: MIT
 type: skill
 edit: locked
-disable-model-invocation: true
 ---
 
 # Callbell Sysadmin Help

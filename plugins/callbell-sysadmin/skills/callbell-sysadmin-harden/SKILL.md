@@ -2,10 +2,11 @@
 name: callbell-sysadmin-harden
 description: >
   Hardens a server to a security baseline, or checks an existing hardening: SSH, firewall, fail2ban, users,
-  system. Start it by typing /callbell-sysadmin-harden.
+  system. Start it by naming callbell-sysadmin-harden.
+disable-model-invocation: true
+license: MIT
 type: skill
 edit: locked
-disable-model-invocation: true
 ---
 
 # Hardening a server: baseline and procedure

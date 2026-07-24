@@ -4,10 +4,11 @@ description: >
   Suspected-breach pass for a host someone may have reached: a fast, read-only triage of access,
   persistence, processes, network, and containers, compared with what's recorded about the host, then
   targeted follow-up on anything that doesn't fit. Never searches the filesystem, never changes anything.
-  Start it by typing /callbell-sysadmin-incident.
+  Start it by naming callbell-sysadmin-incident.
+disable-model-invocation: true
+license: MIT
 type: skill
 edit: locked
-disable-model-invocation: true
 ---
 
 # Server incident: triage, targeted follow-up, response

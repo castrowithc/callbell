@@ -4,12 +4,13 @@ description: >
   Set up the one-way Telegram channel that pings you when the agent stops and is waiting for you, so you
   learn it away from the terminal. Guides the bot setup, stores the secret outside the repo, and sends a
   test ping. Start it by typing /callbell-telegram-ping.
+disable-model-invocation: true
+license: MIT
 type: skill
 edit: locked
-disable-model-invocation: true
 ---
 
-# /callbell-telegram-ping
+# callbell-telegram-ping
 
 Set up a one-way push to Telegram. When the agent stops and waits for you, a message reaches your phone, so
 you do not have to sit and watch the session. You still answer at the terminal; the channel only tells you

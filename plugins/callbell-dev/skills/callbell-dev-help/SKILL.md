@@ -5,13 +5,14 @@ description: >
   persistent mode. Triggers: /callbell-dev-help, "callbell-dev help", "which dev commands", "how do I use the
   dev pack".
 disable-model-invocation: true
+license: MIT
 type: skill
 edit: locked
 ---
 
-<!-- Show the user the following card to quide them -->
+<!-- Show the user the following card to guide them -->
 
-# callbell-dev
+# callbell-dev-help
 
 The code pack: a lazy senior developer and the skills that review their work. Show this card when called. Once only, change no level, write no flag files, persist nothing.
 

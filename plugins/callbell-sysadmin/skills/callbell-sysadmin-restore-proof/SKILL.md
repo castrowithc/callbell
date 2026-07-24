@@ -3,10 +3,11 @@ name: callbell-sysadmin-restore-proof
 description: >
   Proves a backup restores, rather than just checking that it runs: three escalating restore levels into a
   scratch path, each saying what it proves and what stays open. Also covers the case with no backup at all.
-  Start it by typing /callbell-sysadmin-restore-proof.
+  Start it by naming callbell-sysadmin-restore-proof.
+disable-model-invocation: true
+license: MIT
 type: skill
 edit: locked
-disable-model-invocation: true
 ---
 
 # Prove the restore, don't just run the backup
