@@ -9,11 +9,11 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT || process.env.PLUGIN_ROOT;
-if (!pluginRoot) {
-    console.error('CLAUDE_PLUGIN_ROOT is not set — run this from a Claude Code session with the plugin loaded.');
-    process.exit(1);
-}
+// The renderer sits next to this script, so resolve the plugin root from here: setup then runs from any
+// shell, not only where the host sets CLAUDE_PLUGIN_ROOT (an ad-hoc shell has it empty). Mirrors
+// callbell-doctor.js, and matches the skill's "<plugin-root>" instruction working without the env var.
+const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT || process.env.PLUGIN_ROOT
+    || path.resolve(__dirname, '..');
 
 const home = os.homedir();
 const callbellDir = path.join(home, '.callbell');
