@@ -9,10 +9,10 @@ description: >
   /callbell-dev-review. Complements correctness-focused review, this one only
   hunts complexity.
 disable-model-invocation: true
+attribution: github.com/DietrichGebert/ponytail
 license: MIT
 type: skill
 edit: locked
-attribution: github.com/DietrichGebert/ponytail
 ---
 
 # callbell-dev-review

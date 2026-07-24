@@ -5,6 +5,7 @@ description: >
   missing, settles purpose and roles once. Runs every time, reports only what's missing, and in a set-up repo
   stays down to one line. Triggers: /callbell-start, "set up", "get started", "what's missing here", or a
   folder callbell has never run in.
+license: MIT
 type: skill
 edit: locked
 ---

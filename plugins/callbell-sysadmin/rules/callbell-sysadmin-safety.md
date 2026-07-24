@@ -3,6 +3,7 @@ paths: ["**/*"]
 description: >
   Protection against destructive server operations: never expose secrets, explain and confirm destructive
   commands before running them, and change SSH or the firewall only by the two-connection pattern.
+license: MIT
 type: rule
 edit: locked
 ---

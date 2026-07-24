@@ -3,6 +3,7 @@ paths: ["**/*"]
 description: >
   The callbell-managed layer __callbell__/: the fixed function file names, the two I/O zones,
   the backlog, and the memory.
+license: MIT
 type: rule
 edit: locked
 ---

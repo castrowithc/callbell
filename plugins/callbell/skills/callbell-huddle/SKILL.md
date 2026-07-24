@@ -9,6 +9,7 @@ description: >
   "poke holes in this", "what am I missing"). Also on /callbell-huddle. Not planning (that is
   /callbell-plan) and not a gate that judges whether the idea survives.
 argument-hint: "[off]"
+license: MIT
 type: skill
 edit: locked
 ---

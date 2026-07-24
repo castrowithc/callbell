@@ -14,10 +14,10 @@ description: >
   use for non-coding requests (general knowledge, prose, translation,
   summaries, recipes).
 argument-hint: "[lite|full|ultra]"
+attribution: github.com/DietrichGebert/ponytail
 license: MIT
 type: skill
 edit: locked
-attribution: github.com/DietrichGebert/ponytail
 ---
 
 # callbell-dev

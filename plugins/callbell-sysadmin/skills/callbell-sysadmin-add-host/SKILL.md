@@ -3,9 +3,10 @@ name: callbell-sysadmin-add-host
 description: >
   The one way into callbell-sysadmin: adds a host as a working domain, reads the machine's inventory, sets
   the host identity, and on an unprovisioned machine offers to bring it up. Run once per host.
+disable-model-invocation: true
+license: MIT
 type: skill
 edit: locked
-disable-model-invocation: true
 ---
 
 # callbell-sysadmin-add-host

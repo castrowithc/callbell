@@ -4,6 +4,7 @@ description: >
   Frontmatter standard for content Markdown files: which fields a file carries, the type enum and
   what each value means, the strict coupling of type to edit, and the principle that filed repo content
   takes precedence over the agent's training knowledge.
+license: MIT
 type: rule
 edit: locked
 ---

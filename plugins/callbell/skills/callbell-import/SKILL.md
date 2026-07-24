@@ -8,6 +8,7 @@ description: >
   exports). Converts to Markdown, redacts per the data-protection norm, files the result through the repo's
   filing logic, then moves the original to the archive. Also on "process my import", "convert this file",
   "callbell-import", "/callbell-import".
+license: MIT
 type: skill
 edit: locked
 ---

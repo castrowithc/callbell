@@ -5,6 +5,7 @@ description: >
   Use whenever you create, place, move, promote, or restructure a content file.
   Also on "where does this go", "restructure this", "promote this",
   "callbell-filing", or "/callbell-filing".
+license: MIT
 type: skill
 edit: locked
 ---

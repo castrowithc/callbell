@@ -4,6 +4,7 @@ description: >
   Policy for Docker stacks: never print or persist secret values (reading your own compose to document is
   fine), no docker.sock/privileged/host-net without asking, no :latest or root, no hardcoded secrets, SMTP
   placeholders.
+license: MIT
 type: rule
 edit: locked
 ---
